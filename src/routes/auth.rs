@@ -5,10 +5,17 @@ use serde_json::{json, Value as JsonValue};
 
 use crate::models::unsafecredentials::UnsafeCredentials;
 use crate::models::user::User;
+use crate::models::createuser::CreateUser;
 
-#[axum::debug_handler]
 pub async fn login(State(state): State<AppState>, Json(user): Json<UnsafeCredentials>) -> (StatusCode, axum::Json<JsonValue>) {
-    let query = "SELECT id, login, password FROM pfe.users WHERE login = $1";
+    if user.login == "" || user.password == "" {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(json!("Empty login or password"))
+        )
+    }
+
+    let query: &str = "SELECT id, login, password FROM pfe.users WHERE login = $1";
     match sqlx::query_as::<sqlx::Postgres, User>(&query)
     .bind(user.login)
     .fetch_one(&state.db).await {
@@ -40,7 +47,7 @@ pub async fn login(State(state): State<AppState>, Json(user): Json<UnsafeCredent
     }
 }
 
-pub async fn register(State(state): State<AppState>, Json(user): Json<User>) -> (StatusCode, axum::Json<JsonValue>) {
+pub async fn register(State(state): State<AppState>, Json(user): Json<CreateUser>) -> (StatusCode, axum::Json<JsonValue>) {
     (
         StatusCode::NOT_IMPLEMENTED,
         Json(json!("Not implemented"))

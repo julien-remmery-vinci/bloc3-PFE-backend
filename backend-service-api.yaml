@@ -1,0 +1,295 @@
+openapi: 3.0.0
+info:
+  title: Service API ShiftingPact
+  description: API pour la gestion des questionnaires client de ShiftingPact
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Serveur local
+
+paths:
+  /auth/login:
+    post:
+      summary: Connecte un utilisateur
+      description:
+        Permet de connecter un utilisateur à l'application.
+        L'utilisateur doit fournir son adresse email et son mot de passe.
+        Retourne un token d'authentification.
+      requestBody:
+        required: true
+        description:
+          Informations de connexion de l'utilisateur.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: L'utilisateur est connecté
+          content:
+           text/plain:
+             schema:
+               type: string
+               example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"
+        '400':
+          description: Les informations de connexion sont manquantes
+        '401':
+          description: Les informations de connexion sont incorrectes
+        '404':
+          description: L'utilisateur n'existe pas
+  /auth/register:
+    post:
+      summary: Enregistre un nouvel utilisateur
+      description:
+        Permet d'enregistrer un nouvel utilisateur dans l'application.
+        L'utilisateur doit fournir les informations du nouveau compte.
+      requestBody:
+        required: true
+        description:
+          Informations de l'utilisateur à enregistrer.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: L'utilisateur est enregistré
+        '400':
+          description: Les informations de l'utilisateur sont manquantes ou incorrectes
+  /forms:
+    post:
+      summary: Crée un nouveau formulaire
+      description:
+        Permet de créer un nouveau formulaire.
+        L'ID du formulaire sera autogénéré.
+        Les questions associées au formulaire ne sont pas encore connues.
+      requestBody:
+        required: true
+        description:
+          Informations du formulaire à créer.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/Form'
+      responses:
+        '201':
+          description: Le formulaire a été créé
+        '400':
+          description: Les informations du formulaire sont manquantes ou incorrectes
+  /forms/{formId}:
+    parameters:
+      - name: formId
+        in: path
+        required: true
+        description: Identifiant du formulaire
+        schema:
+          type: string
+          example: "12345"
+    get:
+      summary: Consulte les détails d'un formulaire
+      description: Récupère les détails d'un formulaire spécifique en utilisant son ID.
+      responses:
+        '200':
+          description: Détails du formulaire
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Form'
+        '404':
+          description: Le formulaire n'existe pas
+    put:
+      summary: Met à jour un formulaire
+      description:
+        Permet de mettre à jour un formulaire existant.
+        L'ID du formulaire ne peut pas être modifié.
+      requestBody:
+        required: true
+        description:
+          Informations du formulaire à mettre à jour.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/Form'
+      responses:
+        '204':
+          description: Le formulaire a été mis à jour
+        '400':
+          description: Les informations du formulaire sont manquantes ou incorrectes
+        '404':
+          description: Le formulaire n'existe pas
+    delete:
+      summary: Supprime un formulaire
+      description: Supprime un formulaire spécifique en utilisant son ID.
+      responses:
+        '204':
+          description: Le formulaire a été supprimé
+        '404':
+          description: Le formulaire n'existe pas
+  /forms/user/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        description: Identifiant de l'utilisateur
+        schema:
+          type: string
+          example: "12345"
+    get:
+      summary: Consulte les formulaires d'un utilisateur
+      description: Récupère les formulaires associés à un utilisateur spécifique en utilisant son ID.
+      responses:
+        '200':
+          description: Formulaires de l'utilisateur
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Form'
+        '404':
+          description: Aucun formulaire trouvé pour cet utilisateur
+  /questions:
+    post:
+      summary: Crée une nouvelle question
+      description:
+        Permet de créer une nouvelle question.
+        L'ID de la question sera autogénéré.
+      requestBody:
+        required: true
+        description:
+          Informations de la question à créer.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '201':
+          description: La question a été créée
+        '400':
+          description: Les informations de la question sont manquantes ou incorrectes
+  /questions/{questionId}:
+    parameters:
+      - name: questionId
+        in: path
+        required: true
+        description: Identifiant de la question
+        schema:
+          type: string
+          example: "12345"
+    get:
+      summary: Consulte les détails d'une question
+      description: Récupère les détails d'une question spécifique en utilisant son ID.
+      responses:
+        '200':
+          description: Détails de la question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '404':
+          description: La question n'existe pas
+    put:
+      summary: Met à jour une question
+      description:
+        Permet de mettre à jour une question existante.
+        L'ID de la question ne peut pas être modifié.
+      requestBody:
+        required: true
+        description:
+          Informations de la question à mettre à jour.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '204':
+          description: La question a été mise à jour
+        '400':
+          description: Les informations de la question sont manquantes ou incorrectes
+        '404':
+          description: La question n'existe pas
+    delete:
+      summary: Supprime une question
+      description: Supprime une question spécifique en utilisant son ID.
+      responses:
+        '204':
+          description: La question a été supprimée
+        '404':
+          description: La question n'existe pas
+  /answers:
+    post:
+      summary: Crée une nouvelle réponse
+      description:
+        Permet de créer une nouvelle réponse.
+        L'ID de la réponse sera autogénéré.
+      requestBody:
+        required: true
+        description:
+          Informations de la réponse à créer.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/Answer'
+      responses:
+        '201':
+          description: La réponse a été créée
+        '400':
+          description: Les informations de la réponse sont manquantes ou incorrectes
+  /answers/{answerId}:
+    parameters:
+      - name: answerId
+        in: path
+        required: true
+        description: Identifiant de la réponse
+        schema:
+          type: string
+          example: "12345"
+    get:
+      summary: Consulte les détails d'une réponse
+      description: Récupère les détails d'une réponse spécifique en utilisant son ID.
+      responses:
+        '200':
+          description: Détails de la réponse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+        '404':
+          description: La réponse n'existe pas
+    put:
+      summary: Met à jour une réponse
+      description:
+        Permet de mettre à jour une réponse existante.
+        L'ID de la réponse ne peut pas être modifié.
+      requestBody:
+        required: true
+        description:
+          Informations de la réponse à mettre à jour.
+        content:
+          object:
+            schema:
+              $ref: '#/components/schemas/Answer'
+      responses:
+        '204':
+          description: La réponse a été mise à jour
+        '400':
+          description: Les informations de la réponse sont manquantes ou incorrectes
+components:
+  schemas:
+    Credentials:
+      type: object
+      properties:
+        login:
+          type: string
+          description: Adresse email de l'utilisateur
+        password:
+          type: string
+          description: Mot de passe de l'utilisateur
+      example:
+        login: "user@example.com"
+        password: "password"
+    User:
+    NewUser:
+    Form:
+    Question:
+    Answer:

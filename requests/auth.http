@@ -1,7 +1,13 @@
 @baseUrl=http://127.0.0.1:3000
 
-### GET /
-GET {{ baseUrl }}/
+### Register
+POST {{ baseUrl }}/auth/register
+Content-Type: application/json
+
+{
+    "login": "dev",
+    "password": "password"
+}
 
 ### Login
 POST {{ baseUrl }}/auth/login
