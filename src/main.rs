@@ -6,11 +6,9 @@ use axum::{
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 
-mod database;
-use crate::database::database::AppState;
-mod users;
-mod auth;
-use crate::auth::auth::login;
+pub mod models;
+pub mod routes;
+use crate::routes::auth::login;
 
 #[tokio::main]
 async fn main() {

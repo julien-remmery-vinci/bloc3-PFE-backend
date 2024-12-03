@@ -1,19 +1,19 @@
 pub mod auth {
-    use axum::extract::{Path, Query, Json, State};
+    use axum::extract::{Json, State};
     use axum::http::StatusCode;
     use serde::Deserialize;
     use serde_json::{json, Value as JsonValue};
-    use crate::database::database::AppState;
-    use crate::users::users::User;
+
+    use crate::models::user::User;
 
     #[derive(Deserialize)]
-    pub struct CreateUser {
+    pub struct UnsafeCredentials {
         login: String,
         password: String,
     }
 
     #[axum::debug_handler]
-    pub async fn login(State(state): State<AppState>, Json(user): Json<CreateUser>) -> (StatusCode, axum::Json<JsonValue>) {
+    pub async fn login(State(state): State<AppState>, Json(user): Json<UnsafeCredentials>) -> (StatusCode, axum::Json<JsonValue>) {
         let query = "SELECT login, password FROM pfe.users WHERE login = $1";
         match sqlx::query_as::<_, User>(&query)
         .bind(user.login)
@@ -44,5 +44,12 @@ pub mod auth {
                 )
             }
         }
+    }
+
+    pub async fn register(State(state): State<AppState>, Json(user): Json<User>) -> (StatusCode, axum::Json<JsonValue>) {
+        (
+            StatusCode::NOT_IMPLEMENTED,
+            Json(json!("Not implemented"))
+        )
     }
 }
