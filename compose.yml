@@ -7,6 +7,8 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
+    environment:
+      DATABASE_URL: "postgres://dev:password@postgres_db:5432/pfe_backend"
   postgres_db:
     image: postgres
     ports:
