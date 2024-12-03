@@ -1,12 +1,15 @@
+use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 
+#[derive(Debug, Serialize, Deserialize, FromRow)]
 pub struct User {
-    pub id: u32,
-    pub username: String,
-    pub email: String,
+    pub id: i32,
+    pub login: String,
+    pub password: String,
 }
 
 impl User {
-    pub fn new(id: u32, username: String, email: String) -> Self {
-        User { id, username, email }
+    pub fn new(id: i32, login: String, password: String) -> Self {
+        User { id, login, password }
     }
 }
