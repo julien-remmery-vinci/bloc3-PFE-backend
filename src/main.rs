@@ -11,7 +11,7 @@ use tokio::net::TcpListener;
 #[derive(Debug, FromRow, Clone, serde::Serialize)]
 struct Hello {
     id: i32,
-    text: String
+    text: String,
 }
 
 type SharedPool = Arc<PgPool>;
@@ -21,9 +21,22 @@ async fn main() {
     // Connexion à la base de données
     let db_pool = PgPoolOptions::new()
         .max_connections(5)
-        .connect("postgres://dev:password@localhost:5432/postgres")
+        .connect("postgres://dev:password@postgres_db:5432/pfe_backend")
         .await
         .expect("Impossible de se connecter à la base");
+
+    println!("Connexion à la base de données réussie.");
+
+    // Tester un SELECT simple pour vérifier que la table "pfe.hello" existe
+    let test_query = "SELECT id, text FROM pfe.hello LIMIT 1";
+    match sqlx::query(test_query).fetch_optional(&db_pool).await {
+        Ok(Some(_)) => println!("Test de base de données réussi : la table 'pfe.hello' est accessible."),
+        Ok(None) => println!("La table 'pfe.hello' est vide, mais accessible."),
+        Err(e) => {
+            eprintln!("Erreur lors du test de la base de données : {:?}", e);
+            return; // Arrêter l'application si la base de données ne fonctionne pas
+        }
+    }
 
     let shared_pool = Arc::new(db_pool);
 
