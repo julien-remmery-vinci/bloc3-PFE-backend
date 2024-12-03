@@ -1,0 +1,10 @@
+@baseUrl=http://127.0.0.1:3000
+
+### Login
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "dev",
+    "password": "password"
+}
