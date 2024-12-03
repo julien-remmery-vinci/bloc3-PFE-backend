@@ -1,29 +1,17 @@
 use axum::{
-    extract::{Json, State},
-    routing::{get, post},
+    extract::State,
+    routing::get,
     Router,
+    Json,
 };
-use serde::{Deserialize, Serialize};
 use sqlx::{postgres::PgPoolOptions, FromRow, PgPool};
 use std::sync::Arc;
 use tokio::net::TcpListener;
 
-#[derive(Debug, FromRow, Clone, Serialize)]
+#[derive(Debug, FromRow, Clone, serde::Serialize)]
 struct Hello {
     id: i32,
     text: String,
-}
-
-#[derive(Deserialize)]
-struct ConnexionRequest {
-    login: String,
-    password: String,
-}
-
-#[derive(Serialize)]
-struct ConnexionResponse {
-    success: bool,
-    message: String,
 }
 
 type SharedPool = Arc<PgPool>;
@@ -39,12 +27,22 @@ async fn main() {
 
     println!("Connexion à la base de données réussie.");
 
+    // Tester un SELECT simple pour vérifier que la table "pfe.hello" existe
+    let test_query = "SELECT id, text FROM pfe.hello LIMIT 1";
+    match sqlx::query(test_query).fetch_optional(&db_pool).await {
+        Ok(Some(_)) => println!("Test de base de données réussi : la table 'pfe.hello' est accessible."),
+        Ok(None) => println!("La table 'pfe.hello' est vide, mais accessible."),
+        Err(e) => {
+            eprintln!("Erreur lors du test de la base de données : {:?}", e);
+            return; // Arrêter l'application si la base de données ne fonctionne pas
+        }
+    }
+
     let shared_pool = Arc::new(db_pool);
 
-    // Build l'application avec des routes
+    // Build l'application avec une route
     let app = Router::new()
         .route("/", get(get_hello))
-        .route("/connexion", post(post_connexion))
         .with_state(shared_pool);
 
     // Création d'un TcpListener et démarrage du serveur
@@ -55,6 +53,7 @@ async fn main() {
     axum::serve(listener, app.into_make_service()).await.unwrap();
 }
 
+// Fonction handler pour la route "/"
 async fn get_hello(State(pool): State<SharedPool>) -> Json<Vec<Hello>> {
     let query = "SELECT id, text FROM pfe.hello";
 
@@ -64,37 +63,5 @@ async fn get_hello(State(pool): State<SharedPool>) -> Json<Vec<Hello>> {
             eprintln!("Error fetching hello");
             Json(vec![])
         }
-    }
-}
-
-async fn post_connexion(
-    Json(payload): Json<ConnexionRequest>,
-    State(pool): State<SharedPool>,
-) -> Json<ConnexionResponse> {
-    // Requête pour vérifier l'utilisateur
-    let query = "SELECT password FROM pfe.users WHERE email = $1";
-    match sqlx::query(query)
-        .bind(&payload.login)
-        .fetch_one(&*pool)
-        .await
-    {
-        Ok(row) => {
-            let stored_password: String = row.try_get("password").unwrap();
-            if stored_password == payload.password {
-                Json(ConnexionResponse {
-                    success: true,
-                    message: "Connexion réussie".to_string(),
-                })
-            } else {
-                Json(ConnexionResponse {
-                    success: false,
-                    message: "Mot de passe incorrect".to_string(),
-                })
-            }
-        }
-        Err(_) => Json(ConnexionResponse {
-            success: false,
-            message: "Utilisateur introuvable".to_string(),
-        }),
     }
 }
