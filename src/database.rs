@@ -9,7 +9,7 @@ pub mod database {
         pub async fn new() -> Self {
             let db = PgPoolOptions::new()
                 .max_connections(5)
-                .connect("postgres://dev:password@localhost:5432/postgres")
+                .connect("postgres://dev:password@postgres_db:5432/pfe_backend")
                 .await
                 .expect("Impossible de se connecter à la base");
             println!("connected to db");
