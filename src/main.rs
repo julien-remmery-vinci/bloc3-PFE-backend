@@ -6,16 +6,16 @@ use axum::{
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 
-mod database;
-use crate::database::database::AppState;
-mod users;
-mod auth;
-use crate::auth::auth::login;
+pub mod models;
+pub mod routes;
+pub mod database;
+
+use crate::routes::auth;
 
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
-    let state = AppState::new().await;
+    let state = database::database::AppState::new().await;
 
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:4200".parse::<HeaderValue>().unwrap())
@@ -23,7 +23,8 @@ async fn main() {
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
     let app = Router::new()
-        .route("/auth/login", post(login))
+        .route("/auth/login", post(auth::login))
+        .route("/auth/register", post(auth::register))
         .layer(cors)
         .with_state(state);
 
