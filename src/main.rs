@@ -14,6 +14,7 @@ use crate::auth::auth::login;
 
 #[tokio::main]
 async fn main() {
+    dotenvy::dotenv().ok();
     let state = AppState::new().await;
 
     let cors = CorsLayer::new()
@@ -26,8 +27,8 @@ async fn main() {
         .layer(cors)
         .with_state(state);
 
-    let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
-    println!("Listening on http://127.0.0.1:3000");
+    let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    println!("Listening on http://0.0.0.0:3000");
 
     axum::serve(listener, app.into_make_service()).await.unwrap();
 }

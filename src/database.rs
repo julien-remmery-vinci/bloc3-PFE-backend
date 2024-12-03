@@ -1,5 +1,6 @@
 pub mod database {
     use sqlx::postgres::PgPoolOptions;
+    use std::env;
     #[derive(Debug, Clone)]
     pub struct AppState {
         pub db: sqlx::PgPool,
@@ -9,7 +10,7 @@ pub mod database {
         pub async fn new() -> Self {
             let db = PgPoolOptions::new()
                 .max_connections(5)
-                .connect("postgres://dev:password@localhost:5432/postgres")
+                .connect(env::var("DATABASE_URL").expect("DB_URL must be set").as_str())
                 .await
                 .expect("Impossible de se connecter à la base");
             println!("connected to db");
