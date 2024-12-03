@@ -1,0 +1,1 @@
+INSERT INTO hello (id, text) VALUES (1, 'j''ai changé je le jure');

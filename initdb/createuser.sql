@@ -1,0 +1,2 @@
+CREATE USER dev WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE pfe_backend TO dev;
