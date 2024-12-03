@@ -1,14 +1,19 @@
 services:
-  app:
-    build: .
-    container_name: 'pfe_backend'
+  backend:
+    build: ./backend
+    container_name: 'backend'
     ports:
       - 3000:3000
     depends_on:
       postgres_db:
         condition: service_healthy
     environment:
-      DATABASE_URL: "postgres://dev:password@postgres_db:5432/pfe_backend"
+      DATABASE_URL: "postgres://dev:password@postgres_db:5432/pfe_db"
+  frontend:
+    build: ./frontend
+    container_name: 'frontend'
+    ports:
+      - 4200:4200
   postgres_db:
     image: postgres
     ports:
@@ -19,7 +24,7 @@ services:
     environment:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: pfe_backend
+      POSTGRES_DB: pfe_db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 30s

@@ -19,19 +19,25 @@ pub mod auth {
         .bind(user.login)
         .fetch_all(&state.db).await {
             Ok(result) => {
-                if bcrypt::verify(&user.password, &result[0].password).unwrap() {
-                        (
-                            StatusCode::OK,
-                            Json(json!({"login": result[0].login}))
-                        )
+                if result.is_empty() {
+                    (
+                        StatusCode::NOT_FOUND,
+                        Json(json!("User not found"))
+                    )
+                } else if bcrypt::verify(&user.password, &result[0].password).unwrap() {
+                    (
+                        StatusCode::OK,
+                        Json(json!({"login": result[0].login}))
+                    )
                 } else {
                     (
                         StatusCode::UNAUTHORIZED,
-                        Json(json!("Unauthorized"))
+                        Json(json!("Wrong password"))
                     )
                 }
             },
-            Err(_) => {
+            Err(error) => {
+                println!("Error: {:?}", error);
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     Json(json!("Internal Server Error"))
