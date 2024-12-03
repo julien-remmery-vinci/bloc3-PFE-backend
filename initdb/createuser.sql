@@ -1,2 +1,7 @@
-CREATE USER dev WITH PASSWORD 'password';
-GRANT ALL PRIVILEGES ON DATABASE pfe_backend TO dev;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'postgres') THEN
+        CREATE ROLE postgres WITH LOGIN PASSWORD 'password';
+        ALTER ROLE postgres CREATEDB;
+    END IF;
+END $$;
