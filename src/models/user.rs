@@ -1,15 +1,10 @@
+use axum::{extract::State, Json};
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
+use sqlx::FromRow;
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, FromRow, Clone, serde::Serialize)]
 pub struct User {
     pub id: i32,
     pub login: String,
     pub password: String,
-}
-
-impl User {
-    pub fn new(id: i32, login: String, password: String) -> Self {
-        User { id, login, password }
-    }
 }
