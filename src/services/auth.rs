@@ -1,84 +1,49 @@
-use axum::http::StatusCode;
-use axum::response::IntoResponse;
-use serde::Serialize;
 use jsonwebtoken::{EncodingKey, Header};
 
-use crate::{
-    models::credentials::Credentials,
-    models::user::User,
-    models::claims::Claims,
+use crate::models::{
+    claims::Claims, 
+    createuser::CreateUser, 
+    credentials::Credentials, 
+    user::User
 };
+use crate::errors::autherror::AuthError;
 
 #[derive(Debug, Clone)]
 pub struct AuthService {
     pub db: sqlx::PgPool,
 }
 
-const LOGIN_QUERY: &str = "SELECT id, login, password FROM pfe.users WHERE login = $1";
-
-
 impl AuthService {
-    pub async fn auth_query(&self, credentials: Credentials) -> Result<OkResponse, AuthError> {
+    pub async fn login_user(&self, credentials: Credentials) -> Result<String, AuthError> {
         if credentials.invalid() {
             return Err(AuthError::BadRequest);
         }
-        match sqlx::query_as::<_, User>(LOGIN_QUERY)
-            .bind(credentials.login.clone())
-            .fetch_one(&self.db)
-            .await
-        {
-            Ok(user) => {
-                if user.login != credentials.login {
-                    Err(AuthError::NoSuchUser)
-                } else if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)?
-                {
-                    let token = create_token(credentials).map_err(AuthError::JWTError)?;
-                    Ok(OkResponse { token })
-                } else {
-                    Err(AuthError::WrongPassword)
-                }
-            }
-            Err(error) => Err(AuthError::DbError(error)),
+        let user = User::find_by_login(&self.db, credentials.login.clone()).await
+            .map_err(AuthError::DbError)?;
+        if user.id == 0 {
+            return Err(AuthError::NoSuchUser);
+        }
+        else if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)? {
+            let token = create_token(credentials).map_err(AuthError::JWTError)?;
+            return Ok(token)
+        } else {
+            return Err(AuthError::WrongPassword);
         }
     }
-}
 
-pub enum AuthError {
-    BadRequest,
-    WrongPassword,
-    NoSuchUser,
-    DbError(sqlx::Error),
-    BCryptError(bcrypt::BcryptError),
-    JWTError(jsonwebtoken::errors::Error),
-}
-
-#[derive(Serialize)]
-pub struct OkResponse {
-    token: String,
-}
-
-impl IntoResponse for AuthError {
-    fn into_response(self) -> axum::response::Response {
-        let response = axum::http::Response::builder();
-        let (code, message) = match self {
-            AuthError::DbError(e) => {
-                println!("db error : {:?}", e); //tracing::warn!() plutot que println!() mais bon...
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
-            }
-            AuthError::BCryptError(e) => {
-                println!("encryption error : {:?}", e); //tracing::warn!() plutot que println!() mais bon...
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
-            }
-            AuthError::JWTError(e) => {
-                println!("jwt error : {:?}", e); //tracing::warn!() plutot que println!() mais bon...
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
-            }
-            AuthError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),
-            AuthError::WrongPassword => (StatusCode::UNAUTHORIZED, "Wrong password"),
-            AuthError::NoSuchUser => (StatusCode::NOT_FOUND, "User not found"),
-        };
-        let body = axum::body::Body::from(message);
-        response.status(code).body(body).unwrap()
+    pub async fn register_user(&self, mut user: CreateUser) -> Result<User, AuthError> {
+        if user.invalid() {
+            return Err(AuthError::BadRequest);
+        }
+        let found_user = User::find_by_login(&self.db, user.login.clone()).await
+            .map_err(AuthError::DbError)?;
+        if found_user.id != 0 {
+            return Err(AuthError::Conflict);
+        }
+        let hashed_password = bcrypt::hash(&user.password, 12).map_err(AuthError::BCryptError)?;
+        user.password = hashed_password;
+        let created = User::create_user(&self.db, user).await.map_err(AuthError::DbError)?;
+        Ok(created)
     }
 }
 
