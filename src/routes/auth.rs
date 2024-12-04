@@ -11,9 +11,9 @@ use crate::errors::autherror::AuthError;
 pub async fn login(
     State(state): State<AppState>,
     Json(credentials): Json<Credentials>,
-) -> Result<Json<String>, AuthError> {
+) -> Result<String, AuthError> {
     let valid = state.auth.login_user(credentials).await?;
-    Ok(Json(valid))
+    Ok(valid)
 }
 
 // TODO : Not return the password

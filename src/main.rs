@@ -2,6 +2,7 @@ use axum::http::{header, HeaderValue, Method};
 use axum::{
     routing::get,
     routing::post,
+    middleware,
     Router
 };
 use tokio::net::TcpListener;
@@ -10,6 +11,7 @@ use tower_http::cors::CorsLayer;
 // use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use routes::auth::login;
 use routes::auth::register;
+use services::auth::authorization_middleware;
 use database::state::AppState;
 
 mod services;
@@ -39,6 +41,8 @@ async fn main() {
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
     let app = Router::new()
+        .route("/", get(|| async { "Hello, World!" })
+            .layer(middleware::from_fn_with_state(state.clone(), authorization_middleware))) // Exemple de middleware
         .route("/auth/login", post(login))
         .route("/auth/register", post(register))
         // .route("/forms", post(create))
