@@ -1,23 +1,26 @@
 use axum::{extract::State, Json};
 
-use crate::{
-    models::credentials::Credentials,
-    services::auth::OkResponse,
-    database::state::AppState,
+use crate::models::{
+    credentials::Credentials,
+    createuser::CreateUser,
+    user::User,
 };
+use crate::database::state::AppState;
+use crate::errors::autherror::AuthError;
 
 pub async fn login(
     State(state): State<AppState>,
-    Json(user): Json<Credentials>,
-) -> Result<Json<OkResponse>, crate::services::auth::AuthError> {
-    let valid = state.auth.auth_query(user).await?;
-    Ok(Json(valid))
+    Json(credentials): Json<Credentials>,
+) -> Result<String, AuthError> {
+    let valid = state.auth.login_user(credentials).await?;
+    Ok(valid)
 }
 
-// pub async fn register(
-//     State(state): State<AppState>,
-//     Json(user): Json<CreateUser>,
-// ) -> Result<Json<OkResponse>, crate::services::auth::AuthError> {
-//     let valid = state.auth.auth_query(user).await?;
-//     Ok(Json(valid))
-// }
+// TODO : Not return the password
+pub async fn register(
+    State(state): State<AppState>,
+    Json(user): Json<CreateUser>,
+) -> Result<Json<User>, AuthError> {
+    let valid = state.auth.register_user(user).await?;
+    Ok(Json(valid))
+}
