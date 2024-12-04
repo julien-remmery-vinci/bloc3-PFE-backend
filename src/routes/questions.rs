@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     database::state::AppState,
-    services::questions::{self, QuestionError},
+    errors::questionserror::QuestionError,
 };
 
 #[derive(Deserialize)]
@@ -19,17 +19,17 @@ pub struct OkResponse {
     id: i32,
 }
 
-pub async fn post_question(
+pub async fn create(
     State(state): State<AppState>,
     Json(question): Json<QuestionRequest>,
-) -> Result<Json<OkResponse>, crate::services::questions::QuestionError> {
-    question.invalid()?;
+) -> Result<Json<OkResponse>, crate::errors::questionserror::QuestionError> {
+    question.validate()?;
     let id = state.question.create_question(question).await?;
     Ok(Json(OkResponse { id }))
 }
 
 impl QuestionRequest {
-    pub fn invalid(&self) -> Result<(), QuestionError> {
+    pub fn validate(&self) -> Result<(), QuestionError> {
         if self.question.is_empty()
             || self.question_status.is_empty()
             || self.category.is_empty()

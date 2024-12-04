@@ -1,7 +1,5 @@
-use axum::{http::StatusCode, response::IntoResponse};
 use sqlx::{Pool, Postgres, Row};
-
-use crate::routes::questions::QuestionRequest;
+use crate::{errors::questionserror::QuestionError, routes::questions::QuestionRequest};
 
 #[derive(Debug, Clone)]
 pub struct QuestionService {
@@ -28,25 +26,5 @@ impl QuestionService {
             .get("id");
     
         Ok(question_id)
-    }
-}
-
-pub enum QuestionError {
-    BadRequest,
-    DbError(sqlx::Error),
-}
-
-impl IntoResponse for QuestionError {
-    fn into_response(self) -> axum::response::Response {
-        let response = axum::http::Response::builder();
-        let (code, message) = match self {
-            QuestionError::DbError(e) => {
-                println!("db error : {:?}", e); //tracing::warn!() plutot que println!() mais bon...
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
-            }
-            QuestionError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),
-        };
-        let body = axum::body::Body::from(message);
-        response.status(code).body(body).unwrap()
     }
 }
