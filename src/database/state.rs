@@ -1,11 +1,12 @@
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 
-use crate::services::auth::AuthService;
+use crate::services::{auth::AuthService, questions::QuestionService};
 
 #[derive(Debug, Clone)]
 pub struct AppState {
     pub auth: AuthService,
+    pub question: QuestionService,
 }
 
 impl AppState {
@@ -20,8 +21,12 @@ impl AppState {
             .await
             .expect("Impossible de se connecter à la base");
         println!("connected to db");
+        sqlx::migrate!("./migrations")
+            .run(&db)
+            .await.unwrap();
         Self {
-            auth: AuthService { db },
+            auth: AuthService { db:db.clone() },
+            question: QuestionService { db },
         }
     }
 }
