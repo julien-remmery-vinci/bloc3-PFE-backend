@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     business_activity TEXT,
     nb_workers INTEGER,
     revenue NUMERIC(15, 2),
-    labels TEXT[],
+    labels TEXT,
     dispute BOOLEAN DEFAULT FALSE
 );
 CREATE TABLE IF NOT EXISTS pfe.forms (
@@ -33,6 +33,6 @@ CREATE TABLE IF NOT EXISTS pfe.forms (
     company INTEGER REFERENCES companies(company_id),
     type VARCHAR(10) CHECK (type IN ('ODD', 'ESG')),
     nb_questions INTEGER,
-    template TEXT
+    template VARCHAR(15)
 );
 
