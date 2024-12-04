@@ -29,8 +29,9 @@ paths:
           content:
            text/plain:
              schema:
-               type: string
-               example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"
+               type: object
+               example: 
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"
         '400':
           description: Les informations de connexion sont manquantes
         '401':
