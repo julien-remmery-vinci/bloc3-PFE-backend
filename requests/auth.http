@@ -18,7 +18,7 @@ Content-Type: application/json
     "password": "password"
 }
 
-> {% client.global.set("token", response.body) %}
+> {% client.global.set("token", response.body.token) %}
 
 ### Login with bad password
 POST {{ baseUrl }}/auth/login

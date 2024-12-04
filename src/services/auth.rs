@@ -12,7 +12,8 @@ use crate::models::{
     claims::Claims, 
     createuser::CreateUser, 
     credentials::Credentials, 
-    user::User
+    user::User,
+    tokenresponse::TokenResponse
 };
 use crate::errors::autherror::AuthError;
 
@@ -22,7 +23,7 @@ pub struct AuthService {
 }
 
 impl AuthService {
-    pub async fn login_user(&self, credentials: Credentials) -> Result<String, AuthError> {
+    pub async fn login_user(&self, credentials: Credentials) -> Result<TokenResponse, AuthError> {
         if credentials.invalid() {
             return Err(AuthError::BadRequest);
         }
@@ -33,7 +34,7 @@ impl AuthService {
         }
         else if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)? {
             let token = encode_jwt(credentials).map_err(AuthError::JWTError)?;
-            return Ok(token)
+            return Ok(TokenResponse { token });
         } else {
             return Err(AuthError::WrongPassword);
         }
