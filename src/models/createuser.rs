@@ -8,7 +8,7 @@ pub struct CreateUser {
 }
 
 impl CreateUser {
-    pub fn new(login: String, password: String) -> Self {
-        CreateUser { login, password }
+    pub fn invalid(&self) -> bool {
+        self.login.is_empty() || self.password.is_empty()
     }
 }
