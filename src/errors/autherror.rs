@@ -33,7 +33,6 @@ impl IntoResponse for AuthError {
             AuthError::Conflict => (StatusCode::CONFLICT, "User already exists"),
             AuthError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),
             AuthError::Unauthorized => (StatusCode::UNAUTHORIZED, "Unauthorized"),
-            AuthError::Forbidden => (StatusCode::FORBIDDEN, "Forbidden"),
             AuthError::WrongPassword => (StatusCode::UNAUTHORIZED, "Wrong password"),
             AuthError::NoSuchUser => (StatusCode::NOT_FOUND, "User not found"),
             AuthError::EmptyHeaderError => (StatusCode::BAD_REQUEST, "Empty header is not allowed"),
