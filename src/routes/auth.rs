@@ -11,7 +11,7 @@ use crate::models::user::User;
 use crate::models::createuser::CreateUser;
 
 pub async fn login(State(state): State<AppState>, Json(credentials): Json<UnsafeCredentials>) -> (StatusCode, axum::Json<JsonValue>) {
-    if user.login == "" || user.password == "" {
+    if credentials.invalid() {
         return (
             StatusCode::BAD_REQUEST,
             Json(json!("Empty login or password"))
@@ -19,7 +19,7 @@ pub async fn login(State(state): State<AppState>, Json(credentials): Json<Unsafe
     }
 
     let query: &str = "SELECT id, login, password FROM pfe.users WHERE login = $1";
-    match sqlx::query_as::<sqlx::Postgres, User>(&query)
+    match sqlx::query_as::<_, User>(&query)
     .bind(credentials.login.clone())
     .fetch_one(&state.db).await {
         Ok(result) => {

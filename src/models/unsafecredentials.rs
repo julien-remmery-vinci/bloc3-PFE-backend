@@ -20,4 +20,8 @@ impl UnsafeCredentials {
             password,
         }
     }
+
+    pub fn invalid(&self) -> bool {
+        self.login.is_empty() || self.password.is_empty()
+    }
 }
