@@ -55,7 +55,7 @@ async fn main() {
         // .route("/questions/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))
-        // .route("/answers", post(create))
+        .route("/answers", post(create))
         // .route("/answers/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))
