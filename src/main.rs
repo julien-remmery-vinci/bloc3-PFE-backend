@@ -12,6 +12,7 @@ use tower_http::cors::CorsLayer;
 // use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use routes::auth::login;
 use routes::auth::register;
+use routes::forms::create;
 use services::auth::authorization_middleware;
 use database::state::AppState;
 
@@ -46,7 +47,7 @@ async fn main() {
             .layer(middleware::from_fn_with_state(state.clone(), authorization_middleware))) // Exemple de middleware
         .route("/auth/login", post(login))
         .route("/auth/register", post(register))
-        // .route("/forms", post(create))
+        .route("/forms", post(create))
         // .route("/forms/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))
