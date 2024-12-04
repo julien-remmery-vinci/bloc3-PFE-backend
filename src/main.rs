@@ -1,3 +1,10 @@
+mod services;
+mod routes;
+mod database;
+mod models;
+mod errors;
+mod authorization;
+
 use axum::http::{header, HeaderValue, Method};
 use axum::{
     routing::get,
@@ -10,17 +17,18 @@ use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 // use tower_http::trace::TraceLayer;
 // use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use routes::auth::login;
-use routes::auth::register;
-use routes::forms::create;
-use services::auth::authorization_middleware;
+use routes::auth::{
+    login,
+    register
+};
+use routes::forms::create_form;
 use database::state::AppState;
+use authorization::{
+    authorize_user,
+    authorize_admin
+};
 
-mod services;
-mod routes;
-mod database;
-mod models;
-mod errors;
+
 
 #[tokio::main]
 async fn main() {
@@ -44,10 +52,10 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" })
-            .layer(middleware::from_fn_with_state(state.clone(), authorization_middleware))) // Exemple de middleware
+            .layer(middleware::from_fn_with_state(state.clone(), authorize_user))) // Exemple de middleware
         .route("/auth/login", post(login))
         .route("/auth/register", post(register))
-        .route("/forms", post(create))
+        .route("/forms", post(create_form))
         // .route("/forms/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))

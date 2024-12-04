@@ -4,7 +4,7 @@ use crate::models::form::Form;
 use crate::services::forms::create_form_in_db;
 
 #[axum::debug_handler]
-pub async fn create(
+pub async fn create_form(
     State(state): State<AppState>,
     Json(new_form): Json<Form>,
 ) -> Result<Json<Form>, axum::response::Response> {

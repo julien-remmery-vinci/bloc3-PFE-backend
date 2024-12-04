@@ -17,46 +17,50 @@ use crate::models::{
 };
 use crate::errors::autherror::AuthError;
 
+const QUERY_READ_BY_EMAIL: &str = "SELECT id, login, password FROM pfe.users WHERE login = $1";
+const QUERY_INSERT_USER: &str = "
+            INSERT INTO pfe.users (login, password) 
+            VALUES ($1, $2) 
+            RETURNING id, login, password
+        ";
+
 #[derive(Debug, Clone)]
 pub struct AuthService {
     pub db: sqlx::PgPool,
 }
 
 impl AuthService {
-    pub async fn login_user(&self, credentials: Credentials) -> Result<TokenResponse, AuthError> {
-        if credentials.invalid() {
-            return Err(AuthError::BadRequest);
-        }
-        let user = User::find_by_login(&self.db, credentials.login.clone()).await
-            .map_err(AuthError::DbError)?;
-        if user.id == 0 {
-            return Err(AuthError::NoSuchUser);
-        }
-        else if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)? {
-            let token = encode_jwt(credentials).map_err(AuthError::JWTError)?;
-            return Ok(TokenResponse { token });
-        } else {
-            return Err(AuthError::WrongPassword);
+    pub async fn find_by_login(&self, login: String) -> Result<User, sqlx::error::Error> {
+        match sqlx::query_as::<_, User>(QUERY_READ_BY_EMAIL)
+            .bind(login)
+            .fetch_all(&self.db)
+            .await
+        {
+            Ok(user) => {
+                if user.is_empty() {
+                    Ok(User::default())
+                } else {
+                    Ok(user[0].clone())
+                }
+            },
+            Err(error) => Err(error),
         }
     }
 
-    pub async fn register_user(&self, mut user: CreateUser) -> Result<User, AuthError> {
-        if user.invalid() {
-            return Err(AuthError::BadRequest);
+    pub async fn create_user(&self, user: CreateUser) -> Result<User, sqlx::error::Error> {
+        match sqlx::query_as::<_, User>(QUERY_INSERT_USER)
+            .bind(user.login.clone())
+            .bind(user.password.clone())
+            .fetch_one(&self.db)
+            .await
+        {
+            Ok(user) => Ok(user),
+            Err(error) => Err(error),
         }
-        let found_user = User::find_by_login(&self.db, user.login.clone()).await
-            .map_err(AuthError::DbError)?;
-        if found_user.id != 0 {
-            return Err(AuthError::Conflict);
-        }
-        let hashed_password = bcrypt::hash(&user.password, 12).map_err(AuthError::BCryptError)?;
-        user.password = hashed_password;
-        let created = User::create_user(&self.db, user).await.map_err(AuthError::DbError)?;
-        Ok(created)
     }
 }
 
-fn encode_jwt(credentials: Credentials) -> Result<String, jsonwebtoken::errors::Error> {
+pub fn encode_jwt(credentials: Credentials) -> Result<String, jsonwebtoken::errors::Error> {
     let claims = Claims {
         sub: credentials.login,
         exp: (chrono::Utc::now() + chrono::Duration::days(1)).timestamp() as usize,
@@ -67,52 +71,4 @@ fn encode_jwt(credentials: Credentials) -> Result<String, jsonwebtoken::errors::
         Ok(token) => Ok(token),
         Err(error) => Err(error),
     }
-}
-
-fn decode_jwt(jwt_token: String) -> Result<TokenData<Claims>, StatusCode> {
-    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
-    let result: Result<TokenData<Claims>, StatusCode> = decode(
-        &jwt_token,
-        &DecodingKey::from_secret(secret.as_ref()),
-        &Validation::default(),
-    )
-    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR);
-    result
-}
-
-/**
- * Middleware to check if the user is authorized to access the route
- * Some of the code associated to this middleware is inspired from :
- *  - https://blog.logrocket.com/using-rust-axum-build-jwt-authentication-api/
- */
-pub async fn authorization_middleware(State(state): State<AppState>, mut req: Request<Body>, next: Next) -> Result<Response<Body>, AuthError> {
-    let auth_header = req.headers_mut().get(http::header::AUTHORIZATION);
-    let auth_header = match auth_header {
-        Some(header) => header.to_str().map_err(|_| AuthError::EmptyHeaderError)?,
-        None => return Err(AuthError::NoTokenError),
-    };
-
-    let mut header = auth_header.split_whitespace();
-    let _bearer = header.next();
-    let token = header.next();
-    let token = match token {
-        Some(t) => t,
-        None => return Err(AuthError::NoTokenError),
-    };
-
-    println!("Token : {}", token);
-
-    let token_data = match decode_jwt(token.to_string()) {
-        Ok(data) => data,
-        Err(_) => return Err(AuthError::TokenDecodeError),
-    };
-
-    let current_user = User::find_by_login(&state.auth.db, token_data.claims.sub).await
-        .map_err(AuthError::DbError)?;
-    if current_user.id == 0 {
-        return Err(AuthError::Unauthorized);
-    }
-
-    req.extensions_mut().insert(current_user);
-    Ok(next.run(req).await)
 }

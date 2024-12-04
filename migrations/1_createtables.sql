@@ -3,7 +3,8 @@ CREATE SCHEMA IF NOT EXISTS pfe;
 CREATE TABLE IF NOT EXISTS pfe.users (
     id SERIAL PRIMARY KEY,
     login TEXT NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    role NOT NULL VARCHAR(10) CHECK (type IN ('user', 'admin'))
 );
 
 CREATE TABLE IF NOT EXISTS pfe.questions (
