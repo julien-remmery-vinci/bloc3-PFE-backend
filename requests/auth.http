@@ -9,11 +9,29 @@ Content-Type: application/json
     "password": "password"
 }
 
-### Login
+### Login with good credentials
 POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
 {
     "login": "dev",
+    "password": "password"
+}
+
+### Login with bad credentials
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "dev",
+    "password": "badpassword"
+}
+
+### Login with bad login
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "badlogin",
     "password": "password"
 }

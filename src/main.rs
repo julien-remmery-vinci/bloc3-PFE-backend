@@ -9,12 +9,14 @@ use tower_http::cors::CorsLayer;
 // use tower_http::trace::TraceLayer;
 // use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use routes::auth::login;
+use routes::auth::register;
 use database::state::AppState;
 
 mod services;
 mod routes;
 mod database;
 mod models;
+mod errors;
 
 #[tokio::main]
 async fn main() {
@@ -38,7 +40,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/auth/login", post(login))
-        // .route("/auth/register", post(register))
+        .route("/auth/register", post(register))
         // .route("/forms", post(create))
         // .route("/forms/:id", get(read_one)
         //     .put(update)
