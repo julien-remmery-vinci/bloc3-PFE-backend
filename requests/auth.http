@@ -18,7 +18,9 @@ Content-Type: application/json
     "password": "password"
 }
 
-### Login with bad credentials
+> {% client.global.set("token", response.body) %}
+
+### Login with bad password
 POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
@@ -35,3 +37,8 @@ Content-Type: application/json
     "login": "badlogin",
     "password": "password"
 }
+
+
+###
+GET {{ baseUrl }}/
+Authorization: Bearer {{ token }}
