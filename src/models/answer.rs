@@ -1,6 +1,8 @@
 use serde::Deserialize;
 use sqlx::FromRow;
 
+use super::create_answer::CreateAnswer;
+
 #[derive(Deserialize, FromRow, Clone)]
 pub struct Answer {
     pub id: i32,
@@ -26,7 +28,7 @@ const QUERY_FIND_BY_QUESTION_ID_AND_ANSWER: &str = "
         ";
 
 impl Answer {
-    pub async fn create_answer(db: &sqlx::PgPool, answer: Answer) -> Result<Answer, sqlx::error::Error> {
+    pub async fn create_answer(db: &sqlx::PgPool, answer: CreateAnswer) -> Result<Answer, sqlx::error::Error> {
         match sqlx::query_as::<_, Answer>(QUERY_INSERT_ANSWER)
             .bind(answer.answer.clone())
             .bind(answer.template.clone())
@@ -47,7 +49,7 @@ impl Answer {
         match sqlx::query_as::<_, Answer>(QUERY_FIND_BY_QUESTION_ID_AND_ANSWER)
             .bind(question_id)
             .bind(answer)
-            .fetch_one(db)
+            .fetch_all(db)
             .await
         {
             Ok(answer) => {
