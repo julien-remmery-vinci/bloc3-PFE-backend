@@ -1,1 +1,23 @@
 @baseUrl=http://127.0.0.1:3000
+
+### Add a question
+POST {{ baseUrl }}/questions
+Content-Type: application/json
+
+{
+    "question_status": "A compléter",
+    "category": "TEST",
+    "sub_category": "TEST",
+    "question": "cc sava"
+}
+
+### Add a question with empty question
+POST {{ baseUrl }}/questions
+Content-Type: application/json
+
+{
+    "question_status": "A compléter",
+    "category": "TEST",
+    "sub_category": "TEST",
+    "question": ""
+}

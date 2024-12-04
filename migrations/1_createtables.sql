@@ -31,15 +31,14 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
 
 CREATE TABLE IF NOT EXISTS pfe.forms (
     form_id SERIAL PRIMARY KEY,
-    company INTEGER REFERENCES companies(company_id),
+    company INTEGER REFERENCES pfe.companies(company_id),
     type VARCHAR(10) CHECK (type IN ('ODD', 'ESG')),
     nb_questions INTEGER,
-    template VARCHAR(15)
+    template TEXT
 );
 
 CREATE TABLE IF NOT EXISTS pfe.questions_form (
-    form_id INTEGER REFERENCES forms(form_id),
-    question_id INTEGER REFERENCES questions(id),
+    form_id INTEGER REFERENCES pfe.forms(form_id),
+    question_id INTEGER REFERENCES pfe.questions(id),
     PRIMARY KEY (form_id, question_id)
 );
-
