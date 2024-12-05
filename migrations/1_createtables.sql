@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     nace_code VARCHAR(20),
     business_activity TEXT,
     nb_workers INTEGER,
-    revenue NUMERIC(15, 2),
+    revenue DOUBLE PRECISION,
     labels TEXT,
     dispute BOOLEAN DEFAULT FALSE
 );
