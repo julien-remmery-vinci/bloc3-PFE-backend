@@ -1,6 +1,7 @@
 use serde::Deserialize;
+use sqlx::prelude::FromRow;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, FromRow, Clone)]
 pub struct Company {
     pub company_id: i32,
     pub company_name: String,
@@ -31,6 +32,23 @@ impl Company {
             revenue,
             labels,
             dispute,
+        }
+    }
+
+    pub fn default() -> Self {
+        Self {
+            company_id: 0,
+            company_name: "".to_string(),
+            comppany_number: "".to_string(),
+            company_address: "".to_string(),
+            legal_form: "".to_string(),
+            website: None,
+            nace_code: "".to_string(),
+            business_activity: "".to_string(),
+            nb_employees: None,
+            revenue: None,
+            labels: None,
+            dispute: false,
         }
     }
 }

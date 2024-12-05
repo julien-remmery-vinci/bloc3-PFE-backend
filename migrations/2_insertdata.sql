@@ -1,8 +1,9 @@
-INSERT INTO pfe.users (login, password)
+INSERT INTO pfe.users (firstname, lastname, login, password, role)
 VALUES 
+('dev', 'quidev', 'dev', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user'),
+('user', 'example', 'user@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user'),
+('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin'); 
 
-('admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe'), 
-('user1@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe');
 INSERT INTO pfe.questions (question_status, category, sub_category, question)
 VALUES
 -- 1. ENERGIE & CARBONE

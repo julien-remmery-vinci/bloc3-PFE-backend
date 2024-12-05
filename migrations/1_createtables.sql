@@ -1,18 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS pfe;
-
-CREATE TABLE IF NOT EXISTS pfe.users (
-    id SERIAL PRIMARY KEY,
-    login TEXT NOT NULL,
-    password TEXT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS pfe.questions (
-    id SERIAL PRIMARY KEY,
-    question_status VARCHAR(255) NOT NULL,
-    category VARCHAR(255) NOT NULL,
-    sub_category VARCHAR(255) NOT NULL,
-    question TEXT NOT NULL
-);
+DROP SCHEMA IF EXISTS pfe CASCADE;
+CREATE SCHEMA pfe;
 
 CREATE TABLE IF NOT EXISTS pfe.companies (
     company_id SERIAL PRIMARY KEY,
@@ -27,6 +14,24 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     revenue NUMERIC(15, 2),
     labels TEXT,
     dispute BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS pfe.users (
+    id SERIAL PRIMARY KEY,
+    firstname TEXT NOT NULL,
+    lastname TEXT NOT NULL,
+    login TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL CHECK (role IN ('user', 'admin')),
+    company_id INTEGER REFERENCES pfe.companies(company_id) NULL
+);
+
+CREATE TABLE IF NOT EXISTS pfe.questions (
+    id SERIAL PRIMARY KEY,
+    question_status VARCHAR(255) NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    sub_category VARCHAR(255) NOT NULL,
+    question TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS pfe.forms (

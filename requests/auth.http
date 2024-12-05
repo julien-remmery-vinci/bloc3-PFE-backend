@@ -1,31 +1,64 @@
 @baseUrl=http://127.0.0.1:3000
+@user_token={{ user.response.body.token }}
+@admin_token={{ admin.response.body.token }}
 
-### Register
+### Register without company
 POST {{ baseUrl }}/auth/register
 Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
 
 {
-    "login": "dev",
-    "password": "password"
+    "firstname": "John",
+    "lastname": "Doe",
+    "login": "John",
+    "password": "password",
+    "role": "user"
 }
 
-### Login with good credentials
+### Register with company
+POST {{ baseUrl }}/auth/register
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "firstname": "John",
+    "lastname": "Doe",
+    "login": "erzvzvz",
+    "password": "password",
+    "role": "user",
+    "company_id": 1
+}
+
+### Login with user account
+# @name user
 POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
 {
-    "login": "dev",
+    "login": "user@example.com",
     "password": "password"
 }
 
-> {% client.global.set("token", response.body.token) %}
+### Login with admin account
+# @name admin
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "admin@example.com",
+    "password": "password"
+}
+
+### Verify a token
+POST {{ baseUrl }}/auth/verify
+Authorization: Bearer {{user_token}}
 
 ### Login with bad password
 POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
 {
-    "login": "dev",
+    "login": "user@example.com",
     "password": "badpassword"
 }
 
@@ -37,8 +70,3 @@ Content-Type: application/json
     "login": "badlogin",
     "password": "password"
 }
-
-
-###
-GET {{ baseUrl }}/
-Authorization: Bearer {{ token }}

@@ -1,14 +1,23 @@
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
 
-#[derive(Debug, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CreateUser {
+    pub firstname: String,
+    pub lastname: String,
     pub login: String,
     pub password: String,
+    pub role: String,
+    pub company_id: Option<i32>,
 }
 
 impl CreateUser {
     pub fn invalid(&self) -> bool {
-        self.login.is_empty() || self.password.is_empty()
+        self.firstname.is_empty() 
+        || self.lastname.is_empty() 
+        || self.login.is_empty() 
+        || self.password.is_empty()
+        || self.role.is_empty()
+        || (self.role != "admin" && self.role != "user")
+        || (self.company_id != None && self.company_id <= Some(0))
     }
 }
