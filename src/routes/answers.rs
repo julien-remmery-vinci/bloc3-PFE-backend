@@ -1,3 +1,4 @@
+use axum::extract::Path;
 use axum::Extension;
 use axum::{extract::State, Json};
 use serde::Deserialize;
@@ -54,6 +55,15 @@ pub async fn create_answer_for_user(
     let user_id = user.id;
     let valid = state.answer.create_answer_user(answer,user_id).await?;
     Ok(Json(valid))
+}
+
+#[axum::debug_handler]
+pub async fn read_answers_by_question(
+    State(state): State<AppState>,
+    Path(question_id): Path<i32>,
+) -> Result<Json<Vec<Answer>>, AnswerError> {
+    let answers = state.answer.read_answers_by_question(question_id).await?;
+    Ok(Json(answers))
 }
 
 impl CreateAnswerUser {
