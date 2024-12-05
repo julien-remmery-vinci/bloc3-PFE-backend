@@ -24,7 +24,6 @@ pub struct CreateAnswer {
 
 #[derive(Deserialize)]
 pub struct CreateAnswerUser {
-    pub answer_id: i32,
     pub form_id: i32,
     pub now: bool,
     pub commitment_pact: bool,
@@ -47,13 +46,14 @@ pub async fn create_answer(
 pub async fn create_answer_for_user(
     State(state): State<AppState>,
     Extension(user): Extension<User>,
+    Path(answer_id): Path<i32>,
     Json(answer): Json<CreateAnswerUser>
 ) -> Result<Json<AnswerUser>, AnswerError> {
     if answer.invalid() {
         return Err(AnswerError::BadRequest);
     }
     let user_id = user.id;
-    let valid = state.answer.create_answer_user(answer,user_id).await?;
+    let valid = state.answer.create_answer_user(answer,user_id,answer_id).await?;
     Ok(Json(valid))
 }
 
@@ -68,8 +68,7 @@ pub async fn read_answers_by_question(
 
 impl CreateAnswerUser {
     pub fn invalid(&self) -> bool {
-        self.answer_id == 0
-            || self.form_id == 0
+        self.form_id == 0
     }
 }
 

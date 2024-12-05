@@ -57,7 +57,6 @@ Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "answer_id": 1,
     "form_id": 1,
     "now": true,
     "commitment_pact": false,
