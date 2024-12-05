@@ -54,6 +54,7 @@ Content-Type: application/json
 ### Add an answer for a user
 POST {{ baseUrl }}/answers/1
 Content-Type: application/json
+Authorization: Bearer {{ user_token }}
 
 {
     "answer_id": 1,
