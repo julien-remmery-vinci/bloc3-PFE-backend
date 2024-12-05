@@ -28,7 +28,7 @@ impl AppState {
         Self {
             auth: AuthService { db:db.clone() },
             question: QuestionService { db: db.clone() },
-            answer: AnswerService { db },
+            answer: AnswerService { db: db.clone() },
         }
     }
 }
