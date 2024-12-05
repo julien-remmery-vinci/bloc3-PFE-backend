@@ -13,6 +13,7 @@ use axum::{
     middleware,
     Router
 };
+use routes::forms::{create_form,read_form,update_form,delete_form};
 use routes::answers::create_answer;
 use routes::questions::{create_question, read_one_question, update_question};
 use tokio::net::TcpListener;
@@ -24,7 +25,7 @@ use routes::auth::{
     register,
     verify
 };
-use routes::forms::create_form;
+
 use database::state::AppState;
 use authorization::{
     authorize_user,
@@ -60,9 +61,9 @@ async fn main() {
         .route("/auth/verify", post(verify)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
         .route("/forms", post(create_form))
-        // .route("/forms/:id", get(read_one)
-        //     .put(update)
-        //     .delete(delete))
+        .route("/forms/:id", get(read_form)
+            .put(update_form)
+            .delete(delete_form))
         // .route("/forms/user/:id", get(read_all))
         .route("/questions", post(create_question))
         .route("/questions/:id", get(read_one_question)
