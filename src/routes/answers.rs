@@ -48,9 +48,12 @@ pub async fn create_answer_for_user(
     headers: axum::http::HeaderMap,
     Json(answer): Json<CreateAnswerUser>,
 ) -> Result<Json<AnswerUser>, AnswerError> {
+    print!("create_answer_for_user: ");
     if answer.invalid() {
+        print!("invalid");
         return Err(AnswerError::BadRequest);
     }
+    println!("valid");
     let user_id = headers.get("user-id").unwrap().to_str().unwrap().parse::<i32>().unwrap();
     let valid = state.answer.create_answer_user(answer,user_id).await?;
     Ok(Json(valid))
