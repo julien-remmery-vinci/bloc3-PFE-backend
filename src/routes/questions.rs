@@ -1,4 +1,4 @@
-use axum::{extract::State, Json};
+use axum::{debug_handler, extract::{Path, State}, Json};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -6,7 +6,7 @@ use crate::{
     errors::questionserror::QuestionError,
 };
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct QuestionRequest {
     pub question_status: String,
     pub category: String,
@@ -26,6 +26,14 @@ pub async fn create_question(
     question.validate()?;
     let id = state.question.create_question(question).await?;
     Ok(Json(OkResponse { id }))
+}
+
+pub async fn read_one_question(
+    State(state): State<AppState>,
+    Path(id): Path<i32>,
+) -> Result<Json<QuestionRequest>, QuestionError> {
+    let question = state.question.read_one_question(id).await?;
+    Ok(Json(question))
 }
 
 impl QuestionRequest {

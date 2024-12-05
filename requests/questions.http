@@ -21,3 +21,9 @@ Content-Type: application/json
     "sub_category": "TEST",
     "question": ""
 }
+
+### Get one question
+GET {{ baseUrl }}/questions/1
+
+### Get a question that does not exist
+GET {{ baseUrl }}/questions/100
