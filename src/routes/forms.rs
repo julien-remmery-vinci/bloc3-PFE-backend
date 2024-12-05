@@ -8,22 +8,24 @@ use crate::errors::form_error::FormError;
 pub async fn create_form(
     State(state): State<AppState>,
     Json(new_form): Json<Form>,
-) -> Result<Json<Form>, axum::response::Response> {
+) -> Result<impl IntoResponse, FormError> {
+    // Validation
+    if new_form.form_type.is_empty() || new_form.template.is_empty() {
+        return Err(FormError::BadRequest);
+    }
+
     let db_pool = &state.auth.db;
     let form = create_form_in_db(db_pool, new_form)
         .await
-        .map_err(|e| {
-            let error_message = format!("Failed to create form: {}", e);
-            (StatusCode::INTERNAL_SERVER_ERROR, error_message).into_response()
-        })?;
-    Ok(Json(form))
+        .map_err(FormError::DbError)?;
+    Ok((StatusCode::CREATED, Json(form)))
 }
 
 #[axum::debug_handler]
 pub async fn read_form(
     State(state): State<AppState>,
     Path(form_id): Path<i32>,
-) -> Result<Json<Form>, FormError> {
+) -> Result<impl IntoResponse, FormError> {
     let db_pool = &state.auth.db;
     let form = read_form_in_db(db_pool, form_id)
         .await
@@ -31,7 +33,7 @@ pub async fn read_form(
             sqlx::Error::RowNotFound => FormError::NotFound,
             _ => FormError::DbError(e),
         })?;
-    Ok(Json(form))
+    Ok((StatusCode::OK, Json(form)))
 }
 
 #[axum::debug_handler]
@@ -39,8 +41,7 @@ pub async fn update_form(
     State(state): State<AppState>,
     Path(form_id): Path<i32>,
     Json(updated_form): Json<Form>,
-) -> Result<Json<Form>, FormError> {
-    // Validation
+) -> Result<impl IntoResponse, FormError> {
     if updated_form.form_type.is_empty() || updated_form.template.is_empty() {
         return Err(FormError::BadRequest);
     }
@@ -52,14 +53,14 @@ pub async fn update_form(
             sqlx::Error::RowNotFound => FormError::NotFound,
             _ => FormError::DbError(e),
         })?;
-    Ok(Json(form))
+    Ok((StatusCode::OK, Json(form)))
 }
 
 #[axum::debug_handler]
 pub async fn delete_form(
     State(state): State<AppState>,
     Path(form_id): Path<i32>,
-) -> Result<StatusCode, FormError> {
+) -> Result<impl IntoResponse, FormError> {
     let db_pool = &state.auth.db;
     delete_form_in_db(db_pool, form_id)
         .await

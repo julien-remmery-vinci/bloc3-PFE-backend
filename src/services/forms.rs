@@ -66,12 +66,14 @@ pub async fn update_form_in_db(db: &PgPool, form_id: i32, updated_form: Form) ->
 }
 
 pub async fn delete_form_in_db(db: &PgPool, form_id: i32) -> Result<(), sqlx::error::Error> {
-    match sqlx::query(QUERY_DELETE_FORM)
+    let result = sqlx::query(QUERY_DELETE_FORM)
         .bind(form_id)
         .execute(db)
-        .await
-    {
-        Ok(_) => Ok(()),
-        Err(error) => Err(error),
+        .await?;
+
+    if result.rows_affected() == 0 {
+        Err(sqlx::Error::RowNotFound)
+    } else {
+        Ok(())
     }
 }
