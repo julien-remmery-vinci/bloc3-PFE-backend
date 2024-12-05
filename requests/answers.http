@@ -1,1 +1,16 @@
 @baseUrl=http://127.0.0.1:3000
+
+### Add an answer
+POST {{ baseUrl }}/answers
+Content-Type: application/json
+
+{
+    "answer": "cc sava",
+    "template": "test",
+    "question_id": 1,
+    "score": 0.3,
+    "engagement_score": 0.5,
+    "is_forced_engagement": false,
+    "comment": ""
+
+}

@@ -19,7 +19,7 @@ pub struct OkResponse {
     id: i32,
 }
 
-pub async fn create(
+pub async fn create_question(
     State(state): State<AppState>,
     Json(question): Json<QuestionRequest>,
 ) -> Result<Json<OkResponse>, crate::errors::questionserror::QuestionError> {
