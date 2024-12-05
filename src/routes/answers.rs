@@ -1,10 +1,13 @@
+use axum::extract::Request;
 use axum::{extract::State, Json};
 use serde::Deserialize;
 
+use crate::models::answerusers::AnswerUser;
 use crate::{
     database::state::AppState,
     errors::answer_error::AnswerError,
     models::answers::Answer,
+    models::user::User,
 };
 
 #[derive(Deserialize)]
@@ -18,6 +21,15 @@ pub struct CreateAnswer {
     pub comment: String,
 }
 
+#[derive(Deserialize)]
+pub struct CreateAnswerUser {
+    pub answer_id: i32,
+    pub form_id: i32,
+    pub now: bool,
+    pub commitment_pact: bool,
+    pub comment: String,
+}
+
 #[axum::debug_handler]
 pub async fn create_answer(
     State(state): State<AppState>,
@@ -28,6 +40,26 @@ pub async fn create_answer(
     }
     let valid = state.answer.create_answer(answer).await?;
     Ok(Json(valid))
+}
+
+pub async fn create_answer_for_user(
+    State(state): State<AppState>,
+    Json(answer): Json<CreateAnswerUser>,
+    request: Request,
+) -> Result<Json<AnswerUser>, AnswerError> {
+    if answer.invalid() {
+        return Err(AnswerError::BadRequest);
+    }
+    let user_id = request.extensions().get::<User>().unwrap().clone().id;
+    let valid = state.answer.create_answer_user(answer,user_id).await?;
+    Ok(Json(valid))
+}
+
+impl CreateAnswerUser {
+    pub fn invalid(&self) -> bool {
+        self.answer_id == 0
+            || self.form_id == 0
+    }
 }
 
 impl CreateAnswer {

@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     now BOOLEAN NOT NULL,
     commitment_pact BOOLEAN NOT NULL,
     comment TEXT,
-    now_verif BOOLEAN,
+    now_verif BOOLEAN ,
     commitment_pact_verif BOOLEAN,
     PRIMARY KEY (answer_id, user_id, form_id)
 )
