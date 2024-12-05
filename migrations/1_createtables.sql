@@ -47,3 +47,15 @@ CREATE TABLE IF NOT EXISTS pfe.questions_form (
     question_id INTEGER REFERENCES pfe.questions(id),
     PRIMARY KEY (form_id, question_id)
 );
+
+CREATE TABLE IF NOT EXISTS pfe.answers (
+    answer_id SERIAL PRIMARY KEY,
+    answer TEXT NOT NULL,
+    template TEXT NOT NULL,
+    question_id INTEGER REFERENCES pfe.questions(id),
+    score DOUBLE PRECISION NOT NULL,
+    engagement_score DOUBLE PRECISION,
+    is_forced_engagement BOOLEAN NOT NULL,
+    comment TEXT
+);
+
