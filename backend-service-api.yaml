@@ -57,6 +57,29 @@ paths:
           description: L'utilisateur est enregistré
         '400':
           description: Les informations de l'utilisateur sont manquantes ou incorrectes
+  /auth/verify:
+    post:
+      summary: Vérifie un token d'authentification
+      description:
+        Permet de vérifier si un token d'authentification est valide.
+        L'utilisateur doit fournir son token d'authentification.
+        Renvoie les informations de l'utilisateur si le token est valide.
+      requestHeaders:
+        Authorization:
+          description: Token d'authentification
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"
+      responses:
+        '200':
+          description: Le token est valide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Le token est invalide
   /forms:
     post:
       summary: Crée un nouveau formulaire
