@@ -1,7 +1,6 @@
 use axum::{http::StatusCode, response::IntoResponse};
 
 pub enum AnswerError {
-    Conflict,
     BadRequest,
     DbError(sqlx::Error),
 }
@@ -14,7 +13,6 @@ impl IntoResponse for AnswerError {
                 println!("db error : {:?}", e); //tracing::warn!() plutot que println!() mais bon...
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
             }
-            AnswerError::Conflict => (StatusCode::CONFLICT, "Answer already exists"),
             AnswerError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),
         };
         let body = axum::body::Body::from(message);

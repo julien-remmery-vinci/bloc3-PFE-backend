@@ -1,5 +1,3 @@
-use sqlx::query;
-
 use crate::{
     models::answers::Answer,
     errors::answer_error::AnswerError,
