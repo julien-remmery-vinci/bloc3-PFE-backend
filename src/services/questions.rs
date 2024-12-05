@@ -12,13 +12,12 @@ impl QuestionService {
         question: QuestionRequest,
     ) -> Result<i32, QuestionError> {
         let query = "
-            INSERT INTO pfe.questions (question, question_status, category, sub_category)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO pfe.questions (question, category, sub_category)
+            VALUES ($1, $2, $3)
             RETURNING id
         ";
         let question_id: i32 = sqlx::query(query)
             .bind(&question.question)
-            .bind(&question.question_status)
             .bind(&question.category)
             .bind(&question.sub_category)
             .fetch_one(&self.db)
@@ -33,7 +32,7 @@ impl QuestionService {
         id: i32,
     ) -> Result<QuestionRequest, QuestionError> {
         match sqlx::query_as!(QuestionRequest, "
-            SELECT question, question_status, category, sub_category
+            SELECT question, category, sub_category
             FROM pfe.questions
             WHERE id = $1
         ", id)
