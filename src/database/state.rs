@@ -21,11 +21,15 @@ impl AppState {
                     .as_str(),
             )
             .await
-            .expect("Impossible de se connecter à la base");
-        println!("connected to db");
+            .expect("Impossible de se connecter à la base de données");
+        println!("Connexion à la base de données établie");
+
         sqlx::migrate!("./migrations")
             .run(&db)
-            .await.unwrap();
+            .await
+            .expect("Erreur lors de la migration de la base de données");
+        println!("Migration effectuée avec succès");
+        
         Self {
             auth: AuthService { db: db.clone() },
             question: QuestionService { db: db.clone() },

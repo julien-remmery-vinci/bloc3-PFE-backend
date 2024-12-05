@@ -1,12 +1,13 @@
 use axum::{debug_handler, extract::{Path, State}, Json};
 use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 
 use crate::{
     database::state::AppState,
     errors::questionserror::QuestionError,
 };
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, FromRow)]
 pub struct QuestionRequest {
     pub category: String,
     pub sub_category: String,

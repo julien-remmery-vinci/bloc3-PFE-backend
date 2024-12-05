@@ -1,5 +1,25 @@
-use sqlx::{Pool, Postgres, Row};
+use sqlx::{Pool, Postgres};
 use crate::{errors::questionserror::QuestionError, routes::questions::{PutQuestionRequest, QuestionRequest}};
+
+const READ_BY_ID_QUERY: &str = "
+            SELECT question, category, sub_category
+            FROM pfe.questions
+            WHERE id = $1
+        ";
+const READ_ALL_QUERY: &str = "
+            SELECT question, category, sub_category
+            FROM pfe.questions
+        ";
+const INSERT_QUERY: &str ="
+            INSERT INTO pfe.questions (question, category, sub_category)
+            VALUES ($1, $2, $3)
+            RETURNING id
+        ";
+const UPDATE_QUERY: &str = "
+            UPDATE pfe.questions
+            SET question = $1
+            WHERE id = $2
+        ";
 
 #[derive(Debug, Clone)]
 pub struct QuestionService {
@@ -11,19 +31,12 @@ impl QuestionService {
         &self,
         question: QuestionRequest,
     ) -> Result<i32, QuestionError> {
-        let query = "
-            INSERT INTO pfe.questions (question, category, sub_category)
-            VALUES ($1, $2, $3)
-            RETURNING id
-        ";
-        let question_id: i32 = sqlx::query(query)
+        let question_id: i32 = sqlx::query_scalar(INSERT_QUERY)
             .bind(&question.question)
             .bind(&question.category)
             .bind(&question.sub_category)
             .fetch_one(&self.db)
-            .await.map_err(QuestionError::DbError)?
-            .get("id");
-    
+            .await.map_err(QuestionError::DbError)?;
         Ok(question_id)
     }
 
@@ -31,16 +44,13 @@ impl QuestionService {
         &self,
         id: i32,
     ) -> Result<QuestionRequest, QuestionError> {
-        match sqlx::query_as!(QuestionRequest, "
-            SELECT question, category, sub_category
-            FROM pfe.questions
-            WHERE id = $1
-        ", id)
+        match sqlx::query_as::<_, QuestionRequest>(READ_BY_ID_QUERY)
+            .bind(id)
             .fetch_optional(&self.db)
             .await.map_err(QuestionError::DbError) {
-            Ok(Some(question)) => Ok(question),
-            Ok(None) => Err(QuestionError::NoSuchQuestion),
-            Err(err) => Err(err),
+                Ok(Some(question)) => Ok(question),
+                Ok(None) => Err(QuestionError::NoSuchQuestion),
+                Err(err) => Err(err),
             }
     }
 
@@ -49,12 +59,7 @@ impl QuestionService {
         id: i32,
         question: PutQuestionRequest,
     ) -> Result<(), QuestionError> {
-        let query = "
-            UPDATE pfe.questions
-            SET question = $1
-            WHERE id = $2
-        ";
-        sqlx::query(query)
+        sqlx::query(UPDATE_QUERY)
             .bind(&question.question)
             .bind(id)
             .execute(&self.db)
@@ -66,10 +71,7 @@ impl QuestionService {
     pub async fn read_all_questions(
         &self,
     ) -> Result<Vec<QuestionRequest>, QuestionError> {
-        let questions = sqlx::query_as!(QuestionRequest, "
-            SELECT question, category, sub_category
-            FROM pfe.questions
-        ")
+        let questions = sqlx::query_as::<_, QuestionRequest>(READ_ALL_QUERY)
             .fetch_all(&self.db)
             .await.map_err(QuestionError::DbError)?;
     

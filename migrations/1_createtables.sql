@@ -8,6 +8,11 @@ CREATE TABLE IF NOT EXISTS pfe.questions (
     question TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS pfe.templates (
+    template_id SERIAL PRIMARY KEY,
+    value TEXT NOT NULL CHECK (value IN ('ALL', 'OWNED FACILITY', 'WORKERS', 'PRODUITS', 'FACILITY'))
+);
+
 CREATE TABLE IF NOT EXISTS pfe.companies (
     company_id SERIAL PRIMARY KEY,
     company_name VARCHAR(255) NOT NULL,
@@ -18,9 +23,15 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     nace_code VARCHAR(20),
     business_activity TEXT,
     nb_workers INTEGER,
-    revenue NUMERIC(15, 2),
+    revenue DOUBLE PRECISION,
     labels TEXT,
     dispute BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS pfe.template_company (
+    company_id INTEGER REFERENCES pfe.companies(company_id),
+    template_id INTEGER REFERENCES pfe.templates(template_id),
+    PRIMARY KEY (company_id, template_id)
 );
 
 CREATE TABLE IF NOT EXISTS pfe.users (
@@ -47,3 +58,27 @@ CREATE TABLE IF NOT EXISTS pfe.questions_form (
     question_status VARCHAR(255) NOT NULL,
     PRIMARY KEY (form_id, question_id)
 );
+
+CREATE TABLE IF NOT EXISTS pfe.answers (
+    answer_id SERIAL PRIMARY KEY,
+    answer TEXT NOT NULL,
+    template TEXT NOT NULL,
+    question_id INTEGER REFERENCES pfe.questions(id),
+    score DOUBLE PRECISION NOT NULL,
+    engagement_score DOUBLE PRECISION,
+    is_forced_engagement BOOLEAN NOT NULL,
+    comment TEXT
+);
+
+CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
+    answer_id INTEGER REFERENCES pfe.answers(answer_id),
+    user_id INTEGER REFERENCES pfe.users(id),
+    form_id INTEGER REFERENCES pfe.forms(form_id),
+    now BOOLEAN NOT NULL,
+    commitment_pact BOOLEAN NOT NULL,
+    comment TEXT,
+    now_verif BOOLEAN ,
+    commitment_pact_verif BOOLEAN,
+    PRIMARY KEY (answer_id, user_id, form_id)
+);
+
