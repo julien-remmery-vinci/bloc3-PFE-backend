@@ -4,7 +4,6 @@ pub mod createuser;
 pub mod company;
 pub mod form;
 pub mod question;
-pub mod answer;
+pub mod answers;
 pub mod claims;
 pub mod tokenresponse;
-pub mod create_answer;
