@@ -1,4 +1,4 @@
-use axum::extract::Request;
+use axum::Extension;
 use axum::{extract::State, Json};
 use serde::Deserialize;
 
@@ -45,16 +45,13 @@ pub async fn create_answer(
 #[axum::debug_handler]
 pub async fn create_answer_for_user(
     State(state): State<AppState>,
-    headers: axum::http::HeaderMap,
-    Json(answer): Json<CreateAnswerUser>,
+    Extension(user): Extension<User>,
+    Json(answer): Json<CreateAnswerUser>
 ) -> Result<Json<AnswerUser>, AnswerError> {
-    print!("create_answer_for_user: ");
     if answer.invalid() {
-        print!("invalid");
         return Err(AnswerError::BadRequest);
     }
-    println!("valid");
-    let user_id = headers.get("user-id").unwrap().to_str().unwrap().parse::<i32>().unwrap();
+    let user_id = user.id;
     let valid = state.answer.create_answer_user(answer,user_id).await?;
     Ok(Json(valid))
 }
