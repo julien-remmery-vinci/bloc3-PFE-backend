@@ -1,7 +1,7 @@
 use axum::{http::StatusCode, response::IntoResponse, extract::{State, Path}, Json};
 use crate::database::state::AppState;
 use crate::models::form::Form;
-use crate::services::forms::{create_form_in_db, read_form_in_db, update_form_in_db, delete_form_in_db};
+use crate::services::forms::{create_form_in_db, read_form_in_db, update_form_in_db, delete_form_in_db, read_forms_by_user_in_db};
 use crate::errors::form_error::FormError;
 
 #[axum::debug_handler]
@@ -69,4 +69,19 @@ pub async fn delete_form(
             _ => FormError::DbError(e),
         })?;
     Ok(StatusCode::NO_CONTENT)
+}
+
+#[axum::debug_handler]
+pub async fn read_forms_by_user(
+    State(state): State<AppState>,
+    Path(user_id): Path<i32>,
+) -> Result<impl IntoResponse, FormError> {
+    let db_pool = &state.auth.db;
+    let forms = read_forms_by_user_in_db(db_pool, user_id)
+        .await
+        .map_err(|e| match e {
+            sqlx::Error::RowNotFound => FormError::NotFound,
+            _ => FormError::DbError(e),
+        })?;
+    Ok((StatusCode::OK, Json(forms)))
 }

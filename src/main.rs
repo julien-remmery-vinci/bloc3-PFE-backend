@@ -13,7 +13,7 @@ use axum::{
     middleware,
     Router
 };
-use routes::forms::{create_form,read_form,update_form,delete_form};
+use routes::forms::{create_form,read_form,update_form,delete_form, read_forms_by_user};
 use routes::answers::create_answer;
 use routes::questions::{create_question, read_one_question, update_question};
 use tokio::net::TcpListener;
@@ -64,7 +64,7 @@ async fn main() {
         .route("/forms/:id", get(read_form)
             .put(update_form)
             .delete(delete_form))
-        // .route("/forms/user/:id", get(read_all))
+        .route("/forms/user/:id", get(read_forms_by_user))
         .route("/questions", post(create_question))
         .route("/questions/:id", get(read_one_question)
              .put(update_question))

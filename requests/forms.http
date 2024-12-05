@@ -54,3 +54,11 @@ Authorization: Bearer {{ admin_token }}
 ### Delete a form that does not exist
 DELETE {{ baseUrl }}/forms/100
 Authorization: Bearer {{ admin_token }}
+
+### Get forms by user ID
+GET {{ baseUrl }}/forms/user/1
+Authorization: Bearer {{ user_token }}
+
+### Get forms by user ID that does not exist
+GET {{ baseUrl }}/forms/user/100
+Authorization: Bearer {{ user_token }}
