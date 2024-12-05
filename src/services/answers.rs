@@ -41,9 +41,9 @@ impl AnswerService {
         }
     }
 
-    pub async fn create_answer_user(&self, answer: CreateAnswerUser, user_id: i32) -> Result<AnswerUser, AnswerError> {
+    pub async fn create_answer_user(&self, answer: CreateAnswerUser, user_id: i32, answer_id: i32) -> Result<AnswerUser, AnswerError> {
         match sqlx::query_as::<_, AnswerUser>(QUERY_INSERT_ANSWER_USER)
-            .bind(answer.answer_id.clone())
+            .bind(answer_id.clone())
             .bind(user_id.clone())
             .bind(answer.form_id.clone())
             .bind(answer.now.clone())
