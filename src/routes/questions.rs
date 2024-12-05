@@ -8,7 +8,6 @@ use crate::{
 
 #[derive(Deserialize, Serialize)]
 pub struct QuestionRequest {
-    pub question_status: String,
     pub category: String,
     pub sub_category: String,
     pub question: String,
@@ -54,7 +53,6 @@ pub async fn update_question(
 impl QuestionRequest {
     pub fn validate(&self) -> Result<(), QuestionError> {
         if self.question.is_empty()
-            || self.question_status.is_empty()
             || self.category.is_empty()
             || self.sub_category.is_empty()
         {
