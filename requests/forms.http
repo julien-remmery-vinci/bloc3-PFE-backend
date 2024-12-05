@@ -1,3 +1,64 @@
 @baseUrl=http://127.0.0.1:3000
+@user_token={{ user.response.body.token }}
+@admin_token={{ admin.response.body.token }}
 
-### Read all forms for a user
+### Create a form
+POST {{ baseUrl }}/forms
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "company": 1,
+    "form_type": "ODD",
+    "nb_questions": 10,
+    "template": "Template"
+}
+
+### Get a form by ID
+GET {{ baseUrl }}/forms/20
+Authorization: Bearer {{ user_token }}
+
+### Get a form that does not exist
+GET {{ baseUrl }}/forms/100
+Authorization: Bearer {{ user_token }}
+
+### Update a form
+PUT {{ baseUrl }}/forms/16
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "company": 1,
+    "form_type": "ESG",
+    "nb_questions": 15,
+    "template": "Updated"
+}
+
+### Update a form with invalid data
+PUT {{ baseUrl }}/forms/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "form_id": 1,
+    "company": 1,
+    "form_type": "",
+    "nb_questions": 15,
+    "template": "Updated template content"
+}
+
+### Delete a form
+DELETE {{ baseUrl }}/forms/20
+Authorization: Bearer {{ admin_token }}
+
+### Delete a form that does not exist
+DELETE {{ baseUrl }}/forms/100
+Authorization: Bearer {{ admin_token }}
+
+### Get forms by user ID
+GET {{ baseUrl }}/forms/user/1
+Authorization: Bearer {{ user_token }}
+
+### Get forms by user ID that does not exist
+GET {{ baseUrl }}/forms/user/100
+Authorization: Bearer {{ user_token }}
