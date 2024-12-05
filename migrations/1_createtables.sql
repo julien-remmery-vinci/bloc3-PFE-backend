@@ -59,3 +59,15 @@ CREATE TABLE IF NOT EXISTS pfe.answers (
     comment TEXT
 );
 
+CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
+    answer_id INTEGER REFERENCES pfe.answers(answer_id),
+    user_id INTEGER REFERENCES pfe.users(id),
+    form_id INTEGER REFERENCES pfe.forms(form_id),
+    now BOOLEAN NOT NULL,
+    commitment_pact BOOLEAN NOT NULL,
+    comment TEXT,
+    now_verif BOOLEAN,
+    commitment_pact_verif BOOLEAN,
+    PRIMARY KEY (answer_id, user_id, form_id)
+)
+
