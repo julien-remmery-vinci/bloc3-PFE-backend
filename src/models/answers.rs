@@ -1,8 +1,9 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, FromRow, Serialize)]
 pub struct Answer {
-    pub id: i32,
+    pub answer_id: i32,
     pub answer: String,
     pub template: String,
     pub question_id: i32,
@@ -14,7 +15,7 @@ pub struct Answer {
 
 impl Answer {
     pub fn new(
-        id: i32,
+        answer_id: i32,
         answer: String,
         template: String,
         question_id: i32,
@@ -24,7 +25,7 @@ impl Answer {
         comment: String,
     ) -> Self {
         Self {
-            id,
+            answer_id,
             answer,
             template,
             question_id,
