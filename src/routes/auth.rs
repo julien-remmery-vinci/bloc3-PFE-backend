@@ -1,3 +1,5 @@
+use std::env;
+
 use axum::extract::Request;
 use axum::{extract::State, Json};
 
@@ -20,17 +22,17 @@ pub async fn login(
         return Err(AuthError::BadRequest);
     }
 
-    let user = state.auth.find_by_login(credentials.login.clone()).await?;
-
-    if user.id == 0 {
-        return Err(AuthError::NoSuchUser);
-    }
-    else if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)? {
-        let token = auth::encode_jwt(credentials).map_err(AuthError::JWTError)?;
-        return Ok(Json(TokenResponse { token }));
-    } else {
-        return Err(AuthError::WrongPassword);
-    }
+    match state.auth.find_by_login(credentials.login.clone()).await? {
+        None => return Err(AuthError::NoSuchUser),
+        Some(user) => {
+            if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)? {
+                let token = auth::encode_jwt(credentials).map_err(AuthError::JWTError)?;
+                return Ok(Json(TokenResponse { token }));
+            } else {
+                return Err(AuthError::WrongPassword);
+            }
+        }
+    };
 }
 
 // TODO : Not return the password
@@ -42,20 +44,27 @@ pub async fn register(
         return Err(AuthError::BadRequest);
     }
 
-    let found_user = state.auth.find_by_login(user.login.clone()).await?;
-    if found_user.id != 0 {
-        return Err(AuthError::Conflict);
+    match state.auth.find_by_login(user.login.clone()).await? {
+        Some(_) => return Err(AuthError::Conflict),
+        None => (),
     }
 
-    if user.company_id.is_some() {
-        let company = state.company.find_by_id(user.company_id.unwrap()).await
-            .map_err(AuthError::DbError)?;
-        if company.company_id == 0 {
-            return Err(AuthError::NoSuchCompany);
+    match user.company_id {
+        Some(company_id) => {
+            let company = state.company.find_by_id(company_id).await
+                .map_err(AuthError::DbError)?;
+            if company.company_id == 0 {
+                return Err(AuthError::NoSuchCompany);
+            }
         }
+        None => (),
     }
 
-    let hashed_password = bcrypt::hash(&user.password, 12).map_err(AuthError::BCryptError)?;
+    let hashed_password = bcrypt::hash(&user.password, env::var("HASH_ROUNDS")
+        .expect("HASH_ROUNDS must be set")
+        .parse::<u32>()
+        .unwrap())
+        .map_err(AuthError::BCryptError)?;
     user.password = hashed_password;
     let created = state.auth.create_user(user).await?;
     Ok(Json(created))

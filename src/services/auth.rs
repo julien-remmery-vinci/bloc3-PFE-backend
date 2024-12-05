@@ -23,19 +23,13 @@ pub struct AuthService {
 }
 
 impl AuthService {
-    pub async fn find_by_login(&self, login: String) -> Result<User, AuthError> {
+    pub async fn find_by_login(&self, login: String) -> Result<Option<User>, AuthError> {
         match sqlx::query_as::<_, User>(QUERY_READ_BY_EMAIL)
             .bind(login)
-            .fetch_all(&self.db)
+            .fetch_optional(&self.db)
             .await
         {
-            Ok(user) => {
-                if user.is_empty() {
-                    Ok(User::default())
-                } else {
-                    Ok(user[0].clone())
-                }
-            },
+            Ok(user) => Ok(user),
             Err(error) => Err(AuthError::DbError(error)),
         }
     }
