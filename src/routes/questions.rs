@@ -1,4 +1,4 @@
-use axum::{extract::State, Json};
+use axum::{debug_handler, extract::{Path, State}, Json};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -6,11 +6,16 @@ use crate::{
     errors::questionserror::QuestionError,
 };
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct QuestionRequest {
     pub question_status: String,
     pub category: String,
     pub sub_category: String,
+    pub question: String,
+}
+
+#[derive(Deserialize)]
+pub struct PutQuestionRequest {
     pub question: String,
 }
 
@@ -28,6 +33,24 @@ pub async fn create_question(
     Ok(Json(OkResponse { id }))
 }
 
+pub async fn read_one_question(
+    State(state): State<AppState>,
+    Path(id): Path<i32>,
+) -> Result<Json<QuestionRequest>, QuestionError> {
+    let question = state.question.read_one_question(id).await?;
+    Ok(Json(question))
+}
+
+pub async fn update_question(
+    State(state): State<AppState>,
+    Path(id): Path<i32>,
+    Json(question): Json<PutQuestionRequest>,
+) -> Result<Json<OkResponse>, QuestionError> {
+    question.update_validate()?;
+    state.question.update_question(id, question).await?;
+    Ok(Json(OkResponse { id }))
+}
+
 impl QuestionRequest {
     pub fn validate(&self) -> Result<(), QuestionError> {
         if self.question.is_empty()
@@ -35,6 +58,15 @@ impl QuestionRequest {
             || self.category.is_empty()
             || self.sub_category.is_empty()
         {
+            return Err(QuestionError::BadRequest);
+        }
+        Ok(())
+    }
+}
+
+impl PutQuestionRequest {
+    pub fn update_validate(&self) -> Result<(), QuestionError> {
+        if self.question.is_empty() {
             return Err(QuestionError::BadRequest);
         }
         Ok(())

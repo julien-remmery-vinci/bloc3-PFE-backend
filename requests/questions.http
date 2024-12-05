@@ -21,3 +21,25 @@ Content-Type: application/json
     "sub_category": "TEST",
     "question": ""
 }
+
+### Get one question
+GET {{ baseUrl }}/questions/1
+
+### Get a question that does not exist
+GET {{ baseUrl }}/questions/100
+
+### Update a question
+PUT {{ baseUrl }}/questions/1
+Content-Type: application/json
+
+{
+    "question": "cc sava je modifie hihihi"
+}
+
+### Update a question with empty question
+PUT {{ baseUrl }}/questions/1
+Content-Type: application/json
+
+{
+    "question": ""
+}
