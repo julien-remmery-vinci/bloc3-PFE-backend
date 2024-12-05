@@ -8,6 +8,11 @@ CREATE TABLE IF NOT EXISTS pfe.questions (
     question TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS pfe.templates (
+    template_id SERIAL PRIMARY KEY,
+    value TEXT NOT NULL CHECK (value IN ('ALL', 'OWNED FACILITY', 'WORKERS', 'PRODUITS', 'FACILITY'))
+);
+
 CREATE TABLE IF NOT EXISTS pfe.companies (
     company_id SERIAL PRIMARY KEY,
     company_name VARCHAR(255) NOT NULL,
@@ -21,6 +26,12 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     revenue NUMERIC(15, 2),
     labels TEXT,
     dispute BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS pfe.template_company (
+    company_id INTEGER REFERENCES pfe.companies(company_id),
+    template_id INTEGER REFERENCES pfe.templates(template_id),
+    PRIMARY KEY (company_id, template_id)
 );
 
 CREATE TABLE IF NOT EXISTS pfe.users (
@@ -69,5 +80,5 @@ CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     now_verif BOOLEAN ,
     commitment_pact_verif BOOLEAN,
     PRIMARY KEY (answer_id, user_id, form_id)
-)
+);
 
