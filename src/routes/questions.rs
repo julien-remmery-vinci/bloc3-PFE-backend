@@ -14,6 +14,11 @@ pub struct QuestionRequest {
     pub question: String,
 }
 
+#[derive(Deserialize)]
+pub struct PutQuestionRequest {
+    pub question: String,
+}
+
 #[derive(Serialize)]
 pub struct OkResponse {
     id: i32,
@@ -36,6 +41,16 @@ pub async fn read_one_question(
     Ok(Json(question))
 }
 
+pub async fn update_question(
+    State(state): State<AppState>,
+    Path(id): Path<i32>,
+    Json(question): Json<PutQuestionRequest>,
+) -> Result<Json<OkResponse>, QuestionError> {
+    question.update_validate()?;
+    state.question.update_question(id, question).await?;
+    Ok(Json(OkResponse { id }))
+}
+
 impl QuestionRequest {
     pub fn validate(&self) -> Result<(), QuestionError> {
         if self.question.is_empty()
@@ -43,6 +58,15 @@ impl QuestionRequest {
             || self.category.is_empty()
             || self.sub_category.is_empty()
         {
+            return Err(QuestionError::BadRequest);
+        }
+        Ok(())
+    }
+}
+
+impl PutQuestionRequest {
+    pub fn update_validate(&self) -> Result<(), QuestionError> {
+        if self.question.is_empty() {
             return Err(QuestionError::BadRequest);
         }
         Ok(())

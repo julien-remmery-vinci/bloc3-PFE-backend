@@ -2,11 +2,12 @@ use axum::http::{header, HeaderValue, Method};
 use axum::{
     routing::get,
     routing::post,
+    routing::put,
     middleware,
     Router
 };
 use routes::answers::create_answer;
-use routes::questions::{create_question, read_one_question};
+use routes::questions::{create_question, read_one_question, update_question};
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 // use tower_http::trace::TraceLayer;
@@ -54,8 +55,8 @@ async fn main() {
         //     .delete(delete))
         // .route("/forms/user/:id", get(read_all))
         .route("/questions", post(create_question))
-        .route("/questions/:id", get(read_one_question))
-        //     .put(update)
+        .route("/questions/:id", get(read_one_question)
+             .put(update_question))
         //     .delete(delete))
         .route("/answers", post(create_answer))
         // .route("/answers/:id", get(read_one)
