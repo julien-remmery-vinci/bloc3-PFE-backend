@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
 
 CREATE TABLE IF NOT EXISTS pfe.forms (
     form_id SERIAL PRIMARY KEY,
-    company INTEGER REFERENCES pfe.companies(company_id),
+    company_id INTEGER REFERENCES pfe.companies(company_id),
     type VARCHAR(10) CHECK (type IN ('ODD', 'ESG')),
     nb_questions INTEGER,
     template VARCHAR(15)
