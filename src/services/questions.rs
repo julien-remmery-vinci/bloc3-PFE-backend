@@ -63,7 +63,7 @@ impl QuestionService {
         Ok(())
     }
 
-    pub async fn get_all_questions(
+    pub async fn read_all_questions(
         &self,
     ) -> Result<Vec<QuestionRequest>, QuestionError> {
         let questions = sqlx::query_as!(QuestionRequest, "
