@@ -45,8 +45,7 @@ async fn authorize_request(State(state): State<AppState>, req: &mut Request) -> 
         Err(_) => return Err(AuthError::TokenDecodeError),
     };
 
-    let current_user = state.auth.find_by_login(token_data.claims.sub).await
-        .map_err(AuthError::DbError)?;
+    let current_user = state.auth.find_by_login(token_data.claims.sub).await?;
     if current_user.id == 0 {
         return Err(AuthError::Unauthorized);
     }

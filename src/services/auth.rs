@@ -1,27 +1,20 @@
 use std::env;
-
-use axum::body::Body;
-use axum::extract::State;
-use axum::http::{self, Request, StatusCode};
-use axum::middleware::Next;
-use axum::response::Response;
-use jsonwebtoken::{decode, DecodingKey, EncodingKey, Header, TokenData, Validation};
-
-use crate::database::state::AppState;
-use crate::models::{
+use jsonwebtoken::{EncodingKey, Header};
+use crate::{errors::autherror::AuthError, models::{
     claims::Claims, 
     createuser::CreateUser, 
     credentials::Credentials, 
-    user::User,
-    tokenresponse::TokenResponse
-};
-use crate::errors::autherror::AuthError;
+    user::User
+}};
 
-const QUERY_READ_BY_EMAIL: &str = "SELECT id, login, password FROM pfe.users WHERE login = $1";
+const QUERY_READ_BY_EMAIL: &str = "
+            SELECT id, firstname, lastname, login, password, role, company_id
+            FROM pfe.users 
+            WHERE login = $1";
 const QUERY_INSERT_USER: &str = "
-            INSERT INTO pfe.users (login, password) 
-            VALUES ($1, $2) 
-            RETURNING id, login, password
+            INSERT INTO pfe.users (firstname, lastname, login, password, role, company_id) 
+            VALUES ($1, $2, $3, $4, $5, $6) 
+            RETURNING *
         ";
 
 #[derive(Debug, Clone)]
@@ -30,7 +23,7 @@ pub struct AuthService {
 }
 
 impl AuthService {
-    pub async fn find_by_login(&self, login: String) -> Result<User, sqlx::error::Error> {
+    pub async fn find_by_login(&self, login: String) -> Result<User, AuthError> {
         match sqlx::query_as::<_, User>(QUERY_READ_BY_EMAIL)
             .bind(login)
             .fetch_all(&self.db)
@@ -43,19 +36,23 @@ impl AuthService {
                     Ok(user[0].clone())
                 }
             },
-            Err(error) => Err(error),
+            Err(error) => Err(AuthError::DbError(error)),
         }
     }
 
-    pub async fn create_user(&self, user: CreateUser) -> Result<User, sqlx::error::Error> {
+    pub async fn create_user(&self, user: CreateUser) -> Result<User, AuthError> {
         match sqlx::query_as::<_, User>(QUERY_INSERT_USER)
+            .bind(user.firstname.clone())
+            .bind(user.lastname.clone())
             .bind(user.login.clone())
             .bind(user.password.clone())
+            .bind(user.role.clone())
+            .bind(user.company_id)
             .fetch_one(&self.db)
             .await
         {
             Ok(user) => Ok(user),
-            Err(error) => Err(error),
+            Err(error) => Err(AuthError::DbError(error)),
         }
     }
 }

@@ -19,7 +19,8 @@ use tower_http::cors::CorsLayer;
 // use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use routes::auth::{
     login,
-    register
+    register,
+    verify
 };
 use routes::forms::create_form;
 use database::state::AppState;
@@ -51,10 +52,11 @@ async fn main() {
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
     let app = Router::new()
-        .route("/", get(|| async { "Hello, World!" })
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_user))) // Exemple de middleware
         .route("/auth/login", post(login))
-        .route("/auth/register", post(register))
+        .route("/auth/register", post(register)
+            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/auth/verify", post(verify)
+            .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
         .route("/forms", post(create_form))
         // .route("/forms/:id", get(read_one)
         //     .put(update)

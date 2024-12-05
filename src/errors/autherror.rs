@@ -7,6 +7,7 @@ pub enum AuthError {
     Unauthorized,
     Forbidden,
     NoSuchUser,
+    NoSuchCompany,
     DbError(sqlx::Error),
     BCryptError(bcrypt::BcryptError),
     JWTError(jsonwebtoken::errors::Error),
@@ -37,6 +38,7 @@ impl IntoResponse for AuthError {
             AuthError::Forbidden => (StatusCode::FORBIDDEN, "Forbidden"),
             AuthError::WrongPassword => (StatusCode::UNAUTHORIZED, "Wrong password"),
             AuthError::NoSuchUser => (StatusCode::NOT_FOUND, "User not found"),
+            AuthError::NoSuchCompany => (StatusCode::NOT_FOUND, "Company not found"),
             AuthError::EmptyHeaderError => (StatusCode::BAD_REQUEST, "Empty header is not allowed"),
             AuthError::NoTokenError => (StatusCode::UNAUTHORIZED, "Please add the JWT token to the header"),
             AuthError::TokenDecodeError => (StatusCode::UNAUTHORIZED, "Unable to decode token")
