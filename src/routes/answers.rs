@@ -42,15 +42,16 @@ pub async fn create_answer(
     Ok(Json(valid))
 }
 
+#[axum::debug_handler]
 pub async fn create_answer_for_user(
     State(state): State<AppState>,
+    headers: axum::http::HeaderMap,
     Json(answer): Json<CreateAnswerUser>,
-    request: Request,
 ) -> Result<Json<AnswerUser>, AnswerError> {
     if answer.invalid() {
         return Err(AnswerError::BadRequest);
     }
-    let user_id = request.extensions().get::<User>().unwrap().clone().id;
+    let user_id = headers.get("user-id").unwrap().to_str().unwrap().parse::<i32>().unwrap();
     let valid = state.answer.create_answer_user(answer,user_id).await?;
     Ok(Json(valid))
 }
