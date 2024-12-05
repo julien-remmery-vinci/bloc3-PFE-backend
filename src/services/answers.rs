@@ -1,7 +1,8 @@
 use crate::{
-    models::answers::Answer,
     errors::answer_error::AnswerError,
-    routes::answers::CreateAnswer,
+    models::answers::Answer,
+    models::answerusers::AnswerUser,
+    routes::answers::{CreateAnswer, CreateAnswerUser}
 };
 
 #[derive(Debug, Clone)]
@@ -15,6 +16,12 @@ const QUERY_INSERT_ANSWER: &str = "
     RETURNING answer_id, answer, template, question_id, score, engagement_score, is_forced_engagement, comment
 ";
 
+const QUERY_INSERT_ANSWER_USER: &str = "
+    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+";
+
 impl AnswerService {
     pub async fn create_answer(&self, answer: CreateAnswer) -> Result<Answer, AnswerError> {
         match sqlx::query_as::<_, Answer>(QUERY_INSERT_ANSWER)
@@ -24,6 +31,23 @@ impl AnswerService {
             .bind(answer.score.clone())
             .bind(answer.engagement_score.clone())
             .bind(answer.is_forced_engagement.clone())
+            .bind(answer.comment.clone())
+            .fetch_one(&self.db)
+            .await
+            .map_err(|error| AnswerError::DbError(error))
+        {
+            Ok(answer) => Ok(answer),
+            Err(error) => Err(error),
+        }
+    }
+
+    pub async fn create_answer_user(&self, answer: CreateAnswerUser, user_id: i32) -> Result<AnswerUser, AnswerError> {
+        match sqlx::query_as::<_, AnswerUser>(QUERY_INSERT_ANSWER_USER)
+            .bind(answer.answer_id.clone())
+            .bind(user_id.clone())
+            .bind(answer.form_id.clone())
+            .bind(answer.now.clone())
+            .bind(answer.commitment_pact.clone())
             .bind(answer.comment.clone())
             .fetch_one(&self.db)
             .await
