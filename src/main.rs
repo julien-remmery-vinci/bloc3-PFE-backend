@@ -65,7 +65,6 @@ async fn main() {
             .put(update_form)
             .delete(delete_form))
         .route("/forms/user/:id", get(read_forms_by_user))
-        .route("/questions", post(create_question))
         .route("/questions", post(create_question)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
         .route("/questions/:id", get(read_one_question)
