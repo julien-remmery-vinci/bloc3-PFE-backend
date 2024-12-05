@@ -5,6 +5,7 @@ use axum::{
     middleware,
     Router
 };
+use routes::answers::create_answer;
 use routes::questions::create_question;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
@@ -56,7 +57,7 @@ async fn main() {
         // .route("/questions/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))
-        // .route("/answers", post(create))
+        .route("/answers", post(create_answer))
         // .route("/answers/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))

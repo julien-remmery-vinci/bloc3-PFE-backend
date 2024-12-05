@@ -120,3 +120,7 @@ Une déclaration de mission formelle et écrite de l''entreprise est une déclar
 -- 12. CERTIFICATIONS
 ('A compléter', '12. CERTIFICATIONS', '12.1. CERTIFICATIONS D''UN PRODUIT, D''UN SERVICE OU D''UNE PRATIQUE', 'Quel est le pourcentage de vos produits ou services ou pratiques durables qui ont été contrôlés et certifiés par un organisme d''accréditation  axé sur la qualité ou le développement durable ? (ex : Fairtrade, BIO, Ecovadis, Ethibel, BDO etc) '),
 ('A compléter', '12. CERTIFICATIONS', '12.2. CERTIFICATIONS DE L''ENTREPRISE', 'XXX a-t-elle obtenu une ou plusieurs certifications attestant ses efforts en matière de transition durable ?');
+
+INSERT INTO pfe.answers (answer, template, question_id, score, engagement_score, is_forced_engagement, comment)
+VALUES
+('oui','ALL',1,2,0.5,FALSE,'')
