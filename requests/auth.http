@@ -12,7 +12,7 @@ Authorization: Bearer {{ admin_token }}
     "lastname": "Doe",
     "login": "John",
     "password": "password",
-    "role": "user"
+    "role": "admin"
 }
 
 ### Register with company
