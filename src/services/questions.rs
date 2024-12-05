@@ -62,4 +62,17 @@ impl QuestionService {
     
         Ok(())
     }
+
+    pub async fn read_all_questions(
+        &self,
+    ) -> Result<Vec<QuestionRequest>, QuestionError> {
+        let questions = sqlx::query_as!(QuestionRequest, "
+            SELECT question, category, sub_category
+            FROM pfe.questions
+        ")
+            .fetch_all(&self.db)
+            .await.map_err(QuestionError::DbError)?;
+    
+        Ok(questions)
+    }
 }
