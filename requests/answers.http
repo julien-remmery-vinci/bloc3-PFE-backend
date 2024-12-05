@@ -64,3 +64,7 @@ Authorization: Bearer {{ user_token }}
     "comment": " "
 
 }
+
+### Get the answers of a question
+GET {{ baseUrl }}/answers/1
+Authorization: Bearer {{ user_token }}
