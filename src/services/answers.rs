@@ -22,6 +22,12 @@ const QUERY_INSERT_ANSWER_USER: &str = "
     RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
 ";
 
+const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
+    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    FROM pfe.user_answer_esg
+    WHERE form_id = $1 AND user_id = $2 AND answer_id = $3
+    ";
+
 impl AnswerService {
     pub async fn create_answer(&self, answer: CreateAnswer) -> Result<Answer, AnswerError> {
         match sqlx::query_as::<_, Answer>(QUERY_INSERT_ANSWER)
@@ -60,6 +66,20 @@ impl AnswerService {
 
     pub async fn read_answer_by_id(&self, answer_id: i32) -> Result<Option<Answer>, AnswerError> {
         match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers WHERE answer_id = $1")
+            .bind(answer_id)
+            .fetch_optional(&self.db)
+            .await
+            .map_err(|error| AnswerError::DbError(error))
+        {
+            Ok(answer) => Ok(answer),
+            Err(error) => Err(error),
+        }
+    }
+
+    pub async fn read_answer_user_by_form_id(&self, form_id: i32, user_id: i32,answer_id: i32) -> Result<Option<AnswerUser>, AnswerError> {
+        match sqlx::query_as::<_, AnswerUser>(QUERY_FIND_ANSWER_USER_BY_FORM_ID)
+            .bind(form_id)
+            .bind(user_id)
             .bind(answer_id)
             .fetch_optional(&self.db)
             .await
