@@ -57,10 +57,13 @@ Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "answer_id": 1,
     "form_id": 1,
     "now": true,
     "commitment_pact": false,
     "comment": " "
 
 }
+
+### Get the answers of a question
+GET {{ baseUrl }}/answers/1
+Authorization: Bearer {{ user_token }}
