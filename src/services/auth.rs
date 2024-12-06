@@ -8,7 +8,7 @@ use crate::{errors::autherror::AuthError, models::{
 }};
 
 const QUERY_READ_BY_EMAIL: &str = "
-            SELECT id, firstname, lastname, login, password, role, company_id
+            SELECT user_id, firstname, lastname, login, password, role, company_id
             FROM pfe.users 
             WHERE login = $1";
 const QUERY_INSERT_USER: &str = "
