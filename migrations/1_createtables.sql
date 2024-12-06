@@ -65,8 +65,7 @@ CREATE TABLE IF NOT EXISTS pfe.answers (
     question_id INTEGER REFERENCES pfe.questions(id),
     score DOUBLE PRECISION NOT NULL,
     engagement_score DOUBLE PRECISION,
-    is_forced_engagement BOOLEAN NOT NULL,
-    comment TEXT
+    is_forced_engagement BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
