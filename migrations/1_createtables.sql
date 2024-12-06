@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS pfe.template_company (
 );
 
 CREATE TABLE IF NOT EXISTS pfe.users (
-    id SERIAL PRIMARY KEY,
+    user_id SERIAL PRIMARY KEY,
     firstname TEXT NOT NULL,
     lastname TEXT NOT NULL,
     login TEXT NOT NULL UNIQUE,
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS pfe.answers (
 
 CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     answer_id INTEGER REFERENCES pfe.answers(answer_id),
-    user_id INTEGER REFERENCES pfe.users(id),
+    user_id INTEGER REFERENCES pfe.users(user_id),
     form_id INTEGER REFERENCES pfe.forms(form_id),
     now BOOLEAN NOT NULL,
     commitment_pact BOOLEAN NOT NULL,

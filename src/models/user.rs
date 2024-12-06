@@ -3,7 +3,7 @@ use sqlx::FromRow;
 
 #[derive(Debug, FromRow, Clone, Serialize)]
 pub struct User {
-    pub id: i32,
+    pub user_id: i32,
     pub firstname: String,
     pub lastname: String,
     pub login: String,
@@ -15,7 +15,7 @@ pub struct User {
 impl User {
     pub fn default() -> User {
         User {
-            id: 0,
+            user_id: 0,
             firstname: String::from(""),
             lastname: String::from(""),
             login: String::from(""),
