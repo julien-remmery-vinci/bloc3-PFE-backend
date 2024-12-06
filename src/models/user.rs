@@ -29,3 +29,18 @@ impl User {
         self.role == "admin"
     }
 }
+
+#[derive(serde::Serialize)]
+pub struct UserToken {
+    pub user: User,
+    pub token: String,
+}
+
+impl UserToken {
+    pub fn default() -> UserToken {
+        UserToken {
+            user: User::default(),
+            token: String::from(""),
+        }
+    }
+}
