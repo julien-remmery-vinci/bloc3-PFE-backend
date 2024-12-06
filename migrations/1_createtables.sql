@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS pfe.questions (
     id SERIAL PRIMARY KEY,
     category VARCHAR(255) NOT NULL,
     sub_category VARCHAR(255) NOT NULL,
-    question TEXT NOT NULL
+    question TEXT NOT NULL,
+    is_used BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS pfe.templates (

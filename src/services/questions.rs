@@ -21,6 +21,12 @@ const UPDATE_QUERY: &str = "
             WHERE id = $2
         ";
 
+const DELETE_QUERY: &str = "
+            UPDATE pfe.questions
+            SET is_used = $1
+            WHERE id = $2
+        ";
+
 #[derive(Debug, Clone)]
 pub struct QuestionService {
     pub db: Pool<Postgres>,
@@ -59,11 +65,21 @@ impl QuestionService {
         id: i32,
         question: PutQuestionRequest,
     ) -> Result<(), QuestionError> {
+        if let Some(is_used) = question.is_used {
+            sqlx::query(DELETE_QUERY)
+                .bind(&is_used)
+                .bind(id)
+                .execute(&self.db)
+                .await.map_err(QuestionError::DbError)?;
+            return Ok(());
+        }
+        if let Some(question) = question.question {
         sqlx::query(UPDATE_QUERY)
-            .bind(&question.question)
+            .bind(&question)
             .bind(id)
             .execute(&self.db)
             .await.map_err(QuestionError::DbError)?;
+        }
     
         Ok(())
     }
@@ -76,5 +92,17 @@ impl QuestionService {
             .await.map_err(QuestionError::DbError)?;
     
         Ok(questions)
+    }
+
+    pub async fn delete_question(
+        &self,
+        id: i32,
+    ) -> Result<(), QuestionError> {
+        sqlx::query(DELETE_QUERY)
+            .bind(id)
+            .execute(&self.db)
+            .await.map_err(QuestionError::DbError)?;
+    
+        Ok(())
     }
 }
