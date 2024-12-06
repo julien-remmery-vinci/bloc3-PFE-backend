@@ -7,3 +7,4 @@ pub mod question;
 pub mod answers;
 pub mod claims;
 pub mod answerusers;
+pub mod score;
