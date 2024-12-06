@@ -1,8 +1,12 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 
-#[derive(Deserialize)]
+use super::form;
+
+#[derive(Deserialize, Serialize, FromRow, Debug)]
 pub struct Question {
     pub id: i32,
+    pub form_id: Option<i32>,
     pub category: String,
     pub sub_category: String,
     pub question: String,
@@ -12,6 +16,7 @@ pub struct Question {
 impl Question {
     pub fn new(
         id: i32,
+        form_id: i32,
         category: String,
         sub_category: String,
         question: String,
@@ -19,6 +24,7 @@ impl Question {
     ) -> Self {
         Self {
             id,
+            form_id: Some(form_id),
             category,
             sub_category,
             question,
