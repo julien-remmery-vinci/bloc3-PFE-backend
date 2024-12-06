@@ -52,7 +52,17 @@ pub async fn create_answer_for_user(
     if answer.invalid() {
         return Err(AnswerError::BadRequest);
     }
+    match state.answer.read_answer_by_id(answer_id).await? {
+        None => return Err(AnswerError::NoSuchAnswer),
+        Some(_) => (),
+    }
+    //TODO check si le form existe
     let user_id = user.user_id;
+    match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
+        Some(_) => return Err(AnswerError::Conflict),
+        None => (),
+    }
+
     let valid = state.answer.create_answer_user(answer,user_id,answer_id).await?;
     Ok(Json(valid))
 }

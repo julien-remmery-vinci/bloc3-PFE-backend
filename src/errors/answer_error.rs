@@ -3,6 +3,8 @@ use axum::{http::StatusCode, response::IntoResponse};
 pub enum AnswerError {
     BadRequest,
     DbError(sqlx::Error),
+    NoSuchAnswer,
+    Conflict
 }
 
 impl IntoResponse for AnswerError {
@@ -14,6 +16,8 @@ impl IntoResponse for AnswerError {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
             }
             AnswerError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),
+            AnswerError::NoSuchAnswer => (StatusCode::NOT_FOUND, "No such answer"),
+            AnswerError::Conflict => (StatusCode::CONFLICT, "Conflict"),
         };
         let body = axum::body::Body::from(message);
         response.status(code).body(body).unwrap()
