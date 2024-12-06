@@ -5,7 +5,6 @@ POST {{ baseUrl }}/questions
 Content-Type: application/json
 
 {
-    "question_status": "A compléter",
     "category": "TEST",
     "sub_category": "TEST",
     "question": "cc sava"
@@ -16,7 +15,6 @@ POST {{ baseUrl }}/questions
 Content-Type: application/json
 
 {
-    "question_status": "A compléter",
     "category": "TEST",
     "sub_category": "TEST",
     "question": ""
@@ -42,4 +40,12 @@ Content-Type: application/json
 
 {
     "question": ""
+}
+
+### Delete a question
+PUT {{ baseUrl }}/questions/1
+Content-Type: application/json
+
+{
+    "is_used": false
 }

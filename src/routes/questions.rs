@@ -1,4 +1,4 @@
-use axum::{debug_handler, extract::{Path, State}, Json};
+use axum::{extract::{Path, State}, Json};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
@@ -16,7 +16,8 @@ pub struct QuestionRequest {
 
 #[derive(Deserialize)]
 pub struct PutQuestionRequest {
-    pub question: String,
+    pub question: Option<String>,
+    pub is_used: Option<bool>,
 }
 
 #[derive(Serialize)]
@@ -65,8 +66,10 @@ impl QuestionRequest {
 
 impl PutQuestionRequest {
     pub fn update_validate(&self) -> Result<(), QuestionError> {
-        if self.question.is_empty() {
-            return Err(QuestionError::BadRequest);
+        if let Some(question) = &self.question {
+            if question.is_empty() {
+                return Err(QuestionError::BadRequest);
+            }
         }
         Ok(())
     }
