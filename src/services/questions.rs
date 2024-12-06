@@ -9,6 +9,7 @@ const READ_BY_ID_QUERY: &str = "
 const READ_ALL_QUERY: &str = "
             SELECT question, category, sub_category
             FROM pfe.questions
+            WHERE is_used = true
         ";
 const INSERT_QUERY: &str ="
             INSERT INTO pfe.questions (question, category, sub_category)
