@@ -9,16 +9,14 @@ pub async fn create_form(
     State(state): State<AppState>,
     Json(new_form): Json<Form>,
 ) -> Result<impl IntoResponse, FormError> {
-    // Validation
     if new_form.form_type.is_empty() || new_form.template.is_empty() {
         return Err(FormError::BadRequest);
     }
 
-    let db_pool = &state.auth.db;
-    let form = create_form_in_db(db_pool, new_form)
-        .await
-        .map_err(FormError::DbError)?;
-    Ok((StatusCode::CREATED, Json(form)))
+    match create_form_in_db(&state.auth.db, new_form).await {
+        Ok(form) => Ok((StatusCode::CREATED, Json(form))),
+        Err(error) => Err(FormError::DbError(error)),
+    }
 }
 
 #[axum::debug_handler]

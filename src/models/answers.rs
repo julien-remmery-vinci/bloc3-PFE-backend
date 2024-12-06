@@ -1,12 +1,12 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-#[derive(Deserialize, FromRow, Serialize)]
+#[derive(Deserialize, FromRow, Serialize, Debug)]
 pub struct Answer {
     pub answer_id: i32,
     pub answer: String,
     pub template: String,
-    pub question_id: i32,
+    pub question_id: Option<i32>,
     pub score: f64,
     pub engagement_score: f64,
     pub is_forced_engagement: bool,
@@ -28,7 +28,7 @@ impl Answer {
             answer_id,
             answer,
             template,
-            question_id,
+            question_id: Some(question_id),
             score,
             engagement_score,
             is_forced_engagement,
