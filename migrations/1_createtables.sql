@@ -47,9 +47,7 @@ CREATE TABLE IF NOT EXISTS pfe.users (
 CREATE TABLE IF NOT EXISTS pfe.forms (
     form_id SERIAL PRIMARY KEY,
     company INTEGER REFERENCES pfe.companies(company_id),
-    type VARCHAR(10) CHECK (type IN ('ODD', 'ESG')),
-    nb_questions INTEGER,
-    template VARCHAR(15)
+    type VARCHAR(10) CHECK (type IN ('ODD', 'ESG'))
 );
 
 CREATE TABLE IF NOT EXISTS pfe.questions_form (

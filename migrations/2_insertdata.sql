@@ -132,6 +132,6 @@ VALUES
 ('Company 2', 'BE9876543210', 'SPRL', 'Rue de la Loi 2, 1000 Bruxelles', 'www.company2.be', '4321', 'Activité 2', 200, 2000000, 'label3,label4', FALSE),
 ('Company 3', 'BE1234567890', 'SCRL', 'Rue de la Loi 3, 1000 Bruxelles', 'www.company3.be', '5678', 'Activité 3', 300, 3000000, 'label5,label6', FALSE);
 
-INSERT INTO pfe.forms (company, type, nb_questions, template)
+INSERT INTO pfe.forms (company, type)
 VALUES
-(1,'ESG',1,'ALL');
+(1,'ESG');
