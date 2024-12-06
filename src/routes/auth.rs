@@ -3,11 +3,11 @@ use std::env;
 use axum::extract::Request;
 use axum::{extract::State, Json};
 
+use crate::models::user::UserToken;
 use crate::models::{
     credentials::Credentials,
     createuser::CreateUser,
-    user::User,
-    tokenresponse::TokenResponse,
+    user::User
 };
 use crate::database::state::AppState;
 use crate::errors::autherror::AuthError;
@@ -17,7 +17,7 @@ use crate::services::auth;
 pub async fn login(
     State(state): State<AppState>,
     Json(credentials): Json<Credentials>,
-) -> Result<Json<TokenResponse>, AuthError> {
+) -> Result<Json<UserToken>, AuthError> {
     if credentials.invalid() {
         return Err(AuthError::BadRequest);
     }
@@ -27,7 +27,7 @@ pub async fn login(
         Some(user) => {
             if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)? {
                 let token = auth::encode_jwt(credentials).map_err(AuthError::JWTError)?;
-                return Ok(Json(TokenResponse { token }));
+                return Ok(Json(UserToken { user, token }));
             } else {
                 return Err(AuthError::WrongPassword);
             }

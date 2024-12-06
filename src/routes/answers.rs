@@ -52,7 +52,7 @@ pub async fn create_answer_for_user(
     if answer.invalid() {
         return Err(AnswerError::BadRequest);
     }
-    let user_id = user.id;
+    let user_id = user.user_id;
     let valid = state.answer.create_answer_user(answer,user_id,answer_id).await?;
     Ok(Json(valid))
 }

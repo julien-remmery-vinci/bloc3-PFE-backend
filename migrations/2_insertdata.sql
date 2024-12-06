@@ -1,9 +1,3 @@
-INSERT INTO pfe.users (firstname, lastname, login, password, role)
-VALUES 
-
-('dev', 'quidev', 'dev', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user'),
-('user', 'example', 'user@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user'),
-('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin'); 
 INSERT INTO pfe.questions (category, sub_category, question)
 VALUES
 -- 1. ENERGIE & CARBONE
@@ -135,3 +129,10 @@ VALUES
 INSERT INTO pfe.forms (company, type)
 VALUES
 (1,'ESG');
+
+INSERT INTO pfe.users (firstname, lastname, login, password, role, company_id)
+VALUES 
+
+('dev', 'quidev', 'dev', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 1),
+('user', 'example', 'user@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 1),
+('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin', null); 

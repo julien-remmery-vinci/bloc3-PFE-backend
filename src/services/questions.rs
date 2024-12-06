@@ -9,6 +9,7 @@ const READ_BY_ID_QUERY: &str = "
 const READ_ALL_QUERY: &str = "
             SELECT question, category, sub_category
             FROM pfe.questions
+            WHERE is_used = true
         ";
 const INSERT_QUERY: &str ="
             INSERT INTO pfe.questions (question, category, sub_category)
@@ -18,6 +19,12 @@ const INSERT_QUERY: &str ="
 const UPDATE_QUERY: &str = "
             UPDATE pfe.questions
             SET question = $1
+            WHERE id = $2
+        ";
+
+const DELETE_QUERY: &str = "
+            UPDATE pfe.questions
+            SET is_used = $1
             WHERE id = $2
         ";
 
@@ -59,11 +66,21 @@ impl QuestionService {
         id: i32,
         question: PutQuestionRequest,
     ) -> Result<(), QuestionError> {
+        if let Some(is_used) = question.is_used {
+            sqlx::query(DELETE_QUERY)
+                .bind(&is_used)
+                .bind(id)
+                .execute(&self.db)
+                .await.map_err(QuestionError::DbError)?;
+            return Ok(());
+        }
+        if let Some(question) = question.question {
         sqlx::query(UPDATE_QUERY)
-            .bind(&question.question)
+            .bind(&question)
             .bind(id)
             .execute(&self.db)
             .await.map_err(QuestionError::DbError)?;
+        }
     
         Ok(())
     }
@@ -76,5 +93,17 @@ impl QuestionService {
             .await.map_err(QuestionError::DbError)?;
     
         Ok(questions)
+    }
+
+    pub async fn delete_question(
+        &self,
+        id: i32,
+    ) -> Result<(), QuestionError> {
+        sqlx::query(DELETE_QUERY)
+            .bind(id)
+            .execute(&self.db)
+            .await.map_err(QuestionError::DbError)?;
+    
+        Ok(())
     }
 }

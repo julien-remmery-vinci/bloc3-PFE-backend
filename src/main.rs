@@ -9,7 +9,6 @@ use axum::http::{header, HeaderValue, Method};
 use axum::{
     routing::get,
     routing::post,
-    routing::put,
     middleware,
     Router
 };
@@ -70,8 +69,7 @@ async fn main() {
         .route("/questions/:id", get(read_one_question)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_user))
              .put(update_question)
-             .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
-        //     .delete(delete))
+            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
         .route("/answers", post(create_answer))
         .route("/answers/:id", post(create_answer_for_user)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
