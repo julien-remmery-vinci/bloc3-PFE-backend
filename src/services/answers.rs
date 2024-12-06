@@ -58,6 +58,18 @@ impl AnswerService {
         }
     }
 
+    pub async fn read_answer_by_id(&self, answer_id: i32) -> Result<Option<Answer>, AnswerError> {
+        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers WHERE answer_id = $1")
+            .bind(answer_id)
+            .fetch_optional(&self.db)
+            .await
+            .map_err(|error| AnswerError::DbError(error))
+        {
+            Ok(answer) => Ok(answer),
+            Err(error) => Err(error),
+        }
+    }
+
     pub async fn read_answers_by_question(&self, question_id: i32) -> Result<Vec<Answer>, AnswerError> {
         match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers WHERE question_id = $1")
             .bind(question_id)
