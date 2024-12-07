@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS pfe.answers_esg (
     answer_id SERIAL PRIMARY KEY,
     question_id INTEGER REFERENCES pfe.questions(question_id),
     template TEXT NOT NULL,
-    answer TEXT NOT NULL,
+    answer TEXT,
     score_now DOUBLE PRECISION NOT NULL,
     score_commitment_pact DOUBLE PRECISION,
     is_forced_engagement BOOLEAN NOT NULL
