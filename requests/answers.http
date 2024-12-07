@@ -49,7 +49,7 @@ Content-Type: application/json
     "is_forced_engagement": false
 }
 
-### Add an answer for a user
+### Add an answer for a user without text
 POST {{ baseUrl }}/answers/1
 Content-Type: application/json
 Authorization: Bearer {{ user_token }}
@@ -59,7 +59,19 @@ Authorization: Bearer {{ user_token }}
     "now": true,
     "commitment_pact": false,
     "comment": " "
+}
 
+### Add an answer for a user with text
+POST {{ baseUrl }}/answers/3
+Content-Type: application/json
+Authorization: Bearer {{ user_token }}
+
+{
+    "answer": "cc sava",
+    "form_id": 1,
+    "now": true,
+    "commitment_pact": false,
+    "comment": " "
 }
 
 ### Get the answers of a question

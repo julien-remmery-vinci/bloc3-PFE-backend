@@ -16,9 +16,9 @@ const QUERY_INSERT_ANSWER: &str = "
 ";
 
 const QUERY_INSERT_ANSWER_USER: &str = "
-    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, answer, now, commitment_pact, comment)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING answer_id, user_id, form_id, answer, now, commitment_pact, comment, now_verif, commitment_pact_verif
 ";
 
 const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
@@ -26,6 +26,13 @@ const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
     FROM pfe.user_answer_esg
     WHERE form_id = $1 AND user_id = $2 AND answer_id = $3
     ";
+
+const QUERY_READ_ANSWERS_BY_USER_BY_QUESTION: &str = "
+    SELECT answer_id, user_id, form_id, answer, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    FROM pfe.user_answer_esg
+    WHERE user_id = $1 AND form_id = $3 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $2)
+    ";
+
 
 impl AnswerService {
     pub async fn create_answer(&self, answer: CreateAnswer) -> Result<Answer, AnswerError> {
@@ -50,6 +57,7 @@ impl AnswerService {
             .bind(answer_id.clone())
             .bind(user_id.clone())
             .bind(answer.form_id.clone())
+            .bind(answer.answer.clone())
             .bind(answer.now.clone())
             .bind(answer.commitment_pact.clone())
             .bind(answer.comment.clone())
@@ -100,35 +108,31 @@ impl AnswerService {
         }
     }
 
-}
-
-/*
-
-const QUERY_FIND_BY_QUESTION_ID_AND_ANSWER: &str = "
-            SELECT id, answer, template, question_id, score, engagement_score, is_forced_engagement, comment
-            FROM pfe.answers
-            WHERE question_id = $1 & answer = $2
-        ";
-*/
-
-/* 
-
-    pub async fn find_by_question_id_and_answer(db: &sqlx::PgPool, question_id: i32, answer: String) -> Result<Answer, sqlx::error::Error> {
-        match sqlx::query_as::<_, Answer>(QUERY_FIND_BY_QUESTION_ID_AND_ANSWER)
-            .bind(question_id)
-            .bind(answer)
-            .fetch_all(db)
+    pub async fn read_possible_answer_by_id(&self, answer_id: i32) -> Result<Option<Answer>, AnswerError> {
+        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers_esg WHERE answer_id = $1 AND answer IS NULL")
+            .bind(answer_id)
+            .fetch_optional(&self.db)
             .await
+            .map_err(|error| AnswerError::DbError(error))
         {
-            Ok(answer) => {
-                if answer.is_empty() {
-                    Ok(Answer::default())
-                } else {
-                    Ok(answer[0].clone())
-                }
-            },
+            Ok(answer) => Ok(answer),
+            Err(error) => Err(error),
+        }   
+    }
+
+    // method to retrieve all answers of a user for a specific question
+    pub async fn read_answers_by_user_by_question(&self, user_id: i32, question_id: i32, form_id: i32) -> Result<Vec<AnswerUser>, GlobalError> {
+        match sqlx::query_as::<_, AnswerUser>(QUERY_READ_ANSWERS_BY_USER_BY_QUESTION)
+            .bind(user_id)
+            .bind(question_id)
+            .bind(form_id)
+            .fetch_all(&self.db)
+            .await
+            .map_err(|error| GlobalError::DbError(error))
+        {
+            Ok(answers) => Ok(answers),
             Err(error) => Err(error),
         }
     }
 
-    */
+}
