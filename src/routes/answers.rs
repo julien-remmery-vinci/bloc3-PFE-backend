@@ -3,6 +3,7 @@ use axum::Extension;
 use axum::{extract::State, Json};
 use serde::Deserialize;
 
+use crate::errors::globalerror::GlobalError;
 use crate::models::answerusers::AnswerUser;
 use crate::{
     database::state::AppState,
@@ -70,7 +71,7 @@ pub async fn create_answer_for_user(
 pub async fn read_answers_by_question(
     State(state): State<AppState>,
     Path(question_id): Path<i32>,
-) -> Result<Json<Vec<Answer>>, AnswerError> {
+) -> Result<Json<Vec<Answer>>, GlobalError> {
     let answers = state.answer.read_answers_by_question(question_id).await?;
     Ok(Json(answers))
 }
