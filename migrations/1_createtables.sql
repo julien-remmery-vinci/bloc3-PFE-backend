@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS choices_odd (
 CREATE TABLE IF NOT EXISTS pfe.answers_odd (
     answer_id SERIAL PRIMARY KEY,
     question_id INTEGER REFERENCES pfe.questions(id),
-    choice_id INTEGER REFERENCES choices_odd(choice_id),
+    choice_id INTEGER REFERENCES choices_odd(choice_id)
 );
 
 CREATE TABLE IF NOT EXISTS pfe.answers_esg (
