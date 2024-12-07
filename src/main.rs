@@ -15,6 +15,7 @@ use axum::{
 use routes::forms::{create_form,read_form,update_form,delete_form, read_forms_by_user};
 use routes::answers::{create_answer, create_answer_for_user, read_answers_by_question};
 use routes::questions::{create_question, read_one_question, update_question};
+use routes::companies::get_company;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 // use tower_http::trace::TraceLayer;
@@ -75,6 +76,8 @@ async fn main() {
             .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
         .route("/answers/:id", get(read_answers_by_question)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
+        .route("/company", get(get_company)
+            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
         // .route("/answers/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))
