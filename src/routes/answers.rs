@@ -71,6 +71,7 @@ pub async fn create_answer_for_user(
         Some(_) => (),
     }
     //TODO check si le form existe
+    //check si on a deja rep a cette answer
     let user_id = user.user_id;
     match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
         Some(_) => return Err(AnswerError::Conflict),
