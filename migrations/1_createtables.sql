@@ -2,7 +2,7 @@ DROP SCHEMA IF EXISTS pfe CASCADE;
 CREATE SCHEMA pfe;
 
 CREATE TABLE IF NOT EXISTS pfe.questions (
-    id SERIAL PRIMARY KEY,
+    question_id SERIAL PRIMARY KEY,
     category VARCHAR(255) NOT NULL,
     sub_category VARCHAR(255) NOT NULL,
     question TEXT NOT NULL,
@@ -65,11 +65,11 @@ CREATE TABLE IF NOT EXISTS pfe.questions_form (
     PRIMARY KEY (form_id, question_id)
 );
 
-CREATE TABLE IF NOT EXISTS choices_odd (
+CREATE TABLE IF NOT EXISTS pfe.choices_odd (
     choice_id SERIAL PRIMARY KEY,
     choice TEXT NOT NULL UNIQUE CHECK (choice IN (
-        'Ne correspond pas à mes activités', 
-        'Pas de contribution', 
+        'Ne correspond pas à mes activités',
+        'Pas de contribution',
         'Contribution occasionnelle',
         'Contribution générale',
         'Contribution spécifique',
@@ -79,13 +79,13 @@ CREATE TABLE IF NOT EXISTS choices_odd (
 
 CREATE TABLE IF NOT EXISTS pfe.answers_odd (
     answer_id SERIAL PRIMARY KEY,
-    question_id INTEGER REFERENCES pfe.questions(id),
+    question_id INTEGER REFERENCES pfe.questions(question_id),
     choice_id INTEGER REFERENCES choices_odd(choice_id)
 );
 
 CREATE TABLE IF NOT EXISTS pfe.answers_esg (
     answer_id SERIAL PRIMARY KEY,
-    question_id INTEGER REFERENCES pfe.questions(id),
+    question_id INTEGER REFERENCES pfe.questions(question_id),
     template TEXT NOT NULL,
     answer TEXT NOT NULL,
     score_now DOUBLE PRECISION NOT NULL,
