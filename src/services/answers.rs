@@ -1,7 +1,6 @@
 use crate::{
-    errors::answer_error::AnswerError,
-    models::answers::Answer,
-    models::answerusers::AnswerUser,
+    errors::{answer_error::AnswerError, globalerror::GlobalError},
+    models::{answers::Answer, answerusers::AnswerUser},
     routes::answers::{CreateAnswer, CreateAnswerUser}
 };
 
@@ -89,12 +88,12 @@ impl AnswerService {
         }
     }
 
-    pub async fn read_answers_by_question(&self, question_id: i32) -> Result<Vec<Answer>, AnswerError> {
+    pub async fn read_answers_by_question(&self, question_id: i32) -> Result<Vec<Answer>, GlobalError> {
         match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers_esg WHERE question_id = $1")
             .bind(question_id)
             .fetch_all(&self.db)
             .await
-            .map_err(|error| AnswerError::DbError(error))
+            .map_err(|error| GlobalError::DbError(error))
         {
             Ok(answers) => Ok(answers),
             Err(error) => Err(error),

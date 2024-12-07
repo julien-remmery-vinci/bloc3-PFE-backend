@@ -29,7 +29,7 @@ Authorization: Bearer {{ admin_token }}
 
 {
     "company_id": 1,
-    "form_type": "ESG"
+    "type": "ESG"
 }
 
 ### Read all forms for a company

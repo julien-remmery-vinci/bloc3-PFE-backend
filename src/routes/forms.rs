@@ -83,17 +83,21 @@ pub async fn read_forms_by_company(
 
     let mut forms_list: Vec<FormWithQuestions> = Vec::new();
     for form in forms {
+        let mut new_form: FormWithQuestions = FormWithQuestions { form: form.clone(), questions: Vec::new() };
+
         let questions = state.question.read_all_by_form_id(form.form_id).await?;
 
-        // let mut questions_with_answers = Vec::new();
-        // for question in questions {
-        //     let answers = state.answer.read_answers_by_question(question.question_id)
-        //         .await?;
+        for question in &questions {
+            let answers = state.answer.read_answers_by_question(question.question_id).await?;
+            let mut question_with_answers = 
+                QuestionWithAnswers { question: question.clone(), answers, user_answers: Vec::new() };
 
-        //     questions_with_answers.push(QuestionWithAnswers { question, answers });
-        // }
+            // TODO : get user answers
 
-        forms_list.push(FormWithQuestions { form, questions });
+            new_form.questions.push(question_with_answers);
+        }
+
+        forms_list.push(new_form);
     }
 
     Ok((StatusCode::OK, Json(forms_list)))
