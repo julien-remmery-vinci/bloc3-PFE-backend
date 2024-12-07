@@ -11,7 +11,7 @@ impl IntoResponse for QuestionError {
         let response = axum::http::Response::builder();
         let (code, message) = match self {
             QuestionError::DbError(e) => {
-                println!("db error : {:?}", e);
+                println!("question db error : {:?}", e);
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
             }
             QuestionError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),

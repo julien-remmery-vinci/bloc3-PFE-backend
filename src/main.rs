@@ -12,7 +12,7 @@ use axum::{
     middleware,
     Router
 };
-use routes::forms::{create_form,read_form,update_form,delete_form, read_forms_by_user};
+use routes::forms::{create_form, read_forms_by_company/*, read_form,update_form,delete_form, read_forms_by_user */};
 use routes::answers::{create_answer, create_answer_for_user, read_answers_by_question};
 use routes::questions::{create_question, read_one_question, update_question};
 use routes::companies::get_company;
@@ -60,11 +60,14 @@ async fn main() {
             .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
         .route("/auth/verify", post(verify)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
-        .route("/forms", post(create_form))
-        .route("/forms/:id", get(read_form)
-            .put(update_form)
-            .delete(delete_form))
-        .route("/forms/user/:id", get(read_forms_by_user))
+        .route("/forms", post(create_form)
+            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/forms/company", get(read_forms_by_company)
+            .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
+        // .route("/forms/:id", get(read_form)
+        //     .put(update_form)
+        //     .delete(delete_form))
+        // .route("/forms/user/:id", get(read_forms_by_user))
         .route("/questions", post(create_question)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
         .route("/questions/:id", get(read_one_question)

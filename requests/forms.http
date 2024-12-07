@@ -2,17 +2,39 @@
 @user_token={{ user.response.body.token }}
 @admin_token={{ admin.response.body.token }}
 
+### Login with user account
+# @name user
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "user@example.com",
+    "password": "password"
+}
+
+### Login with admin account
+# @name admin
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "admin@example.com",
+    "password": "password"
+}
+
 ### Create a form
 POST {{ baseUrl }}/forms
 Content-Type: application/json
 Authorization: Bearer {{ admin_token }}
 
 {
-    "company": 1,
-    "form_type": "ODD",
-    "nb_questions": 10,
-    "template": "Template"
+    "company_id": 1,
+    "form_type": "ESG"
 }
+
+### Read all forms for a company
+GET {{ baseUrl }}/forms/company
+Authorization: Bearer {{ user_token }}
 
 ### Get a form by ID
 GET {{ baseUrl }}/forms/20
