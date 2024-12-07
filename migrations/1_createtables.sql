@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     answer_id INTEGER REFERENCES pfe.answers_esg(answer_id),
     user_id INTEGER REFERENCES pfe.users(user_id),
     form_id INTEGER REFERENCES pfe.forms(form_id),
+    answer TEXT,
     now BOOLEAN NOT NULL,
     commitment_pact BOOLEAN NOT NULL,
     comment TEXT,

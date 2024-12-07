@@ -46,9 +46,7 @@ Content-Type: application/json
     "question_id": 1,
     "score": 0.3,
     "engagement_score": 0.5,
-    "is_forced_engagement": false,
-    "comment": ""
-
+    "is_forced_engagement": false
 }
 
 ### Add an answer for a user

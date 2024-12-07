@@ -19,7 +19,6 @@ pub struct CreateAnswer {
     pub score: f64,
     pub engagement_score: f64,
     pub is_forced_engagement: bool,
-    pub comment: String,
 }
 
 #[derive(Deserialize)]

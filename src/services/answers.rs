@@ -11,9 +11,9 @@ pub struct AnswerService {
 }
 
 const QUERY_INSERT_ANSWER: &str = "
-    INSERT INTO pfe.answers (answer, template, question_id, score, engagement_score, is_forced_engagement, comment) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7) 
-    RETURNING answer_id, answer, template, question_id, score, engagement_score, is_forced_engagement, comment
+    INSERT INTO pfe.answers_esg (question_id, template, answer, score_now, score_commitment_pact, is_forced_engagement) 
+    VALUES ($1, $2, $3, $4, $5, $6) 
+    RETURNING answer_id, question_id, template, answer, score_now, score_commitment_pact, is_forced_engagement
 ";
 
 const QUERY_INSERT_ANSWER_USER: &str = "
@@ -31,13 +31,12 @@ const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
 impl AnswerService {
     pub async fn create_answer(&self, answer: CreateAnswer) -> Result<Answer, AnswerError> {
         match sqlx::query_as::<_, Answer>(QUERY_INSERT_ANSWER)
-            .bind(answer.answer.clone())
-            .bind(answer.template.clone())
             .bind(answer.question_id.clone())
+            .bind(answer.template.clone())
+            .bind(answer.answer.clone())
             .bind(answer.score.clone())
             .bind(answer.engagement_score.clone())
             .bind(answer.is_forced_engagement.clone())
-            .bind(answer.comment.clone())
             .fetch_one(&self.db)
             .await
             .map_err(|error| AnswerError::DbError(error))
@@ -65,7 +64,7 @@ impl AnswerService {
     }
 
     pub async fn read_answer_by_id(&self, answer_id: i32) -> Result<Option<Answer>, AnswerError> {
-        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers WHERE answer_id = $1")
+        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers_esg WHERE answer_id = $1")
             .bind(answer_id)
             .fetch_optional(&self.db)
             .await
@@ -91,7 +90,7 @@ impl AnswerService {
     }
 
     pub async fn read_answers_by_question(&self, question_id: i32) -> Result<Vec<Answer>, AnswerError> {
-        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers WHERE question_id = $1")
+        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers_esg WHERE question_id = $1")
             .bind(question_id)
             .fetch_all(&self.db)
             .await
