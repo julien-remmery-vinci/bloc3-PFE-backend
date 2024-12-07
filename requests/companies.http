@@ -1,0 +1,16 @@
+@baseUrl=http://127.0.0.1:3000
+@admin_token={{ admin.response.body.token }}
+
+### Login with admin account
+# @name admin
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "admin@example.com",
+    "password": "password"
+}
+
+### Get all companies
+GET {{ baseUrl }}/company
+Authorization: Bearer {{ admin_token }}

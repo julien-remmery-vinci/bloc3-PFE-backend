@@ -1,4 +1,4 @@
-use sqlx::{PgPool, Pool, Postgres};
+use sqlx::{Pool, Postgres};
 use crate::{errors::questionserror::QuestionError, routes::questions::{PutQuestionRequest, QuestionRequest}};
 use crate::models::answers::Answer;
 
@@ -10,8 +10,12 @@ const READ_BY_ID_QUERY: &str = "
 const READ_ALL_QUERY: &str = "
             SELECT question, category, sub_category
             FROM pfe.questions
-            WHERE is_used = true
         ";
+const READ_ALL_USED_QUERY: &str = "
+        SELECT question, category, sub_category
+        FROM pfe.questions
+        WHERE is_used = true AND question_type = $1
+    ";
 const INSERT_QUERY: &str ="
             INSERT INTO pfe.questions (question, category, sub_category)
             VALUES ($1, $2, $3)
@@ -87,12 +91,22 @@ impl QuestionService {
     }
 
     pub async fn read_all_questions(
-        &self,
+        &self
     ) -> Result<Vec<QuestionRequest>, QuestionError> {
         let questions = sqlx::query_as::<_, QuestionRequest>(READ_ALL_QUERY)
             .fetch_all(&self.db)
             .await.map_err(QuestionError::DbError)?;
-    
+        Ok(questions)
+    }
+
+    pub async fn read_all_used_questions(
+        &self,
+        question_type: String
+    ) -> Result<Vec<QuestionRequest>, QuestionError> {
+        let questions = sqlx::query_as::<_, QuestionRequest>(READ_ALL_USED_QUERY)
+            .bind(question_type)
+            .fetch_all(&self.db)
+            .await.map_err(QuestionError::DbError)?;
         Ok(questions)
     }
 

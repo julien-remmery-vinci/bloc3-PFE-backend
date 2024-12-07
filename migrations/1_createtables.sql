@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS pfe.questions (
     category VARCHAR(255) NOT NULL,
     sub_category VARCHAR(255) NOT NULL,
     question TEXT NOT NULL,
-    is_used BOOLEAN DEFAULT TRUE
+    is_used BOOLEAN DEFAULT TRUE,
+    question_type TEXT NOT NULL CHECK (question_type IN ('ODD', 'ESG'))
 );
 
 CREATE TABLE IF NOT EXISTS pfe.templates (
@@ -35,6 +36,18 @@ CREATE TABLE IF NOT EXISTS pfe.template_company (
     PRIMARY KEY (company_id, template_id)
 );
 
+CREATE TABLE IF NOT EXISTS pfe.forms (
+    form_id SERIAL PRIMARY KEY,
+    company INTEGER REFERENCES pfe.companies(company_id),
+    type VARCHAR(10) CHECK (type IN ('ODD', 'ESG'))
+);
+
+CREATE TABLE IF NOT EXISTS pfe.template_form (
+    form_id INTEGER REFERENCES pfe.forms(form_id),
+    template_id INTEGER REFERENCES pfe.templates(template_id),
+    PRIMARY KEY (form_id, template_id)
+);
+
 CREATE TABLE IF NOT EXISTS pfe.users (
     user_id SERIAL PRIMARY KEY,
     firstname TEXT NOT NULL,
@@ -45,12 +58,6 @@ CREATE TABLE IF NOT EXISTS pfe.users (
     company_id INTEGER REFERENCES pfe.companies(company_id) NULL
 );
 
-CREATE TABLE IF NOT EXISTS pfe.forms (
-    form_id SERIAL PRIMARY KEY,
-    company INTEGER REFERENCES pfe.companies(company_id),
-    type VARCHAR(10) CHECK (type IN ('ODD', 'ESG'))
-);
-
 CREATE TABLE IF NOT EXISTS pfe.questions_form (
     form_id INTEGER REFERENCES pfe.forms(form_id),
     question_id INTEGER REFERENCES pfe.questions(id),
@@ -58,18 +65,36 @@ CREATE TABLE IF NOT EXISTS pfe.questions_form (
     PRIMARY KEY (form_id, question_id)
 );
 
-CREATE TABLE IF NOT EXISTS pfe.answers (
+CREATE TABLE IF NOT EXISTS choices_odd (
+    choice_id SERIAL PRIMARY KEY,
+    choice TEXT NOT NULL UNIQUE CHECK (choice IN (
+        'Ne correspond pas à mes activités', 
+        'Pas de contribution', 
+        'Contribution occasionnelle',
+        'Contribution générale',
+        'Contribution spécifique',
+        'Mission d''entreprise')),
+    score DOUBLE PRECISION NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS pfe.answers_odd (
     answer_id SERIAL PRIMARY KEY,
-    answer TEXT NOT NULL,
-    template TEXT NOT NULL,
     question_id INTEGER REFERENCES pfe.questions(id),
-    score DOUBLE PRECISION NOT NULL,
-    engagement_score DOUBLE PRECISION,
+    choice_id INTEGER REFERENCES choices_odd(choice_id)
+);
+
+CREATE TABLE IF NOT EXISTS pfe.answers_esg (
+    answer_id SERIAL PRIMARY KEY,
+    question_id INTEGER REFERENCES pfe.questions(id),
+    template TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    score_now DOUBLE PRECISION NOT NULL,
+    score_commitment_pact DOUBLE PRECISION,
     is_forced_engagement BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
-    answer_id INTEGER REFERENCES pfe.answers(answer_id),
+    answer_id INTEGER REFERENCES pfe.answers_esg(answer_id),
     user_id INTEGER REFERENCES pfe.users(user_id),
     form_id INTEGER REFERENCES pfe.forms(form_id),
     now BOOLEAN NOT NULL,
