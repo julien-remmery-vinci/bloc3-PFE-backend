@@ -16,9 +16,9 @@ const QUERY_INSERT_ANSWER: &str = "
 ";
 
 const QUERY_INSERT_ANSWER_USER: &str = "
-    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, answer, now, commitment_pact, comment)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    RETURNING answer_id, user_id, form_id, answer, now, commitment_pact, comment, now_verif, commitment_pact_verif
 ";
 
 const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
@@ -106,6 +106,18 @@ impl AnswerService {
             Ok(answers) => Ok(answers),
             Err(error) => Err(error),
         }
+    }
+
+    pub async fn read_possible_answer_by_id(&self, answer_id: i32) -> Result<Option<Answer>, AnswerError> {
+        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers_esg WHERE answer_id = $1 AND answer IS NULL")
+            .bind(answer_id)
+            .fetch_optional(&self.db)
+            .await
+            .map_err(|error| AnswerError::DbError(error))
+        {
+            Ok(answer) => Ok(answer),
+            Err(error) => Err(error),
+        }   
     }
 
     // method to retrieve all answers of a user for a specific question
