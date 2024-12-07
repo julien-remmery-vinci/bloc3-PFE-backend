@@ -36,6 +36,18 @@ CREATE TABLE IF NOT EXISTS pfe.template_company (
     PRIMARY KEY (company_id, template_id)
 );
 
+CREATE TABLE IF NOT EXISTS pfe.forms (
+    form_id SERIAL PRIMARY KEY,
+    company INTEGER REFERENCES pfe.companies(company_id),
+    type VARCHAR(10) CHECK (type IN ('ODD', 'ESG'))
+);
+
+CREATE TABLE IF NOT EXISTS pfe.template_form (
+    form_id INTEGER REFERENCES pfe.forms(form_id),
+    template_id INTEGER REFERENCES pfe.templates(template_id),
+    PRIMARY KEY (form_id, template_id)
+);
+
 CREATE TABLE IF NOT EXISTS pfe.users (
     user_id SERIAL PRIMARY KEY,
     firstname TEXT NOT NULL,
@@ -44,12 +56,6 @@ CREATE TABLE IF NOT EXISTS pfe.users (
     password TEXT NOT NULL,
     role TEXT NOT NULL CHECK (role IN ('user', 'admin')),
     company_id INTEGER REFERENCES pfe.companies(company_id) NULL
-);
-
-CREATE TABLE IF NOT EXISTS pfe.forms (
-    form_id SERIAL PRIMARY KEY,
-    company INTEGER REFERENCES pfe.companies(company_id),
-    type VARCHAR(10) CHECK (type IN ('ODD', 'ESG'))
 );
 
 CREATE TABLE IF NOT EXISTS pfe.questions_form (
