@@ -1,12 +1,13 @@
-use axum::{extract::{ Query, State}, Json};
+use axum::{extract::{ Path, State}, Json};
 
-use crate::{database::state::AppState, errors::score_error::ScoreError, models::score::ScoreQuery};
+use crate::{database::state::AppState, errors::score_error::ScoreError};
 
 #[axum::debug_handler]
 pub async fn sum_score_template(
     State(state): State<AppState>,
-    Query(query): Query<ScoreQuery>,
+    Path(form_id): Path<i32>,
 ) -> Result<Json<f64>, ScoreError> {
-    let score = state.score.sum_score_template(query.form_id.to_string()).await?;
+    let template=state.score.find_template_by_form_id(form_id).await?;
+    let score = state.score.sum_score_template(template).await?;
     Ok(Json(score))
 }
