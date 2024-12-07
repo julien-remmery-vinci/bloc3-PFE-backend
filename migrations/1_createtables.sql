@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS pfe.template_company (
 
 CREATE TABLE IF NOT EXISTS pfe.forms (
     form_id SERIAL PRIMARY KEY,
-    company INTEGER REFERENCES pfe.companies(company_id),
+    company_id INTEGER REFERENCES pfe.companies(company_id),
     type VARCHAR(10) CHECK (type IN ('ODD', 'ESG'))
 );
 
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS pfe.users (
 
 CREATE TABLE IF NOT EXISTS pfe.questions_form (
     form_id INTEGER REFERENCES pfe.forms(form_id),
-    question_id INTEGER REFERENCES pfe.questions(id),
+    question_id INTEGER REFERENCES pfe.questions(question_id),
     question_status VARCHAR(255) NOT NULL,
     PRIMARY KEY (form_id, question_id)
 );
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS pfe.choices_odd (
 CREATE TABLE IF NOT EXISTS pfe.answers_odd (
     answer_id SERIAL PRIMARY KEY,
     question_id INTEGER REFERENCES pfe.questions(question_id),
-    choice_id INTEGER REFERENCES choices_odd(choice_id)
+    choice_id INTEGER REFERENCES pfe.choices_odd(choice_id)
 );
 
 CREATE TABLE IF NOT EXISTS pfe.answers_esg (

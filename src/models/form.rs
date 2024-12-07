@@ -5,15 +5,21 @@ use crate::models::answers::Answer;
 
 #[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct Form {
-    pub form_id: Option<i32>,
-    pub company: i32,
-    pub form_type: String,
+    pub form_id: i32,
+    pub company_id: i32,
+    pub r#type: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct CreateForm {
+    pub company_id: i32,
+    pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FormWithQuestions {
     pub form: Form,
-    pub questions: Vec<QuestionWithAnswers>,
+    pub questions: Vec<Question>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -25,19 +31,19 @@ pub struct QuestionWithAnswers {
 impl Form {
     pub fn new(
         form_id: i32,
-        company: i32,
-        form_type: String,
+        company_id: i32,
+        r#type: String,
     ) -> Self {
         Self {
-            form_id: Some(form_id),
-            company,
-            form_type,
+            form_id,
+            company_id,
+            r#type,
         }
     }
 }
 
-impl FormWithQuestions {
-    pub fn get_questions(&self) -> &Vec<QuestionWithAnswers> {
-        &self.questions
+impl CreateForm {
+    pub fn invalid(&self) -> bool {
+        self.company_id <= 0 || self.r#type.is_empty()
     }
 }
