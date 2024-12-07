@@ -1,10 +1,15 @@
-use crate::models::company::Company;
+use crate::{errors::company_error::CompanyError, models::company::Company};
 
 const QUERY_READ_BY_ID: &str = "SELECT * FROM pfe.companies WHERE company_id = $1";
 // const QUERY_INSERT_COMPANY: &str = "
 //             INSERT INTO company (name, address, city, zip_code, country) 
 //             VALUES ($1, $2, $3, $4, $5) 
 //             RETURNING *";
+
+const QUERY_GET_ALL_COMPANIES: &str = "SELECT company_id, company_name, company_number, legal_form, office_address, website,
+                                        nace_code, business_activity, nb_workers, revenue, labels, dispute
+                                        FROM pfe.companies";
+
 
 #[derive(Debug, Clone)]
 pub struct CompanyService {
@@ -26,6 +31,16 @@ impl CompanyService {
                 }
             },
             Err(error) => Err(error),
+        }
+    }
+
+    pub async fn get_companies(&self) -> Result<Vec<Company>, CompanyError> {
+        match sqlx::query_as::<_, Company>(QUERY_GET_ALL_COMPANIES)
+            .fetch_all(&self.db)
+            .await
+        {
+            Ok(companies) => Ok(companies),
+            Err(error) => Err(CompanyError::DbError(error)),
         }
     }
 
