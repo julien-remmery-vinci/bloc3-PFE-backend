@@ -12,6 +12,20 @@ Authorization: Bearer {{ admin_token }}
     "lastname": "Doe",
     "login": "John",
     "password": "password",
+    "role": "admin",
+    "company_id": null
+}
+
+### Register without company
+POST {{ baseUrl }}/auth/register
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "firstname": "John",
+    "lastname": "Doe",
+    "login": "azeazeazeae",
+    "password": "password",
     "role": "admin"
 }
 

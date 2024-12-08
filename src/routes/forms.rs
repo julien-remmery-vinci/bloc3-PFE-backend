@@ -1,7 +1,21 @@
-use axum::{extract::{Path, State}, http::StatusCode, response::IntoResponse, Extension, Json};
-use crate::{database::state::AppState, errors::globalerror::GlobalError, models::{answers::Answer, company, form::{self, CreateForm, FormWithQuestions, QuestionWithAnswers}, question::Question, user::User}};
-use crate::models::form::Form;
-use crate::errors::form_error::FormError;
+use axum::{
+    extract::State, 
+    http::StatusCode, 
+    response::IntoResponse, 
+    Extension, 
+    Json
+};
+use crate::{
+    database::state::AppState, 
+    errors::globalerror::GlobalError, 
+    models::{
+        form::{
+            CreateForm, FormWithQuestions, QuestionWithAnswers
+        }, 
+        question::Question, 
+        user::User
+    }
+};
 
 #[axum::debug_handler]
 pub async fn create_form(
@@ -35,39 +49,6 @@ pub async fn create_form(
 //     Ok((StatusCode::OK, Json(form)))
 // }
 
-// #[axum::debug_handler]
-// pub async fn update_form(
-//     State(state): State<AppState>,
-//     Path(form_id): Path<i32>,
-//     Json(updated_form): Json<Form>,
-// ) -> Result<impl IntoResponse, FormError> {
-//     if updated_form.form_type.is_empty() {
-//         return Err(FormError::BadRequest);
-//     }
-
-//     let form = state.form.update_form_in_db(form_id, updated_form)
-//         .await
-//         .map_err(|e| match e {
-//             sqlx::Error::RowNotFound => FormError::NotFound,
-//             _ => FormError::DbError(e),
-//         })?;
-//     Ok((StatusCode::OK, Json(form)))
-// }
-
-// #[axum::debug_handler]
-// pub async fn delete_form(
-//     State(state): State<AppState>,
-//     Path(form_id): Path<i32>,
-// ) -> Result<impl IntoResponse, FormError> {
-//     state.form.delete_form_in_db(form_id)
-//         .await
-//         .map_err(|e| match e {
-//             sqlx::Error::RowNotFound => FormError::NotFound,
-//             _ => FormError::DbError(e),
-//         })?;
-//     Ok(StatusCode::NO_CONTENT)
-// }
-
 #[axum::debug_handler]
 pub async fn read_forms_by_company(
     State(state): State<AppState>,
@@ -89,12 +70,15 @@ pub async fn read_forms_by_company(
 
         for question in &questions {
             let answers = state.answer.read_answers_by_question(question.question_id).await?;
-            let mut question_with_answers = 
-                QuestionWithAnswers { question: question.clone(), answers, user_answers: Vec::new() };
+            let user_answers = state.answer.read_answers_by_user_by_question(user.user_id, question.question_id, form.form_id).await?;
 
-            // TODO : get user answers
-
-            new_form.questions.push(question_with_answers);
+            new_form.questions.push(
+                QuestionWithAnswers { 
+                    question: question.clone(), 
+                    answers, 
+                    user_answers
+                }
+            );
         }
 
         forms_list.push(new_form);

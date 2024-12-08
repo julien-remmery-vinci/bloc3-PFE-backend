@@ -1,6 +1,5 @@
 use sqlx::{Pool, Postgres};
-use crate::{errors::{globalerror::GlobalError, questionserror::QuestionError}, models::{form::QuestionWithAnswers, question::Question}, routes::questions::{PutQuestionRequest, QuestionRequest}};
-use crate::models::answers::Answer;
+use crate::{errors::{globalerror::GlobalError, questionserror::QuestionError}, models::{question::Question}, routes::questions::{PutQuestionRequest, QuestionRequest}};
 
 const READ_BY_ID_QUERY: &str = "
         SELECT question_id, category, sub_category
@@ -137,13 +136,5 @@ impl QuestionService {
             .await.map_err(QuestionError::DbError)?;
     
         Ok(())
-    }
-
-    pub async fn get_answers(&self, question_id: i32) -> Result<Vec<Answer>, sqlx::Error> {
-        let answers = sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers WHERE question_id = $1")
-            .bind(question_id)
-            .fetch_all(&self.db)
-            .await?;
-        Ok(answers)
     }
 }
