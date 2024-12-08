@@ -38,6 +38,7 @@ use routes::companies::{
     read_all_companies,
     create_company
 };
+use routes::scores::sum_score_template;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
@@ -96,6 +97,12 @@ fn company_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_user)))
 }
 
+fn score_routes(state: AppState) -> Router<AppState> {
+    Router::new()
+        .route("/score/:form_id", get(sum_score_template)
+        .layer(from_fn_with_state(state.clone(), authorize_user)))
+}
+
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
@@ -120,6 +127,7 @@ async fn main() {
             .merge(questions_routes(state.clone()))
             .merge(answers_routes(state.clone()))
             .merge(company_routes(state.clone()))
+            .merge(score_routes(state.clone()))
             .layer(cors)
             .layer(
                 TraceLayer::new_for_http()
