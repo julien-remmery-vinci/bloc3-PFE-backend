@@ -1,5 +1,5 @@
 use crate::{
-    errors::globalerror::ResponseError,
+    errors::responserror::ResponseError,
     models::answer::{Answer, AnswerUser, CreateAnswer, CreateAnswerUser},
 };
 
