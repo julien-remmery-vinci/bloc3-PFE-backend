@@ -99,8 +99,8 @@ async fn main() {
         // .route("/answers/:id", get(read_one)
         //     .put(update)
         //     .delete(delete))
-        .route("/score", get(read_score_for_form_user)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
+        //.route("/score", get(read_score_for_form_user)
+            //.layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
         .layer(cors)
         .layer(TraceLayer::new_for_http()
             .on_request(|request: &Request<Body>, _span: &Span| {
