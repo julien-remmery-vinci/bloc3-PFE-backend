@@ -1,4 +1,4 @@
-use crate::errors::score_error::ScoreError;
+use crate::errors::responserror::ResponseError;
 
 #[derive(Debug,Clone)]
 pub struct ScoreService {
@@ -24,7 +24,7 @@ impl ScoreService {
             .bind(template)
             .fetch_one(&self.db)
             .await
-            .map_err(ScoreError::DbError)
+            .map_err(ResponseError::DbError)
     }
 
     pub async fn find_company_by_form_id(&self, form_id: i32) -> Result<String, ScoreError> {
@@ -32,7 +32,7 @@ impl ScoreService {
             .bind(form_id)
             .fetch_one(&self.db)
             .await
-            .map_err(ScoreError::DbError)?;
+            .map_err(ResponseError::DbError)?;
 
         Ok(company)
     }
@@ -43,7 +43,7 @@ impl ScoreService {
         .bind(form_id)
         .fetch_one(&self.db)
         .await
-        .map_err(ScoreError::DbError)?;
+        .map_err(ResponseError::DbError)?;
 
         Ok(template)
     }
