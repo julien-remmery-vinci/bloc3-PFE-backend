@@ -632,9 +632,9 @@ VALUES
 
 INSERT INTO pfe.companies (company_name, company_number, legal_form, office_address, website, nace_code, business_activity, nb_workers, revenue, labels, dispute)
 VALUES
-('Company 1', 'BE0123456789', 'SRL', 'Rue de la Loi 1, 1000 Bruxelles', 'www.company1.be', '1234', 'Activité 1', 100, 1000000, 'label1,label2', FALSE),
-('Company 2', 'BE9876543210', 'SPRL', 'Rue de la Loi 2, 1000 Bruxelles', 'www.company2.be', '4321', 'Activité 2', 200, 2000000, 'label3,label4', FALSE),
-('Company 3', 'BE1234567890', 'SCRL', 'Rue de la Loi 3, 1000 Bruxelles', 'www.company3.be', '5678', 'Activité 3', 300, 3000000, 'label5,label6', FALSE);
+('Company 1', 'BE0123456789', 'SRL', 'Rue de la Loi 1, 1000 Bruxelles', 'www.company1.be', '1234', 'Activité 1', 100, 1000000, ARRAY['label 1','label 2'], FALSE),
+('Company 2', 'BE9876543210', 'SPRL', 'Rue de la Loi 2, 1000 Bruxelles', 'www.company2.be', '4321', 'Activité 2', 200, 2000000, ARRAY['label 3','label 4'], FALSE),
+('Company 3', 'BE1234567890', 'SCRL', 'Rue de la Loi 3, 1000 Bruxelles', 'www.company3.be', '5678', 'Activité 3', 300, 3000000, ARRAY['label 5','label 6'], FALSE);
 
 INSERT INTO pfe.forms (company_id, type)
 VALUES

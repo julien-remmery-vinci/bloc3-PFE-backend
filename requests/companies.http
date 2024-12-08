@@ -1,5 +1,16 @@
 @baseUrl=http://127.0.0.1:3000
 @admin_token={{ admin.response.body.token }}
+@user_token={{ user.response.body.token }}
+
+### Login with admin account
+# @name user
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "user@example.com",
+    "password": "password"
+}
 
 ### Login with admin account
 # @name admin
@@ -14,3 +25,22 @@ Content-Type: application/json
 ### Get all companies
 GET {{ baseUrl }}/company
 Authorization: Bearer {{ admin_token }}
+
+### Create a new company
+POST {{ baseUrl }}/company
+Content-Type: application/json
+Authorization: Bearer {{ user_token }}
+
+{
+    "company_name": "Company 1",
+    "company_number": "BE0223456789",
+    "office_address": "Rue de la Loi 1, 1000 Bruxelles",
+    "legal_form": "SRL",
+    "website": "www.company1.be",
+    "nace_code": "1234",
+    "business_activity": "Activité 1",
+    "nb_workers": 100,
+    "revenue": 1000000.0,
+    "labels": ["label1", "label2"],
+    "dispute": false
+}

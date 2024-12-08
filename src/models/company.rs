@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-#[derive(Deserialize, FromRow, Clone, Serialize)]
+#[derive(Deserialize, FromRow, Serialize, Clone)]
 pub struct Company {
-    pub company_id: i32,
+    pub company_id: Option<i32>,
     pub company_name: String,
     pub company_number: String,
     pub office_address: String,
@@ -13,6 +13,6 @@ pub struct Company {
     pub business_activity: String,
     pub nb_workers: Option<i32>,
     pub revenue: Option<f64>,
-    pub labels: Option<String>,
+    pub labels: Option<Vec<String>>,
     pub dispute: bool,
 }
