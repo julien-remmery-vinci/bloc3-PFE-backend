@@ -1,4 +1,4 @@
-use crate::errors::globalerror::GlobalError;
+use crate::errors::globalerror::ResponseError;
 use crate::models::form::{CreateForm, Form};
 use crate::models::question::Question;
 
@@ -52,11 +52,11 @@ impl FormService {
     }
 
     // Lire les formulaires d'une entreprise
-    pub async fn read_forms_by_company(&self, company_id: i32) -> Result<Vec<Form>, GlobalError> {
+    pub async fn read_forms_by_company(&self, company_id: i32) -> Result<Vec<Form>, ResponseError> {
         let forms = sqlx::query_as::<_, Form>(QUERY_SELECT_FORMS_BY_COMPANY)
             .bind(company_id)
             .fetch_all(&self.db)
-            .await.map_err(|e| GlobalError::DbError(e))?;
+            .await.map_err(|e| ResponseError::DbError(e))?;
 
         Ok(forms)
     }

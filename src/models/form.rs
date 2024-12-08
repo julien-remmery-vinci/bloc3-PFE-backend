@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use crate::models::question::Question;
-use crate::models::answers::Answer;
+use crate::models::answer::Answer;
 
-use super::answerusers::AnswerUser;
+use super::answer::AnswerUser;
 
 #[derive(Serialize, Deserialize, FromRow, Debug, Clone)]
 pub struct Form {
@@ -29,20 +29,6 @@ pub struct QuestionWithAnswers {
     pub question: Question,
     pub answers: Vec<Answer>,
     pub user_answers: Vec<AnswerUser>,
-}
-
-impl Form {
-    pub fn new(
-        form_id: i32,
-        company_id: i32,
-        r#type: String,
-    ) -> Self {
-        Self {
-            form_id,
-            company_id,
-            r#type,
-        }
-    }
 }
 
 impl CreateForm {

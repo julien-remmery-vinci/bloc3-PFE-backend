@@ -1,5 +1,8 @@
 use sqlx::{Pool, Postgres};
-use crate::{errors::{globalerror::GlobalError, questionserror::QuestionError}, models::{question::Question}, routes::questions::{PutQuestionRequest, QuestionRequest}};
+use crate::{
+    errors::globalerror::ResponseError, 
+    models::question::{PutQuestionRequest, Question, QuestionRequest},
+};
 
 const READ_BY_ID_QUERY: &str = "
         SELECT question_id, category, sub_category
@@ -46,26 +49,26 @@ impl QuestionService {
     pub async fn create_question(
         &self,
         question: QuestionRequest,
-    ) -> Result<i32, QuestionError> {
+    ) -> Result<i32, ResponseError> {
         let question_id: i32 = sqlx::query_scalar(INSERT_QUERY)
             .bind(&question.question)
             .bind(&question.category)
             .bind(&question.sub_category)
             .fetch_one(&self.db)
-            .await.map_err(QuestionError::DbError)?;
+            .await.map_err(ResponseError::DbError)?;
         Ok(question_id)
     }
 
     pub async fn read_one_question(
         &self,
         id: i32,
-    ) -> Result<QuestionRequest, QuestionError> {
+    ) -> Result<QuestionRequest, ResponseError> {
         match sqlx::query_as::<_, QuestionRequest>(READ_BY_ID_QUERY)
             .bind(id)
             .fetch_optional(&self.db)
-            .await.map_err(QuestionError::DbError) {
+            .await.map_err(ResponseError::DbError) {
                 Ok(Some(question)) => Ok(question),
-                Ok(None) => Err(QuestionError::NoSuchQuestion),
+                Ok(None) => Err(ResponseError::NotFound(Some(String::from("Question not found")))),
                 Err(err) => Err(err),
             }
     }
@@ -74,13 +77,13 @@ impl QuestionService {
         &self,
         id: i32,
         question: PutQuestionRequest,
-    ) -> Result<(), QuestionError> {
+    ) -> Result<(), ResponseError> {
         if let Some(is_used) = question.is_used {
             sqlx::query(DELETE_QUERY)
                 .bind(&is_used)
                 .bind(id)
                 .execute(&self.db)
-                .await.map_err(QuestionError::DbError)?;
+                .await.map_err(ResponseError::DbError)?;
             return Ok(());
         }
         if let Some(question) = question.question {
@@ -88,7 +91,7 @@ impl QuestionService {
             .bind(&question)
             .bind(id)
             .execute(&self.db)
-            .await.map_err(QuestionError::DbError)?;
+            .await.map_err(ResponseError::DbError)?;
         }
     
         Ok(())
@@ -96,21 +99,21 @@ impl QuestionService {
 
     pub async fn read_all_questions(
         &self
-    ) -> Result<Vec<QuestionRequest>, QuestionError> {
+    ) -> Result<Vec<QuestionRequest>, ResponseError> {
         let questions = sqlx::query_as::<_, QuestionRequest>(READ_ALL_QUERY)
             .fetch_all(&self.db)
-            .await.map_err(QuestionError::DbError)?;
+            .await.map_err(ResponseError::DbError)?;
         Ok(questions)
     }
 
     pub async fn read_all_used_questions(
         &self,
         question_type: String
-    ) -> Result<Vec<Question>, GlobalError> {
+    ) -> Result<Vec<Question>, ResponseError> {
         let questions = sqlx::query_as::<_, Question>(READ_ALL_USED_QUERY)
             .bind(question_type)
             .fetch_all(&self.db)
-            .await.map_err(GlobalError::DbError)?;
+            .await.map_err(ResponseError::DbError)?;
 
         Ok(questions)
     }
@@ -118,22 +121,22 @@ impl QuestionService {
     pub async fn read_all_by_form_id(
         &self,
         form_id: i32,
-    ) -> Result<Vec<Question>, GlobalError> {
+    ) -> Result<Vec<Question>, ResponseError> {
         let questions = sqlx::query_as::<_, Question>(READ_ALL_BY_FORM_ID_QUERY)
             .bind(form_id)
             .fetch_all(&self.db)
-            .await.map_err(GlobalError::DbError)?;
+            .await.map_err(ResponseError::DbError)?;
         Ok(questions)
     }
 
     pub async fn delete_question(
         &self,
         id: i32,
-    ) -> Result<(), QuestionError> {
+    ) -> Result<(), ResponseError> {
         sqlx::query(DELETE_QUERY)
             .bind(id)
             .execute(&self.db)
-            .await.map_err(QuestionError::DbError)?;
+            .await.map_err(ResponseError::DbError)?;
     
         Ok(())
     }

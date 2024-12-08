@@ -7,7 +7,7 @@ use axum::{
 };
 use crate::{
     database::state::AppState, 
-    errors::globalerror::GlobalError, 
+    errors::globalerror::ResponseError, 
     models::{
         form::{
             CreateForm, FormWithQuestions, QuestionWithAnswers
@@ -21,9 +21,9 @@ use crate::{
 pub async fn create_form(
     State(state): State<AppState>,
     Json(new_form): Json<CreateForm>,
-) -> Result<impl IntoResponse, GlobalError> {
+) -> Result<impl IntoResponse, ResponseError> {
     if new_form.invalid() {
-        return Err(GlobalError::BadRequest);
+        return Err(ResponseError::BadRequest(None));
     }
 
     let questions: Vec<Question> = state.question
@@ -31,7 +31,7 @@ pub async fn create_form(
 
     match state.form.create_form_in_db(new_form, questions).await {
         Ok(_) => Ok(StatusCode::CREATED),
-        Err(error) => Err(GlobalError::DbError(error)),
+        Err(error) => Err(ResponseError::DbError(error)),
     }
 }
 
@@ -53,9 +53,9 @@ pub async fn create_form(
 pub async fn read_forms_by_company(
     State(state): State<AppState>,
     Extension(user): Extension<User>
-) -> Result<impl IntoResponse, GlobalError> {
+) -> Result<impl IntoResponse, ResponseError> {
     if user.company_id.is_none() {
-        return Err(GlobalError::BadRequest);
+        return Err(ResponseError::BadRequest(None));
     }
 
     let company_id = user.company_id.unwrap();
