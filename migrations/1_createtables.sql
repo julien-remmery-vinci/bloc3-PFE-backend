@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     business_activity TEXT,
     nb_workers INTEGER,
     revenue DOUBLE PRECISION,
-    labels TEXT,
+    labels TEXT[],
     dispute BOOLEAN DEFAULT FALSE
 );
 

@@ -4,11 +4,19 @@ use crate::{
 };
 
 const QUERY_READ_BY_ID: &str = "SELECT * FROM pfe.companies WHERE company_id = $1";
+const QUERY_READ_BY_COMPANY_NUMBER: &str = "SELECT * FROM pfe.companies WHERE company_number = $1";
 
 const QUERY_GET_ALL_COMPANIES: &str = "
     SELECT company_id, company_name, company_number, legal_form, office_address, website,
     nace_code, business_activity, nb_workers, revenue, labels, dispute
     FROM pfe.companies
+";
+
+const QUERY_INSERT_COMPANY: &str = "
+    INSERT INTO pfe.companies (company_name, company_number, legal_form, office_address, website,
+    nace_code, business_activity, nb_workers, revenue, labels, dispute)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+    RETURNING *
 ";
 
 
@@ -27,6 +35,15 @@ impl CompanyService {
         Ok(company)
     }
 
+    pub async fn find_by_company_number(&self, company_number: String) -> Result<Option<Company>, ResponseError> {
+        let company = sqlx::query_as::<_, Company>(QUERY_READ_BY_COMPANY_NUMBER)
+            .bind(company_number)
+            .fetch_optional(&self.db)
+            .await
+            .map_err(ResponseError::DbError)?;
+        Ok(company)
+    }
+
     pub async fn get_companies(&self) -> Result<Vec<Company>, ResponseError> {
         match sqlx::query_as::<_, Company>(QUERY_GET_ALL_COMPANIES)
             .fetch_all(&self.db)
@@ -37,18 +54,21 @@ impl CompanyService {
         }
     }
 
-    // pub async fn create_company(&self, company: CreateCompany) -> Result<Company, sqlx::error::Error> {
-    //     match sqlx::query_as::<_, Company>(QUERY_INSERT_COMPANY)
-    //         .bind(company.name.clone())
-    //         .bind(company.address.clone())
-    //         .bind(company.city.clone())
-    //         .bind(company.zip_code.clone())
-    //         .bind(company.country.clone())
-    //         .fetch_one(&self.db)
-    //         .await
-    //     {
-    //         Ok(company) => Ok(company),
-    //         Err(error) => Err(error),
-    //     }
-    // }
+    pub async fn create_company(&self, company: Company) -> Result<Company, ResponseError> {
+        let company = sqlx::query_as::<_, Company>(QUERY_INSERT_COMPANY)
+            .bind(company.company_name.clone())
+            .bind(company.company_number.clone())
+            .bind(company.legal_form.clone())
+            .bind(company.office_address.clone())
+            .bind(company.website.clone())
+            .bind(company.nace_code.clone())
+            .bind(company.business_activity.clone())
+            .bind(company.nb_workers)
+            .bind(company.revenue)
+            .bind(company.labels.clone())
+            .bind(company.dispute)
+            .fetch_one(&self.db)
+            .await.map_err(ResponseError::DbError)?;
+        Ok(company)
+    }
 }
