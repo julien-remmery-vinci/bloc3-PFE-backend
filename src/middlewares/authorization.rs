@@ -4,7 +4,7 @@ use axum::{body::Body, extract::{Request, State}, http::{self, StatusCode}, midd
 use jsonwebtoken::{decode, DecodingKey, TokenData, Validation};
 
 use crate::{
-    database::state::AppState, errors::globalerror::ResponseError, models::{claims::Claims, user::User}
+    database::state::AppState, errors::responserror::ResponseError, models::{claims::Claims, user::User}
 };
 
 fn decode_jwt(jwt_token: String) -> Result<TokenData<Claims>, StatusCode> {

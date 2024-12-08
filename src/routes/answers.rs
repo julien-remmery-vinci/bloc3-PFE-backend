@@ -5,7 +5,7 @@ use axum::{
     Json
 };
 
-use crate::errors::globalerror::ResponseError;
+use crate::errors::responserror::ResponseError;
 use crate::models::answer::{AnswerUser, CreateAnswer, CreateAnswerUser};
 use crate::{
     database::state::AppState,

@@ -1,4 +1,4 @@
-use crate::errors::globalerror::ResponseError;
+use crate::errors::responserror::ResponseError;
 use crate::models::form::{CreateForm, Form};
 use crate::models::question::Question;
 

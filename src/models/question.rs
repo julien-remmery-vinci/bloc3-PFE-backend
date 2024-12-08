@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-use crate::errors::globalerror::ResponseError;
+use crate::errors::responserror::ResponseError;
 
 #[derive(Deserialize, Serialize, FromRow, Debug, Clone)]
 pub struct Question {
