@@ -629,24 +629,59 @@ VALUES
 ('Autre : veuillez préciser dans les commentaires.', 'ALL', 90, 0.0, 0.0, FALSE),
 ('Non', 'ALL', 90, 0.0, 0.0, FALSE);
 
+-- Insertion des templates
+INSERT INTO pfe.templates (value)
+VALUES
+('ALL'),
+('OWNED FACILITY'),
+('WORKERS'),
+('PRODUITS'),
+('FACILITY');
 
+-- Insertion des entreprises
 INSERT INTO pfe.companies (company_name, company_number, legal_form, office_address, website, nace_code, business_activity, nb_workers, revenue, labels, dispute)
 VALUES
 ('Company 1', 'BE0123456789', 'SRL', 'Rue de la Loi 1, 1000 Bruxelles', 'www.company1.be', '1234', 'Activité 1', 100, 1000000, ARRAY['label 1','label 2'], FALSE),
 ('Company 2', 'BE9876543210', 'SPRL', 'Rue de la Loi 2, 1000 Bruxelles', 'www.company2.be', '4321', 'Activité 2', 200, 2000000, ARRAY['label 3','label 4'], FALSE),
 ('Company 3', 'BE1234567890', 'SCRL', 'Rue de la Loi 3, 1000 Bruxelles', 'www.company3.be', '5678', 'Activité 3', 300, 3000000, ARRAY['label 5','label 6'], FALSE);
 
+-- Lien entre les entreprises et les templates
+INSERT INTO pfe.template_company (company_id, template_id)
+VALUES
+(1, 1),
+(2, 2),
+(2, 3),
+(2, 4),
+(3, 2),
+(3, 3),
+(3, 5);
+
+-- Insertion des formulaires
 INSERT INTO pfe.forms (company_id, type)
 VALUES
 (1,'ESG'),
-(1,'ODD'),
+--(1,'ODD'),
 (2,'ESG'),
-(2,'ODD'),
-(3,'ESG'),
-(3,'ODD');
+--(2,'ODD'),
+(3,'ESG');
+--(3,'ODD');
 
+-- Lien entre les templates et les formulaires
+INSERT INTO pfe.template_form (form_id, template_id)
+VALUES
+(1, 1),
+(2, 2),
+(2, 3),
+(2, 4),
+(3, 2),
+(3, 3),
+(3, 5);
+
+-- Insertion des utilisateurs de test
 INSERT INTO pfe.users (firstname, lastname, login, password, role, company_id)
 VALUES 
 ('dev', 'quidev', 'dev', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 1),
-('user', 'example', 'user@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 1),
-('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin', null); 
+('user1', 'example', 'user1@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 1),
+('user2', 'example', 'user2@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 2),
+('user3', 'example', 'user3@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 3),
+('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin', null);
