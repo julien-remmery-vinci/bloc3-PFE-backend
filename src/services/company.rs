@@ -1,6 +1,6 @@
 use crate::{
     errors::responserror::ResponseError, 
-    models::company::Company
+    models::{company::Company, template::Template}
 };
 
 const QUERY_READ_BY_ID: &str = "SELECT * FROM pfe.companies WHERE company_id = $1";
@@ -17,6 +17,12 @@ const QUERY_INSERT_COMPANY: &str = "
     nace_code, business_activity, nb_workers, revenue, labels, dispute)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     RETURNING *
+";
+
+const QUERY_SELECT_TEMPLATES: &str = "
+    SELECT t.template_id, value 
+    FROM pfe.templates t, pfe.template_company tc 
+    WHERE t.template_id = tc.template_id AND tc.company_id = $1;
 ";
 
 
@@ -52,6 +58,14 @@ impl CompanyService {
             Ok(companies) => Ok(companies),
             Err(error) => Err(ResponseError::DbError(error)),
         }
+    }
+
+    pub async fn read_company_templates(&self, company_id: i32) -> Result<Vec<Template>, ResponseError> {
+        let templates = sqlx::query_as::<_, Template>(QUERY_SELECT_TEMPLATES)
+            .bind(company_id)
+            .fetch_all(&self.db)
+            .await.map_err(ResponseError::DbError)?;
+        Ok(templates)
     }
 
     pub async fn create_company(&self, company: Company) -> Result<Company, ResponseError> {
