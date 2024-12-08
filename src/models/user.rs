@@ -1,4 +1,7 @@
-use serde::Serialize;
+use serde::{
+    Deserialize, 
+    Serialize
+};
 use sqlx::FromRow;
 
 #[derive(Debug, FromRow, Clone, Serialize)]
@@ -12,19 +15,7 @@ pub struct User {
     pub company_id: Option<i32>,
 }
 
-impl User {
-    pub fn default() -> User {
-        User {
-            user_id: 0,
-            firstname: String::from(""),
-            lastname: String::from(""),
-            login: String::from(""),
-            password: String::from(""),
-            role: String::from(""),
-            company_id: None,
-        }
-    }
-    
+impl User {  
     pub fn is_admin(&self) -> bool {
         self.role == "admin"
     }
@@ -36,11 +27,24 @@ pub struct UserToken {
     pub token: String,
 }
 
-impl UserToken {
-    pub fn default() -> UserToken {
-        UserToken {
-            user: User::default(),
-            token: String::from(""),
-        }
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateUser {
+    pub firstname: String,
+    pub lastname: String,
+    pub login: String,
+    pub password: String,
+    pub role: String,
+    pub company_id: Option<i32>,
+}
+
+impl CreateUser {
+    pub fn invalid(&self) -> bool {
+        self.firstname.is_empty() 
+        || self.lastname.is_empty() 
+        || self.login.is_empty() 
+        || self.password.is_empty()
+        || self.role.is_empty()
+        || (self.role != "admin" && self.role != "user")
+        || (self.company_id != None && self.company_id <= Some(0))
     }
 }

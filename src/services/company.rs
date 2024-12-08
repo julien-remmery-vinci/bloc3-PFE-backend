@@ -1,14 +1,15 @@
-use crate::{errors::company_error::CompanyError, models::company::Company};
+use crate::{
+    errors::globalerror::ResponseError, 
+    models::company::Company
+};
 
 const QUERY_READ_BY_ID: &str = "SELECT * FROM pfe.companies WHERE company_id = $1";
-// const QUERY_INSERT_COMPANY: &str = "
-//             INSERT INTO company (name, address, city, zip_code, country) 
-//             VALUES ($1, $2, $3, $4, $5) 
-//             RETURNING *";
 
-const QUERY_GET_ALL_COMPANIES: &str = "SELECT company_id, company_name, company_number, legal_form, office_address, website,
-                                        nace_code, business_activity, nb_workers, revenue, labels, dispute
-                                        FROM pfe.companies";
+const QUERY_GET_ALL_COMPANIES: &str = "
+    SELECT company_id, company_name, company_number, legal_form, office_address, website,
+    nace_code, business_activity, nb_workers, revenue, labels, dispute
+    FROM pfe.companies
+";
 
 
 #[derive(Debug, Clone)]
@@ -17,30 +18,22 @@ pub struct CompanyService {
 }
 
 impl CompanyService {
-    pub async fn find_by_id(&self, id: i32) -> Result<Company, sqlx::error::Error> {
-        match sqlx::query_as::<_, Company>(QUERY_READ_BY_ID)
-            .bind(id)
-            .fetch_all(&self.db)
+    pub async fn find_by_id(&self, company_id: i32) -> Result<Option<Company>, ResponseError> {
+        let company = sqlx::query_as::<_, Company>(QUERY_READ_BY_ID)
+            .bind(company_id)
+            .fetch_optional(&self.db)
             .await
-        {
-            Ok(result) => {
-                if result.is_empty() {
-                    Ok(Company::default())
-                } else {
-                    Ok(result[0].clone())
-                }
-            },
-            Err(error) => Err(error),
-        }
+            .map_err(ResponseError::DbError)?;
+        Ok(company)
     }
 
-    pub async fn get_companies(&self) -> Result<Vec<Company>, CompanyError> {
+    pub async fn get_companies(&self) -> Result<Vec<Company>, ResponseError> {
         match sqlx::query_as::<_, Company>(QUERY_GET_ALL_COMPANIES)
             .fetch_all(&self.db)
             .await
         {
             Ok(companies) => Ok(companies),
-            Err(error) => Err(CompanyError::DbError(error)),
+            Err(error) => Err(ResponseError::DbError(error)),
         }
     }
 

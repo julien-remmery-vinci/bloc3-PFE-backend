@@ -37,7 +37,7 @@ Authorization: Bearer {{ admin_token }}
 {
     "firstname": "John",
     "lastname": "Doe",
-    "login": "erzvzvz",
+    "login": "John",
     "password": "password",
     "role": "user",
     "company_id": 1

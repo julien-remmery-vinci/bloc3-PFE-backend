@@ -1,24 +1,9 @@
 use axum::{extract::{Path, State}, Json};
-use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
+use serde::Serialize;
 
 use crate::{
-    database::state::AppState,
-    errors::questionserror::QuestionError,
+    database::state::AppState, errors::globalerror::ResponseError, models::question::{PutQuestionRequest, QuestionRequest},
 };
-
-#[derive(Deserialize, Serialize, FromRow)]
-pub struct QuestionRequest {
-    pub category: String,
-    pub sub_category: String,
-    pub question: String,
-}
-
-#[derive(Deserialize)]
-pub struct PutQuestionRequest {
-    pub question: Option<String>,
-    pub is_used: Option<bool>,
-}
 
 #[derive(Serialize)]
 pub struct OkResponse {
@@ -28,7 +13,7 @@ pub struct OkResponse {
 pub async fn create_question(
     State(state): State<AppState>,
     Json(question): Json<QuestionRequest>,
-) -> Result<Json<OkResponse>, crate::errors::questionserror::QuestionError> {
+) -> Result<Json<OkResponse>, ResponseError> {
     question.validate()?;
     let id = state.question.create_question(question).await?;
     Ok(Json(OkResponse { id }))
@@ -37,7 +22,7 @@ pub async fn create_question(
 pub async fn read_one_question(
     State(state): State<AppState>,
     Path(id): Path<i32>,
-) -> Result<Json<QuestionRequest>, QuestionError> {
+) -> Result<Json<QuestionRequest>, ResponseError> {
     let question = state.question.read_one_question(id).await?;
     Ok(Json(question))
 }
@@ -46,31 +31,8 @@ pub async fn update_question(
     State(state): State<AppState>,
     Path(id): Path<i32>,
     Json(question): Json<PutQuestionRequest>,
-) -> Result<Json<OkResponse>, QuestionError> {
+) -> Result<Json<OkResponse>, ResponseError> {
     question.update_validate()?;
     state.question.update_question(id, question).await?;
     Ok(Json(OkResponse { id }))
-}
-
-impl QuestionRequest {
-    pub fn validate(&self) -> Result<(), QuestionError> {
-        if self.question.is_empty()
-            || self.category.is_empty()
-            || self.sub_category.is_empty()
-        {
-            return Err(QuestionError::BadRequest);
-        }
-        Ok(())
-    }
-}
-
-impl PutQuestionRequest {
-    pub fn update_validate(&self) -> Result<(), QuestionError> {
-        if let Some(question) = &self.question {
-            if question.is_empty() {
-                return Err(QuestionError::BadRequest);
-            }
-        }
-        Ok(())
-    }
 }

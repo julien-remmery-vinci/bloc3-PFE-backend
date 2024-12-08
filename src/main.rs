@@ -3,23 +3,42 @@ mod routes;
 mod database;
 mod models;
 mod errors;
-mod authorization;
+mod middlewares;
 
-use axum::http::{header, HeaderValue, Method};
+use axum::body::Body;
+use axum::extract::Request;
+use axum::http::{
+    header, 
+    HeaderValue, 
+    Method, 
+    Response
+};
 use axum::{
     routing::get,
     routing::post,
     middleware,
     Router
 };
-use routes::forms::{create_form, read_forms_by_company/*, read_form,update_form,delete_form, read_forms_by_user */};
-use routes::answers::{create_answer, create_answer_for_user, read_answers_by_question};
-use routes::questions::{create_question, read_one_question, update_question};
+use std::time::Duration;
+use routes::forms::{
+    create_form, 
+    read_forms_by_company
+};
+use routes::answers::{
+    create_answer, 
+    create_answer_for_user, 
+    read_answers_by_question
+};
+use routes::questions::{
+    create_question, 
+    read_one_question, 
+    update_question
+};
 use routes::companies::get_company;
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
-// use tower_http::trace::TraceLayer;
-// use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use tower_http::trace::TraceLayer;
+use tracing::Span;
 use routes::auth::{
     login,
     register,
@@ -27,21 +46,17 @@ use routes::auth::{
 };
 
 use database::state::AppState;
-use authorization::{
-    authorize_user,
-    authorize_admin
+use crate::middlewares::authorization::{
+    authorize_admin, 
+    authorize_user
 };
-
-
 
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
     let state = AppState::new().await;
 
-    // tracing_subscriber::registry()
-    //     .with(tracing_subscriber::fmt::layer())
-    //     .init();
+    tracing_subscriber::fmt().init();
 
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:4200".parse::<HeaderValue>().unwrap())
@@ -87,7 +102,19 @@ async fn main() {
         .route("/score", get(read_score_for_form_user)
             .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
         .layer(cors)
-        // .layer(TraceLayer::new_for_http())
+        .layer(TraceLayer::new_for_http()
+            .on_request(|request: &Request<Body>, _span: &Span| {
+                tracing::info!(
+                    method = %request.method(),
+                    uri = %request.uri(),
+                );
+            })
+            .on_response(|response: &Response<Body>, latency: Duration, _span: &Span| {
+                tracing::info!(
+                    status = %response.status(),
+                    latency = ?latency,
+                );
+            }))
         .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();

@@ -1,8 +1,8 @@
 use std::env;
 use jsonwebtoken::{EncodingKey, Header};
-use crate::{errors::autherror::AuthError, models::{
+use crate::{errors::globalerror::ResponseError, models::{
     claims::Claims, 
-    createuser::CreateUser, 
+    user::CreateUser, 
     credentials::Credentials, 
     user::User
 }};
@@ -23,18 +23,15 @@ pub struct AuthService {
 }
 
 impl AuthService {
-    pub async fn find_by_login(&self, login: String) -> Result<Option<User>, AuthError> {
-        match sqlx::query_as::<_, User>(QUERY_READ_BY_EMAIL)
+    pub async fn find_by_login(&self, login: String) -> Result<Option<User>, ResponseError> {
+        let user = sqlx::query_as::<_, User>(QUERY_READ_BY_EMAIL)
             .bind(login)
             .fetch_optional(&self.db)
-            .await
-        {
-            Ok(user) => Ok(user),
-            Err(error) => Err(AuthError::DbError(error)),
-        }
+            .await.map_err(ResponseError::DbError)?;
+        Ok(user)
     }
 
-    pub async fn create_user(&self, user: CreateUser) -> Result<User, AuthError> {
+    pub async fn create_user(&self, user: CreateUser) -> Result<User, ResponseError> {
         match sqlx::query_as::<_, User>(QUERY_INSERT_USER)
             .bind(user.firstname.clone())
             .bind(user.lastname.clone())
@@ -46,12 +43,12 @@ impl AuthService {
             .await
         {
             Ok(user) => Ok(user),
-            Err(error) => Err(AuthError::DbError(error)),
+            Err(error) => Err(ResponseError::DbError(error)),
         }
     }
 }
 
-pub fn encode_jwt(credentials: Credentials) -> Result<String, jsonwebtoken::errors::Error> {
+pub fn encode_jwt(credentials: Credentials) -> Result<String, ResponseError> {
     let claims = Claims {
         sub: credentials.login,
         exp: (chrono::Utc::now() + chrono::Duration::days(1)).timestamp() as usize,
@@ -60,6 +57,6 @@ pub fn encode_jwt(credentials: Credentials) -> Result<String, jsonwebtoken::erro
 
     match jsonwebtoken::encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_ref())) {
         Ok(token) => Ok(token),
-        Err(error) => Err(error),
+        Err(error) => Err(ResponseError::JWTError(error)),
     }
 }

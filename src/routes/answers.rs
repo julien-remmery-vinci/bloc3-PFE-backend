@@ -1,43 +1,25 @@
 use axum::extract::Path;
 use axum::Extension;
-use axum::{extract::State, Json};
-use serde::Deserialize;
-
-use crate::errors::globalerror::GlobalError;
-use crate::models::answerusers::AnswerUser;
-use crate::{
-    database::state::AppState,
-    errors::answer_error::AnswerError,
-    models::answers::Answer,
-    models::user::User,
+use axum::{
+    extract::State, 
+    Json
 };
 
-#[derive(Deserialize)]
-pub struct CreateAnswer {
-    pub answer: String,
-    pub template: String,
-    pub question_id: i32,
-    pub score: f64,
-    pub engagement_score: f64,
-    pub is_forced_engagement: bool,
-}
-
-#[derive(Deserialize)]
-pub struct CreateAnswerUser {
-    pub answer: Option<String>,
-    pub form_id: i32,
-    pub now: bool,
-    pub commitment_pact: bool,
-    pub comment: String,
-}
+use crate::errors::globalerror::ResponseError;
+use crate::models::answer::{AnswerUser, CreateAnswer, CreateAnswerUser};
+use crate::{
+    database::state::AppState,
+    models::answer::Answer,
+    models::user::User,
+};
 
 #[axum::debug_handler]
 pub async fn create_answer(
     State(state): State<AppState>,
     Json(answer): Json<CreateAnswer>,
-) -> Result<Json<Answer>, AnswerError> {
+) -> Result<Json<Answer>, ResponseError> {
     if answer.invalid() {
-        return Err(AnswerError::BadRequest);
+        return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
     }
     let valid = state.answer.create_answer(answer).await?;
     Ok(Json(valid))
@@ -49,32 +31,32 @@ pub async fn create_answer_for_user(
     Extension(user): Extension<User>,
     Path(answer_id): Path<i32>,
     Json(answer): Json<CreateAnswerUser>
-) -> Result<Json<AnswerUser>, AnswerError> {
+) -> Result<Json<AnswerUser>, ResponseError> {
     //si le contenue du champ answer de la table answers_esg est NULL alors answer de l'objet CreateAnswerUser est obligatoire
     let possible_answer = state.answer.read_possible_answer_by_id(answer_id).await?;
     if possible_answer.is_none() {
         if answer.answer.is_some() {
-            return Err(AnswerError::BadRequest);
+            return Err(ResponseError::BadRequest(None));
         }   
     }
     if possible_answer.is_some() {
         if answer.answer.is_none() {
-            return Err(AnswerError::BadRequest);
+            return Err(ResponseError::BadRequest(None));
         }
     }
     if answer.invalid() {
-        return Err(AnswerError::BadRequest);
+        return Err(ResponseError::BadRequest(None));
     }
     //check si l'id de l'answer exist
     match state.answer.read_answer_by_id(answer_id).await? {
-        None => return Err(AnswerError::NoSuchAnswer),
+        None => return Err(ResponseError::NotFound(None)),
         Some(_) => (),
     }
     //TODO check si le form existe
     //check si on a deja rep a cette answer
     let user_id = user.user_id;
     match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
-        Some(_) => return Err(AnswerError::Conflict),
+        Some(_) => return Err(ResponseError::Conflict(None)),
         None => (),
     }
 
@@ -86,7 +68,7 @@ pub async fn create_answer_for_user(
 pub async fn read_answers_by_question(
     State(state): State<AppState>,
     Path(question_id): Path<i32>,
-) -> Result<Json<Vec<Answer>>, GlobalError> {
+) -> Result<Json<Vec<Answer>>, ResponseError> {
     let answers = state.answer.read_answers_by_question(question_id).await?;
     Ok(Json(answers))
 }
