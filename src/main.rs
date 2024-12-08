@@ -56,7 +56,7 @@ fn auth_routes(state: AppState) -> Router<AppState> {
         .route("/auth/login", post(login))
         .route("/auth/register", post(register)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/auth/verify", post(verify)
+        .route("/auth/verify", get(verify)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
 }
 
