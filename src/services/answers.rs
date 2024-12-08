@@ -26,10 +26,10 @@ const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
     WHERE form_id = $1 AND user_id = $2 AND answer_id = $3
     ";
 
-const QUERY_READ_ANSWERS_BY_USER_BY_QUESTION: &str = "
+const QUERY_READ_ANSWERS_BY_QUESTION: &str = "
     SELECT answer_id, user_id, form_id, answer, now, commitment_pact, comment, now_verif, commitment_pact_verif
     FROM pfe.user_answer_esg
-    WHERE user_id = $1 AND form_id = $3 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $2)
+    WHERE form_id = $2 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $1)
     ";
 
 
@@ -120,9 +120,8 @@ impl AnswerService {
     }
 
     // method to retrieve all answers of a user for a specific question
-    pub async fn read_answers_by_user_by_question(&self, user_id: i32, question_id: i32, form_id: i32) -> Result<Vec<AnswerUser>, ResponseError> {
-        match sqlx::query_as::<_, AnswerUser>(QUERY_READ_ANSWERS_BY_USER_BY_QUESTION)
-            .bind(user_id)
+    pub async fn read_answers_by_user_by_question(&self, question_id: i32, form_id: i32) -> Result<Vec<AnswerUser>, ResponseError> {
+        match sqlx::query_as::<_, AnswerUser>(QUERY_READ_ANSWERS_BY_QUESTION)
             .bind(question_id)
             .bind(form_id)
             .fetch_all(&self.db)

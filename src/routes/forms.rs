@@ -10,7 +10,7 @@ use crate::{
     errors::responserror::ResponseError, 
     models::{
         form::{
-            CreateForm, FormWithQuestions, QuestionWithAnswers
+            CompleteForm, CreateForm, QuestionWithAnswers
         }, 
         question::Question, 
         user::User
@@ -26,10 +26,12 @@ pub async fn create_form(
         return Err(ResponseError::BadRequest(None));
     }
 
+    let templates = state.company.read_company_templates(new_form.company_id).await?;
+
     let questions: Vec<Question> = state.question
         .read_all_used_questions(new_form.r#type.clone()).await?;
 
-    match state.form.create_form_in_db(new_form, questions).await {
+    match state.form.create_form_in_db(new_form, questions, templates).await {
         Ok(_) => Ok(StatusCode::CREATED),
         Err(error) => Err(ResponseError::DbError(error)),
     }
@@ -62,15 +64,23 @@ pub async fn read_forms_by_company(
     let forms = state.form.read_forms_by_company(company_id)
         .await?;
 
-    let mut forms_list: Vec<FormWithQuestions> = Vec::new();
+    let mut forms_list: Vec<CompleteForm> = Vec::new();
     for form in forms {
-        let mut new_form: FormWithQuestions = FormWithQuestions { form: form.clone(), questions: Vec::new() };
+        let templates = state.form.read_form_templates(form.form_id).await?;
+
+        let mut new_form: CompleteForm = CompleteForm { 
+            form_id: form.form_id, 
+            company_id: form.company_id, 
+            r#type: form.r#type.clone(), 
+            templates,
+            questions: Vec::new() 
+        };
 
         let questions = state.question.read_all_by_form_id(form.form_id).await?;
 
         for question in &questions {
             let answers = state.answer.read_answers_by_question(question.question_id).await?;
-            let user_answers = state.answer.read_answers_by_user_by_question(user.user_id, question.question_id, form.form_id).await?;
+            let user_answers = state.answer.read_answers_by_user_by_question(question.question_id, form.form_id).await?;
 
             new_form.questions.push(
                 QuestionWithAnswers { 
