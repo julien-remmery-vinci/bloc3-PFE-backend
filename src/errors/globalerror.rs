@@ -1,27 +1,55 @@
-use axum::{http::StatusCode, response::IntoResponse};
+use axum::{
+    http::StatusCode, 
+    response::IntoResponse
+};
 
-pub enum GlobalError {
-    Conflict,
-    BadRequest,
-    Unauthorized,
-    Forbidden,
-    InternalServerError,
-    DbError(sqlx::Error)
+pub enum ResponseError {
+    Conflict(Option<String>),
+    BadRequest(Option<String>),
+    Unauthorized(Option<String>),
+    Forbidden(Option<String>),
+    NotFound(Option<String>),
+    DbError(sqlx::Error),
+    BCryptError(bcrypt::BcryptError),
+    JWTError(jsonwebtoken::errors::Error),
 }
 
-impl IntoResponse for GlobalError {
+impl IntoResponse for ResponseError {
     fn into_response(self) -> axum::response::Response {
         let response = axum::http::Response::builder();
         let (code, message) = match self {
-            GlobalError::DbError(e) => {
-                println!("db error : {:?}", e);
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
+            ResponseError::Conflict(str) => (
+                StatusCode::CONFLICT, 
+                str.unwrap_or_else(|| String::from("Conflict"))
+            ),
+            ResponseError::BadRequest(str) => (
+                StatusCode::BAD_REQUEST,
+                str.unwrap_or_else(|| String::from("Bad request"))
+            ),
+            ResponseError::Unauthorized(str) => (
+                StatusCode::UNAUTHORIZED, 
+                str.unwrap_or_else(|| String::from("Unauthorized"))
+            ),
+            ResponseError::Forbidden(str) => (
+                StatusCode::FORBIDDEN, 
+                str.unwrap_or_else(|| String::from("Forbidden"))
+            ),
+            ResponseError::NotFound(str) => (
+                StatusCode::NOT_FOUND, 
+                str.unwrap_or_else(|| String::from("Not found"))
+            ),
+            ResponseError::DbError(e) => {
+                tracing::error!("Database error : {:?}", e);
+                (StatusCode::INTERNAL_SERVER_ERROR, String::from("Internal server error"))
+            },
+            ResponseError::BCryptError(e) => {
+                tracing::error!("Bcrypt error : {:?}", e);
+                (StatusCode::INTERNAL_SERVER_ERROR, String::from("Internal server error"))
             }
-            GlobalError::Conflict => (StatusCode::CONFLICT, "User already exists"),
-            GlobalError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),
-            GlobalError::Unauthorized => (StatusCode::UNAUTHORIZED, "Unauthorized"),
-            GlobalError::Forbidden => (StatusCode::FORBIDDEN, "Forbidden"),
-            GlobalError::InternalServerError => (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"),
+            ResponseError::JWTError(e) => {
+                tracing::error!("JWT error : {:?}", e);
+                (StatusCode::INTERNAL_SERVER_ERROR, String::from("Internal server error"))
+            }
         };
         let body = axum::body::Body::from(message);
         response.status(code).body(body).unwrap()

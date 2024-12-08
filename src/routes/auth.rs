@@ -1,35 +1,36 @@
 use std::env;
-
 use axum::extract::Request;
-use axum::{extract::State, Json};
-
+use axum::{
+    extract::State, 
+    Json
+};
+use crate::errors::globalerror::ResponseError;
 use crate::models::user::UserToken;
 use crate::models::{
     credentials::Credentials,
-    createuser::CreateUser,
+    user::CreateUser,
     user::User
 };
 use crate::database::state::AppState;
-use crate::errors::autherror::AuthError;
 use crate::services::auth;
 
 #[axum::debug_handler]
 pub async fn login(
     State(state): State<AppState>,
     Json(credentials): Json<Credentials>,
-) -> Result<Json<UserToken>, AuthError> {
+) -> Result<Json<UserToken>, ResponseError> {
     if credentials.invalid() {
-        return Err(AuthError::BadRequest);
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid credentials"))));
     }
 
     match state.auth.find_by_login(credentials.login.clone()).await? {
-        None => return Err(AuthError::NoSuchUser),
+        None => return Err(ResponseError::NotFound(Some(String::from("User not found")))),
         Some(user) => {
-            if bcrypt::verify(&credentials.password, &user.password).map_err(AuthError::BCryptError)? {
-                let token = auth::encode_jwt(credentials).map_err(AuthError::JWTError)?;
+            if bcrypt::verify(&credentials.password, &user.password).map_err(ResponseError::BCryptError)? {
+                let token = auth::encode_jwt(credentials)?;
                 return Ok(Json(UserToken { user, token }));
             } else {
-                return Err(AuthError::WrongPassword);
+                return Err(ResponseError::Unauthorized(Some(String::from("Wrong password"))));
             }
         }
     };
@@ -39,23 +40,22 @@ pub async fn login(
 pub async fn register(
     State(state): State<AppState>,
     Json(mut user): Json<CreateUser>,
-) -> Result<Json<User>, AuthError> {
+) -> Result<Json<User>, ResponseError> {
     if user.invalid() {
-        return Err(AuthError::BadRequest);
+        return Err(ResponseError::BadRequest(Some(String::from("Missing user information"))));
     }
 
     match state.auth.find_by_login(user.login.clone()).await? {
-        Some(_) => return Err(AuthError::Conflict),
+        Some(_) => return Err(ResponseError::Conflict(Some("User already exists".to_string()))),
         None => (),
     }
 
     match user.company_id {
         Some(company_id) => {
-            let company = state.company.find_by_id(company_id).await
-                .map_err(AuthError::DbError)?;
-            if company.company_id == 0 {
-                return Err(AuthError::NoSuchCompany);
-            }
+            match state.company.find_by_id(company_id).await? {
+                    Some(_) => (),
+                    None => return Err(ResponseError::NotFound(Some("Company not found".to_string()))),
+                }
         }
         None => (),
     }
@@ -64,7 +64,7 @@ pub async fn register(
         .expect("HASH_ROUNDS must be set")
         .parse::<u32>()
         .unwrap())
-        .map_err(AuthError::BCryptError)?;
+        .map_err(ResponseError::BCryptError)?;
     user.password = hashed_password;
     let created = state.auth.create_user(user).await?;
     Ok(Json(created))
@@ -72,6 +72,6 @@ pub async fn register(
 
 pub async fn verify(
     request: Request
-) -> Result<Json<User>, AuthError> {
+) -> Result<Json<User>, ResponseError> {
     Ok(Json(request.extensions().get::<User>().unwrap().clone()))
 }
