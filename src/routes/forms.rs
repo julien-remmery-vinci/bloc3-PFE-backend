@@ -10,7 +10,7 @@ use crate::{
     errors::responserror::ResponseError, 
     models::{
         form::{
-            CompleteForm, CreateForm, QuestionWithAnswers
+            CompleteForm, CreateForm, Form, QuestionWithAnswers
         }, 
         question::Question, 
         user::User
@@ -37,22 +37,8 @@ pub async fn create_form(
     }
 }
 
-// #[axum::debug_handler]
-// pub async fn read_form(
-//     State(state): State<AppState>,
-//     Path(form_id): Path<i32>,
-// ) -> Result<impl IntoResponse, FormError> {
-//     let form = state.form.read_form_in_db(form_id)
-//         .await
-//         .map_err(|e| match e {
-//             sqlx::Error::RowNotFound => FormError::NotFound,
-//             _ => FormError::DbError(e),
-//         })?;
-//     Ok((StatusCode::OK, Json(form)))
-// }
-
 #[axum::debug_handler]
-pub async fn read_forms_by_company(
+pub async fn read_forms_by_user(
     State(state): State<AppState>,
     Extension(user): Extension<User>
 ) -> Result<impl IntoResponse, ResponseError> {
@@ -66,33 +52,40 @@ pub async fn read_forms_by_company(
 
     let mut forms_list: Vec<CompleteForm> = Vec::new();
     for form in forms {
-        let templates = state.form.read_form_templates(form.form_id).await?;
-
-        let mut new_form: CompleteForm = CompleteForm { 
-            form_id: form.form_id, 
-            company_id: form.company_id, 
-            r#type: form.r#type.clone(), 
-            templates,
-            questions: Vec::new() 
-        };
-
-        let questions = state.question.read_all_by_form_id(form.form_id).await?;
-
-        for question in &questions {
-            let answers = state.answer.read_answers_by_question(question.question_id).await?;
-            let user_answers = state.answer.read_answers_by_user_by_question(question.question_id, form.form_id).await?;
-
-            new_form.questions.push(
-                QuestionWithAnswers { 
-                    question: question.clone(), 
-                    answers, 
-                    user_answers
-                }
-            );
-        }
-
-        forms_list.push(new_form);
+        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
+        forms_list.push(complete_form);
     }
 
     Ok((StatusCode::OK, Json(forms_list)))
+}
+
+pub async fn get_complete_form(
+    state: AppState,
+    form: Form,
+) -> Result<CompleteForm, ResponseError> {
+    let templates = state.form.read_form_templates(form.form_id).await?;
+
+    let mut complete_form: CompleteForm = CompleteForm { 
+        form_id: form.form_id, 
+        company_id: form.company_id, 
+        r#type: form.r#type.clone(), 
+        templates,
+        questions: Vec::new() 
+    };
+
+    let questions = state.question.read_all_by_form_id(form.form_id).await?;
+
+    for question in &questions {
+        let answers = state.answer.read_answers_by_question(question.question_id).await?;
+        let user_answers = state.answer.read_answers_by_user_by_question(question.question_id, form.form_id).await?;
+
+        complete_form.questions.push(
+            QuestionWithAnswers { 
+                question: question.clone(), 
+                answers, 
+                user_answers
+            }
+        );
+    }
+    Ok(complete_form)
 }

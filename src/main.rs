@@ -22,7 +22,7 @@ use axum::{
 use std::time::Duration;
 use routes::forms::{
     create_form, 
-    read_forms_by_company
+    read_forms_by_user
 };
 use routes::answers::{
     create_answer, 
@@ -35,8 +35,7 @@ use routes::questions::{
     update_question
 };
 use routes::companies::{
-    read_all_companies,
-    create_company
+    create_company, read_all_companies, read_one_company
 };
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
@@ -65,7 +64,7 @@ fn forms_routes(state: AppState) -> Router<AppState> {
     Router::new()
         .route("/forms", post(create_form)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/forms/company",get(read_forms_by_company)
+        .route("/forms/user",get(read_forms_by_user)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
 }
 
@@ -94,6 +93,8 @@ fn company_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_admin))
         .post(create_company)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
+        .route("/company/:id", get(read_one_company)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
 #[tokio::main]

@@ -1,12 +1,38 @@
 use axum::{
-    extract::State, http::StatusCode, response::IntoResponse, Json
+    extract::{Path, State}, http::StatusCode, response::IntoResponse, Json
 };
 
 use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
-    models::company::Company
+    models::{company::{self, Company, CompanyWithCompleteForms}, form::CompleteForm},
+    routes::forms::get_complete_form
 };
+
+#[axum::debug_handler]
+pub async fn read_one_company(
+    State(state): State<AppState>,
+    Path(company_id): Path<i32>,
+) -> Result<Json<CompanyWithCompleteForms>, ResponseError> {
+    if company_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid company id"))));
+    }
+
+    let company = match state.company.find_by_id(company_id).await? {
+        Some(company) => company,
+        None => return Err(ResponseError::NotFound(Some(String::from("Company not found")))),
+    };
+
+    let forms = state.form.read_forms_by_company(company_id).await?;
+
+    let mut forms_list: Vec<CompleteForm> = Vec::new();
+    for form in forms {
+        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
+        forms_list.push(complete_form);
+    }
+
+    Ok(Json(CompanyWithCompleteForms { company, forms: forms_list }))
+}
 
 #[axum::debug_handler]
 pub async fn read_all_companies(
