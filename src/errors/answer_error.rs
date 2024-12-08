@@ -12,7 +12,7 @@ impl IntoResponse for AnswerError {
         let response = axum::http::Response::builder();
         let (code, message) = match self {
             AnswerError::DbError(e) => {
-                println!("db error : {:?}", e);
+                println!("answer db error : {:?}", e); //tracing::warn!() plutot que println!() mais bon...
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
             }
             AnswerError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),

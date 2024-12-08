@@ -1,37 +1,41 @@
 use sqlx::{Pool, Postgres};
-use crate::{errors::questionserror::QuestionError, routes::questions::{PutQuestionRequest, QuestionRequest}};
-use crate::models::answers::Answer;
+use crate::{errors::{globalerror::GlobalError, questionserror::QuestionError}, models::{question::Question}, routes::questions::{PutQuestionRequest, QuestionRequest}};
 
 const READ_BY_ID_QUERY: &str = "
-            SELECT question, category, sub_category
-            FROM pfe.questions
-            WHERE id = $1
-        ";
+        SELECT question_id, category, sub_category
+        FROM pfe.questions
+        WHERE id = $1
+    ";
 const READ_ALL_QUERY: &str = "
-            SELECT question, category, sub_category
-            FROM pfe.questions
-        ";
+        SELECT question_id, category, sub_category
+        FROM pfe.questions
+    ";
 const READ_ALL_USED_QUERY: &str = "
-        SELECT question, category, sub_category
+        SELECT question_id, category, sub_category, question, is_used
         FROM pfe.questions
         WHERE is_used = true AND question_type = $1
     ";
+const READ_ALL_BY_FORM_ID_QUERY: &str = "
+        SELECT q.question_id AS question_id, q.category, q.sub_category, q.question, q.is_used, qf.question_status
+        FROM pfe.questions_form qf
+        JOIN pfe.questions q ON qf.question_id = q.question_id
+        WHERE qf.form_id = $1
+    ";
 const INSERT_QUERY: &str ="
-            INSERT INTO pfe.questions (question, category, sub_category)
-            VALUES ($1, $2, $3)
-            RETURNING id
-        ";
+        INSERT INTO pfe.questions (question_id, category, sub_category)
+        VALUES ($1, $2, $3)
+        RETURNING id
+    ";
 const UPDATE_QUERY: &str = "
-            UPDATE pfe.questions
-            SET question = $1
-            WHERE id = $2
-        ";
-
+        UPDATE pfe.question_id
+        SET question = $1
+        WHERE id = $2
+    ";
 const DELETE_QUERY: &str = "
-            UPDATE pfe.questions
-            SET is_used = $1
-            WHERE id = $2
-        ";
+        UPDATE pfe.question_id
+        SET is_used = $1
+        WHERE id = $2
+    ";
 
 #[derive(Debug, Clone)]
 pub struct QuestionService {
@@ -102,11 +106,23 @@ impl QuestionService {
     pub async fn read_all_used_questions(
         &self,
         question_type: String
-    ) -> Result<Vec<QuestionRequest>, QuestionError> {
-        let questions = sqlx::query_as::<_, QuestionRequest>(READ_ALL_USED_QUERY)
+    ) -> Result<Vec<Question>, GlobalError> {
+        let questions = sqlx::query_as::<_, Question>(READ_ALL_USED_QUERY)
             .bind(question_type)
             .fetch_all(&self.db)
-            .await.map_err(QuestionError::DbError)?;
+            .await.map_err(GlobalError::DbError)?;
+
+        Ok(questions)
+    }
+
+    pub async fn read_all_by_form_id(
+        &self,
+        form_id: i32,
+    ) -> Result<Vec<Question>, GlobalError> {
+        let questions = sqlx::query_as::<_, Question>(READ_ALL_BY_FORM_ID_QUERY)
+            .bind(form_id)
+            .fetch_all(&self.db)
+            .await.map_err(GlobalError::DbError)?;
         Ok(questions)
     }
 
@@ -120,13 +136,5 @@ impl QuestionService {
             .await.map_err(QuestionError::DbError)?;
     
         Ok(())
-    }
-
-    pub async fn get_answers(&self, question_id: i32) -> Result<Vec<Answer>, sqlx::Error> {
-        let answers = sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers WHERE question_id = $1")
-            .bind(question_id)
-            .fetch_all(&self.db)
-            .await?;
-        Ok(answers)
     }
 }

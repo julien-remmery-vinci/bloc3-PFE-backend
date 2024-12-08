@@ -4,35 +4,32 @@ use sqlx::prelude::FromRow;
 #[derive(Deserialize, FromRow, Serialize, Debug)]
 pub struct Answer {
     pub answer_id: i32,
-    pub answer: String,
-    pub template: String,
     pub question_id: Option<i32>,
-    pub score: f64,
-    pub engagement_score: f64,
+    pub template: String,
+    pub answer: Option<String>,
+    pub score_now: f64,
+    pub score_commitment_pact: f64,
     pub is_forced_engagement: bool,
-    pub comment: String,
 }
 
 impl Answer {
     pub fn new(
         answer_id: i32,
-        answer: String,
+        question_id: Option<i32>,
         template: String,
-        question_id: i32,
-        score: f64,
-        engagement_score: f64,
+        answer: Option<String>,
+        score_now: f64,
+        score_commitment_pact: f64,
         is_forced_engagement: bool,
-        comment: String,
     ) -> Self {
         Self {
             answer_id,
-            answer,
+            question_id,
             template,
-            question_id: Some(question_id),
-            score,
-            engagement_score,
+            answer,
+            score_now,
+            score_commitment_pact,
             is_forced_engagement,
-            comment,
         }
     }
     

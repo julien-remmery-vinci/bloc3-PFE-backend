@@ -11,7 +11,7 @@ impl IntoResponse for FormError {
         let response = axum::http::Response::builder();
         let (code, message) = match self {
             FormError::DbError(e) => {
-                println!("db error : {:?}", e); //tracing::warn!() plutôt que println!() mais bon...
+                println!("form db error : {:?}", e); //tracing::warn!() plutôt que println!() mais bon...
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
             }
             FormError::BadRequest => (StatusCode::BAD_REQUEST, "Bad request"),

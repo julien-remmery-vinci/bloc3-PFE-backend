@@ -2,46 +2,51 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use crate::models::question::Question;
 use crate::models::answers::Answer;
-use serde_json::Value;
 
-#[derive(Serialize, Deserialize, FromRow)]
+use super::answerusers::AnswerUser;
+
+#[derive(Serialize, Deserialize, FromRow, Debug, Clone)]
 pub struct Form {
-    pub form_id: Option<i32>,
-    pub company: i32,
-    pub form_type: String,
-    pub nb_questions: i32,
-    pub template: String,
-    pub questions: Option<Value>,
+    pub form_id: i32,
+    pub company_id: i32,
+    pub r#type: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct CreateForm {
+    pub company_id: i32,
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct FormWithQuestions {
+    pub form: Form,
+    pub questions: Vec<QuestionWithAnswers>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct QuestionWithAnswers {
     pub question: Question,
     pub answers: Vec<Answer>,
+    pub user_answers: Vec<AnswerUser>,
 }
 
 impl Form {
     pub fn new(
         form_id: i32,
-        company: i32,
-        form_type: String,
-        nb_questions: i32,
-        template: String,
-        questions: Option<Vec<QuestionWithAnswers>>,
+        company_id: i32,
+        r#type: String,
     ) -> Self {
         Self {
-            form_id: Some(form_id),
-            company,
-            form_type,
-            nb_questions,
-            template,
-            questions: questions.map(|q| serde_json::to_value(q).expect("Failed to serialize questions")),
+            form_id,
+            company_id,
+            r#type,
         }
     }
+}
 
-    pub fn get_questions(&self) -> Option<Vec<QuestionWithAnswers>> {
-        self.questions.as_ref().map(|json| {
-            serde_json::from_value(json.clone()).expect("Failed to deserialize questions")
-        })
+impl CreateForm {
+    pub fn invalid(&self) -> bool {
+        self.company_id <= 0 || self.r#type.is_empty()
     }
 }

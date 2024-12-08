@@ -3,6 +3,7 @@ use axum::Extension;
 use axum::{extract::State, Json};
 use serde::Deserialize;
 
+use crate::errors::globalerror::GlobalError;
 use crate::models::answerusers::AnswerUser;
 use crate::{
     database::state::AppState,
@@ -19,11 +20,11 @@ pub struct CreateAnswer {
     pub score: f64,
     pub engagement_score: f64,
     pub is_forced_engagement: bool,
-    pub comment: String,
 }
 
 #[derive(Deserialize)]
 pub struct CreateAnswerUser {
+    pub answer: Option<String>,
     pub form_id: i32,
     pub now: bool,
     pub commitment_pact: bool,
@@ -49,14 +50,28 @@ pub async fn create_answer_for_user(
     Path(answer_id): Path<i32>,
     Json(answer): Json<CreateAnswerUser>
 ) -> Result<Json<AnswerUser>, AnswerError> {
+    //si le contenue du champ answer de la table answers_esg est NULL alors answer de l'objet CreateAnswerUser est obligatoire
+    let possible_answer = state.answer.read_possible_answer_by_id(answer_id).await?;
+    if possible_answer.is_none() {
+        if answer.answer.is_some() {
+            return Err(AnswerError::BadRequest);
+        }   
+    }
+    if possible_answer.is_some() {
+        if answer.answer.is_none() {
+            return Err(AnswerError::BadRequest);
+        }
+    }
     if answer.invalid() {
         return Err(AnswerError::BadRequest);
     }
+    //check si l'id de l'answer exist
     match state.answer.read_answer_by_id(answer_id).await? {
         None => return Err(AnswerError::NoSuchAnswer),
         Some(_) => (),
     }
     //TODO check si le form existe
+    //check si on a deja rep a cette answer
     let user_id = user.user_id;
     match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
         Some(_) => return Err(AnswerError::Conflict),
@@ -71,7 +86,7 @@ pub async fn create_answer_for_user(
 pub async fn read_answers_by_question(
     State(state): State<AppState>,
     Path(question_id): Path<i32>,
-) -> Result<Json<Vec<Answer>>, AnswerError> {
+) -> Result<Json<Vec<Answer>>, GlobalError> {
     let answers = state.answer.read_answers_by_question(question_id).await?;
     Ok(Json(answers))
 }

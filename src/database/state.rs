@@ -1,11 +1,12 @@
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 
-use crate::services::{auth::AuthService, questions::QuestionService, company::CompanyService, answers::AnswerService, score::ScoreService};
+use crate::services::{answers::AnswerService, auth::AuthService, company::CompanyService, forms::FormService, questions::QuestionService, score::ScoreService};
 
 #[derive(Debug, Clone)]
 pub struct AppState {
     pub auth: AuthService,
+    pub form: FormService,
     pub question: QuestionService,
     pub company: CompanyService,
     pub answer: AnswerService,
@@ -33,6 +34,7 @@ impl AppState {
         
         Self {
             auth: AuthService { db: db.clone() },
+            form: FormService { db: db.clone() },
             question: QuestionService { db: db.clone() },
             company: CompanyService { db: db.clone() },
             answer: AnswerService { db: db.clone() },
