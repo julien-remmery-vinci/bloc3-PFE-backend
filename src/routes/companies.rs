@@ -5,8 +5,29 @@ use axum::{
 use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
-    models::company::Company
+    models::company::{Company, CompanyWithCompleteForms},
+    routes::forms::get_complete_form
 };
+
+pub async fn read_one_company(
+    State(state): State<AppState>,
+    company_id: i32,
+) -> Result<Json<CompanyWithCompleteForms>, ResponseError> {
+    let company = state.company.find_by_id(company_id).await?;
+
+    let forms = state.form.read_forms_by_company(company_id).await?;
+
+    let mut forms_list: Vec<crate::models::form::CompleteForm> = Vec::new();
+    for form in forms {
+        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
+        forms_list.push(complete_form);
+    }
+
+    match company {
+        Some(company) => Ok(Json(CompanyWithCompleteForms { company, forms: forms_list })),
+        None => Err(ResponseError::NotFound(Some(String::from("Company not found")))),
+    }
+}
 
 #[axum::debug_handler]
 pub async fn read_all_companies(

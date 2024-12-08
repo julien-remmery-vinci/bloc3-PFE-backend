@@ -22,7 +22,7 @@ use axum::{
 use std::time::Duration;
 use routes::forms::{
     create_form, 
-    read_forms_by_company
+    read_forms_by_user
 };
 use routes::answers::{
     create_answer, 
@@ -65,7 +65,7 @@ fn forms_routes(state: AppState) -> Router<AppState> {
     Router::new()
         .route("/forms", post(create_form)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/forms/company",get(read_forms_by_company)
+        .route("/forms/user",get(read_forms_by_user)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
 }
 
