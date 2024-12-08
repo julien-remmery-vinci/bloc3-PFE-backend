@@ -35,8 +35,7 @@ use routes::questions::{
     update_question
 };
 use routes::companies::{
-    read_all_companies,
-    create_company
+    create_company, read_all_companies, read_one_company
 };
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
@@ -94,6 +93,8 @@ fn company_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_admin))
         .post(create_company)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
+        .route("/company/:id", get(read_one_company)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
 #[tokio::main]

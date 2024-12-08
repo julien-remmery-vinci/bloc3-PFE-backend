@@ -32,8 +32,8 @@ Authorization: Bearer {{ admin_token }}
     "type": "ESG"
 }
 
-### Read all forms for a company
-GET {{ baseUrl }}/forms/company
+### Read all forms for a user
+GET {{ baseUrl }}/forms/user
 Authorization: Bearer {{ user_token }}
 
 ### Get a form by ID

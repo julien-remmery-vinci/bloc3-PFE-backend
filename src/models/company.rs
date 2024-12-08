@@ -19,6 +19,7 @@ pub struct Company {
     pub dispute: bool,
 }
 
+#[derive(Deserialize, FromRow, Serialize)]
 pub struct CompanyWithCompleteForms {
     pub company: Company,
     pub forms: Vec<CompleteForm>,

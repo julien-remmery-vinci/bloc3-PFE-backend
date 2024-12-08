@@ -8,7 +8,7 @@ POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
 {
-    "login": "user@example.com",
+    "login": "user1@example.com",
     "password": "password"
 }
 
@@ -44,3 +44,7 @@ Authorization: Bearer {{ user_token }}
     "labels": ["label1", "label2"],
     "dispute": false
 }
+
+### Get a company
+GET {{ baseUrl }}/company/1
+Authorization: Bearer {{ admin_token }}
