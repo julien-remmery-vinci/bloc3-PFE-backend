@@ -1,6 +1,6 @@
 use sqlx::{Pool, Postgres};
 use crate::{
-    errors::globalerror::ResponseError, 
+    errors::responserror::ResponseError, 
     models::question::{PutQuestionRequest, Question, QuestionRequest},
 };
 

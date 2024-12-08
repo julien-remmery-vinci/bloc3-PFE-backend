@@ -2,7 +2,7 @@ use axum::{extract::{Path, State}, Json};
 use serde::Serialize;
 
 use crate::{
-    database::state::AppState, errors::globalerror::ResponseError, models::question::{PutQuestionRequest, QuestionRequest},
+    database::state::AppState, errors::responserror::ResponseError, models::question::{PutQuestionRequest, QuestionRequest},
 };
 
 #[derive(Serialize)]

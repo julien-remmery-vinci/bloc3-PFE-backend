@@ -1,6 +1,6 @@
 use std::env;
 use jsonwebtoken::{EncodingKey, Header};
-use crate::{errors::globalerror::ResponseError, models::{
+use crate::{errors::responserror::ResponseError, models::{
     claims::Claims, 
     user::CreateUser, 
     credentials::Credentials, 

@@ -4,7 +4,7 @@ use axum::{
     extract::State, 
     Json
 };
-use crate::errors::globalerror::ResponseError;
+use crate::errors::responserror::ResponseError;
 use crate::models::user::UserToken;
 use crate::models::{
     credentials::Credentials,
