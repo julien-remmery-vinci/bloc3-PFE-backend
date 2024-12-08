@@ -80,7 +80,7 @@ pub async fn read_forms_by_company(
 
         for question in &questions {
             let answers = state.answer.read_answers_by_question(question.question_id).await?;
-            let user_answers = state.answer.read_answers_by_user_by_question(user.user_id, question.question_id, form.form_id).await?;
+            let user_answers = state.answer.read_answers_by_user_by_question(question.question_id, form.form_id).await?;
 
             new_form.questions.push(
                 QuestionWithAnswers { 
