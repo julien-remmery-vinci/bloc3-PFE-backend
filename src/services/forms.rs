@@ -1,8 +1,5 @@
-use std::f32::consts::E;
-
 use crate::errors::globalerror::GlobalError;
-use crate::models::answers::Answer;
-use crate::models::form::{CreateForm, Form, FormWithQuestions, QuestionWithAnswers};
+use crate::models::form::{CreateForm, Form};
 use crate::models::question::Question;
 
 use sqlx::{Error, PgPool};
@@ -12,43 +9,20 @@ const QUERY_INSERT_FORM: &str = "
     VALUES ($1, $2)
     RETURNING form_id, company_id, type
 ";
-const QUERY_SELECT_FORM: &str = "
-    SELECT form_id, company_id, type AS form_type
-    FROM pfe.forms
-    WHERE form_id = $1
-";
+// const QUERY_SELECT_FORM: &str = "
+//     SELECT form_id, company_id, type AS form_type
+//     FROM pfe.forms
+//     WHERE form_id = $1
+// ";
 const QUERY_SELECT_FORMS_BY_COMPANY: &str = "
     SELECT form_id, company_id, type
     FROM pfe.forms
     WHERE company_id = $1
 ";
-
-// const QUERY_SELECT_ANSWERS_BY_QUESTION: &str = "
-//     SELECT 
-//         a.answer_id,
-//         a.answer,
-//         a.template,
-//         a.score,
-//         a.engagement_score,
-//         a.is_forced_engagement,
-//         a.comment
-//     FROM 
-//         pfe.answers a
-//     WHERE 
-//         a.question_id = $1
-// ";
-
 const QUERY_INSERT_QUESTION_FORM: &str = "
-INSERT INTO pfe.questions_form (form_id, question_id, question_status)
-VALUES ($1, $2, $3)
-RETURNING form_id, question_id, question_status
-";
-
-const QUERY_SELECT_QUESTIONS_BY_FORM: &str = "
-    SELECT q.id AS question_id, q.category, q.sub_category, q.question, q.is_used, qf.question_status
-    FROM pfe.questions_form qf
-    JOIN pfe.questions q ON qf.question_id = q.id
-    WHERE qf.form_id = $1
+    INSERT INTO pfe.questions_form (form_id, question_id, question_status)
+    VALUES ($1, $2, $3)
+    RETURNING form_id, question_id, question_status
 ";
 
 #[derive(Debug, Clone)]
@@ -85,30 +59,6 @@ impl FormService {
             .await.map_err(|e| GlobalError::DbError(e))?;
 
         Ok(forms)
-    
-        // let mut forms_with_questions = Vec::new();
-        // for mut form in forms {
-        //     let questions = sqlx::query_as::<_, Question>(QUERY_SELECT_QUESTIONS_BY_FORM)
-        //         .bind(form.form_id)
-        //         .fetch_all(&self.db)
-        //         .await?;
-    
-        //     let mut questions_with_answers = Vec::new();
-        //     for question in questions {
-        //         let answers = sqlx::query_as::<_, Answer>(QUERY_SELECT_ANSWERS_BY_QUESTION)
-        //             .bind(question.id)
-        //             .fetch_all(&self.db)
-        //             .await?;
-    
-        //         questions_with_answers.push(QuestionWithAnswers { question, answers });
-        //     }
-    
-        //     form.questions = Some(serde_json::to_value(questions_with_answers)
-        // .map_err(|e| sqlx::Error::Decode(Box::new(e)))?);
-        //     forms_with_questions.push(form);
-        // }
-    
-        // Ok(forms_with_questions)
     }
     
     // Lire un formulaire par ID

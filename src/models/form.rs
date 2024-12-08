@@ -3,6 +3,8 @@ use sqlx::FromRow;
 use crate::models::question::Question;
 use crate::models::answers::Answer;
 
+use super::answerusers::AnswerUser;
+
 #[derive(Serialize, Deserialize, FromRow, Debug, Clone)]
 pub struct Form {
     pub form_id: i32,
@@ -26,7 +28,7 @@ pub struct FormWithQuestions {
 pub struct QuestionWithAnswers {
     pub question: Question,
     pub answers: Vec<Answer>,
-    pub user_answers: Vec<Answer>, // TODO : Change type to Vec<UserAnswer>
+    pub user_answers: Vec<AnswerUser>,
 }
 
 impl Form {
