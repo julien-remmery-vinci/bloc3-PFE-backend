@@ -16,7 +16,7 @@ use axum::http::{
 use axum::{
     routing::get,
     routing::post,
-    middleware,
+    middleware::from_fn_with_state,
     Router
 };
 use std::time::Duration;
@@ -34,15 +34,16 @@ use routes::questions::{
     read_one_question, 
     update_question
 };
-use routes::companies::get_company;
+use routes::companies::{
+    read_all_companies,
+    create_company
+};
 use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 use tracing::Span;
 use routes::auth::{
-    login,
-    register,
-    verify
+    login, register, verify
 };
 
 use database::state::AppState;
@@ -50,6 +51,50 @@ use crate::middlewares::authorization::{
     authorize_admin, 
     authorize_user
 };
+
+fn auth_routes(state: AppState) -> Router<AppState> {
+    Router::new()
+        .route("/auth/login", post(login))
+        .route("/auth/register", post(register)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/auth/verify", post(verify)
+        .layer(from_fn_with_state(state.clone(), authorize_user)))
+}
+
+fn forms_routes(state: AppState) -> Router<AppState> {
+    Router::new()
+        .route("/forms", post(create_form)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/forms/company",get(read_forms_by_company)
+        .layer(from_fn_with_state(state.clone(), authorize_user)))
+}
+
+fn questions_routes(state: AppState) -> Router<AppState> {
+    Router::new()
+        .route("/questions",post(create_question)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/questions/:id",get(read_one_question)
+        .layer(from_fn_with_state(state.clone(), authorize_user))
+        .put(update_question)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+}
+
+fn answers_routes(state: AppState) -> Router<AppState> {
+    Router::new()
+        .route("/answers", post(create_answer))
+        .route("/answers/:id",post(create_answer_for_user)
+        .layer(from_fn_with_state(state.clone(), authorize_user)),)
+        .route("/answers/:id",get(read_answers_by_question)
+        .layer(from_fn_with_state(state.clone(), authorize_user)))
+}
+
+fn company_routes(state: AppState) -> Router<AppState> {
+    Router::new()
+        .route("/company",get(read_all_companies)
+        .layer(from_fn_with_state(state.clone(), authorize_admin))
+        .post(create_company)
+        .layer(from_fn_with_state(state.clone(), authorize_user)))
+}
 
 #[tokio::main]
 async fn main() {
@@ -69,53 +114,29 @@ async fn main() {
         ])
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
-    let app = Router::new()
-        .route("/auth/login", post(login))
-        .route("/auth/register", post(register)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/auth/verify", post(verify)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
-        .route("/forms", post(create_form)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/forms/company", get(read_forms_by_company)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
-        // .route("/forms/:id", get(read_form)
-        //     .put(update_form)
-        //     .delete(delete_form))
-        // .route("/forms/user/:id", get(read_forms_by_user))
-        .route("/questions", post(create_question)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/questions/:id", get(read_one_question)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_user))
-             .put(update_question)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/answers", post(create_answer))
-        .route("/answers/:id", post(create_answer_for_user)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
-        .route("/answers/:id", get(read_answers_by_question)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
-        .route("/company", get(get_company)
-            .layer(middleware::from_fn_with_state(state.clone(), authorize_admin)))
-        // .route("/answers/:id", get(read_one)
-        //     .put(update)
-        //     .delete(delete))
-        //.route("/score", get(read_score_for_form_user)
-            //.layer(middleware::from_fn_with_state(state.clone(), authorize_user)))
-        .layer(cors)
-        .layer(TraceLayer::new_for_http()
-            .on_request(|request: &Request<Body>, _span: &Span| {
-                tracing::info!(
-                    method = %request.method(),
-                    uri = %request.uri(),
-                );
-            })
-            .on_response(|response: &Response<Body>, latency: Duration, _span: &Span| {
-                tracing::info!(
-                    status = %response.status(),
-                    latency = ?latency,
-                );
-            }))
-        .with_state(state);
+        let app = Router::new()
+            .merge(auth_routes(state.clone()))
+            .merge(forms_routes(state.clone()))
+            .merge(questions_routes(state.clone()))
+            .merge(answers_routes(state.clone()))
+            .merge(company_routes(state.clone()))
+            .layer(cors)
+            .layer(
+                TraceLayer::new_for_http()
+                    .on_request(|request: &Request<Body>, _span: &Span| {
+                        tracing::info!(
+                            method = %request.method(),
+                            uri = %request.uri(),
+                        );
+                    })
+                    .on_response(|response: &Response<Body>, latency: Duration, _span: &Span| {
+                        tracing::info!(
+                            status = %response.status(),
+                            latency = ?latency,
+                        );
+                    }),
+            )
+            .with_state(state);
 
     let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
     println!("Listening on http://0.0.0.0:3000");
