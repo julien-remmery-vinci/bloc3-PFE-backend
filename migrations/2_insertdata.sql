@@ -271,7 +271,7 @@ VALUES
 ('Nous avons formalisé notre engagement envers la protection des écosystèmes et de la biodiversité.', 'PRODUIT', 32, 1.3333333333333333, 0.3333333333333333, FALSE),
 ('Autre : veuillez expliquer dans les commentaires', 'PRODUIT', 32, 0, 0.0, FALSE),
 ('Aucune de ces réponses.', 'PRODUIT', 32, 0.0, 0, FALSE),
-('nan', 'PRODUIT', 32, 0.0, 0.0, FALSE),
+('N/A', 'PRODUIT', 32, 0.0, 0.0, FALSE),
 ('Oui', 'WORKERS', 33, 1.3333333333333333, 0.3333333333333333, FALSE),
 ('Non', 'WORKERS', 33, 0.0, 0, FALSE),
 ('Non applicable - Nous n''avons pas de travailleur·euses.', 'WORKERS', 33, 0.0, 0.0, FALSE),
@@ -689,24 +689,5 @@ VALUES
 ('user3', 'example', 'user3@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 3),
 ('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin', null);
 
--- Insertion exemples de questions et réponses
-INSERT INTO pfe.questions_form (form_id, question_id, question_status)
-VALUES
-(1, 1, 'PENDING'),
-(1, 2, 'PENDING'),
-(1, 3, 'PENDING'),
-(1, 4, 'PENDING'),
-(1, 5, 'PENDING'),
-(1, 6, 'PENDING'),
-(1, 7, 'PENDING'),
-(1, 8, 'PENDING'),
-(1, 9, 'PENDING'),
-(1, 10, 'PENDING');
 
-INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment)
-VALUES
-(1, 1, 1, true, false, 'Rien à dire'),
-(2, 1, 1, false, true, 'Rien à dire'),
-(3, 1, 1, true, false, 'Rien à dire'),
-(4, 1, 1, true, false, 'Rien à dire'),
-(5, 1, 1, true, false, 'Rien à dire');
+
