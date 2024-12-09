@@ -8,7 +8,6 @@ pub async fn sum_score_template(
     Path(form_id): Path<i32>,
 ) -> Result<Json<Score>, ResponseError> {
     let template=state.score.find_template_by_form_id(form_id).await?;
-    println!("{:?}",template);
     let mut score_total = 0.0;
     // si template est ALL 
     if template.contains(&"ALL".to_string()) {
@@ -21,7 +20,6 @@ pub async fn sum_score_template(
         score_total += state.score.sum_score_template("ALL".to_string()).await?;
     }
     
-    println!("{:?}",score_total);
     let score_user_now = state.score.sum_score_user_now(form_id).await?;
     let mut sum: f64 = 0.0;
     let score_user_now_clone = score_user_now.clone();
