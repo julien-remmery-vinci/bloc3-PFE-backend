@@ -10,6 +10,7 @@ pub struct User {
     pub firstname: String,
     pub lastname: String,
     pub login: String,
+    #[serde(skip_serializing)]
     pub password: String,
     pub role: String,
     pub company_id: Option<i32>,
