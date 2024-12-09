@@ -20,7 +20,7 @@ const READ_ALL_USED_QUERY: &str = "
         WHERE is_used = true AND question_type = $1
     ";
 const READ_ALL_BY_FORM_ID_QUERY: &str = "
-        SELECT q.question_id AS question_id, q.category, q.sub_category, q.question, q.is_used, qf.question_status
+        SELECT q.question_id AS question_id, q.category, q.sub_category, q.question, q.is_used, qf.question_status, q.question_type
         FROM pfe.questions_form qf
         JOIN pfe.questions q ON qf.question_id = q.question_id
         WHERE qf.form_id = $1
