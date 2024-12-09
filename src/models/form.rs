@@ -6,6 +6,12 @@ use crate::models::answer::Answer;
 use super::answer::AnswerUser;
 use super::template::Template;
 
+#[derive(Deserialize, Debug)]
+pub struct CreateForm {
+    pub company_id: i32,
+    pub r#type: String,
+}
+
 #[derive(Serialize, Deserialize, FromRow, Debug, Clone)]
 pub struct Form {
     pub form_id: i32,
@@ -19,20 +25,26 @@ pub struct CompleteForm {
     pub company_id: i32,
     pub r#type: String,
     pub templates: Vec<Template>,
-    pub questions: Vec<QuestionWithAnswers>,
+    pub questions: Vec<QuestionWithUserAnswers>,
 }
 
-#[derive(Deserialize, Debug)]
-pub struct CreateForm {
-    pub company_id: i32,
-    pub r#type: String,
+#[derive(Serialize, Deserialize, Debug)]
+pub struct QuestionWithUserAnswers {
+    pub question: Question,
+    pub answers: Vec<Answer>,
+    pub user_answers: Vec<AnswerUser>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct QuestionWithAnswers {
     pub question: Question,
-    pub answers: Vec<Answer>,
-    pub user_answers: Vec<AnswerUser>,
+    pub answers: Vec<Answer>
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ModifiableForm {
+    pub r#type: String,
+    pub questions: Vec<QuestionWithAnswers>,
 }
 
 impl CreateForm {

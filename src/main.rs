@@ -22,7 +22,7 @@ use axum::{
 use std::time::Duration;
 use routes::forms::{
     create_form, 
-    read_forms_by_company
+    read_forms_by_user, read_forms_with_questions_and_answers
 };
 use routes::answers::{
     create_answer, 
@@ -35,8 +35,7 @@ use routes::questions::{
     update_question
 };
 use routes::companies::{
-    read_all_companies,
-    create_company
+    create_company, read_all_companies, read_one_company
 };
 use routes::scores::sum_score_template;
 use tokio::net::TcpListener;
@@ -58,15 +57,16 @@ fn auth_routes(state: AppState) -> Router<AppState> {
         .route("/auth/login", post(login))
         .route("/auth/register", post(register)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/auth/verify", post(verify)
+        .route("/auth/verify", get(verify)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
 }
 
 fn forms_routes(state: AppState) -> Router<AppState> {
     Router::new()
-        .route("/forms", post(create_form)
+        .route("/forms", get(read_forms_with_questions_and_answers)
+        .post(create_form)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/forms/company",get(read_forms_by_company)
+        .route("/forms/user",get(read_forms_by_user)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
 }
 
@@ -95,6 +95,8 @@ fn company_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_admin))
         .post(create_company)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
+        .route("/company/:id", get(read_one_company)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
 fn score_routes(state: AppState) -> Router<AppState> {
