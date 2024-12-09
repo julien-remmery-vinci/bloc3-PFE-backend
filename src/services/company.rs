@@ -8,7 +8,7 @@ const QUERY_READ_BY_COMPANY_NUMBER: &str = "SELECT * FROM pfe.companies WHERE co
 
 const QUERY_GET_ALL_COMPANIES: &str = "
     SELECT company_id, company_name, company_number, legal_form, office_address, website,
-    nace_code, business_activity, nb_workers, revenue, labels, dispute
+    nace_code, business_activity, nb_workers, revenue, labels, dispute, is_validated, is_eligible
     FROM pfe.companies
 ";
 
@@ -23,6 +23,13 @@ const QUERY_SELECT_TEMPLATES: &str = "
     SELECT t.template_id, value 
     FROM pfe.templates t, pfe.template_company tc 
     WHERE t.template_id = tc.template_id AND tc.company_id = $1;
+";
+
+const QUERY_VALIDATE_COMPANY: &str = "
+    UPDATE pfe.companies
+    SET is_validated = true, is_eligible = $1
+    WHERE company_id = $2
+    RETURNING *;
 ";
 
 
@@ -81,6 +88,15 @@ impl CompanyService {
             .bind(company.revenue)
             .bind(company.labels.clone())
             .bind(company.dispute)
+            .fetch_one(&self.db)
+            .await.map_err(ResponseError::DbError)?;
+        Ok(company)
+    }
+
+    pub async fn validate_company(&self, company_id: i32, is_eligible: bool) -> Result<Company, ResponseError> {
+        let company = sqlx::query_as::<_, Company>(QUERY_VALIDATE_COMPANY)
+            .bind(is_eligible)
+            .bind(company_id)
             .fetch_one(&self.db)
             .await.map_err(ResponseError::DbError)?;
         Ok(company)

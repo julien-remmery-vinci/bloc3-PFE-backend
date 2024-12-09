@@ -116,12 +116,15 @@ Une déclaration de mission formelle et écrite de l''entreprise est une déclar
 ('ESG', '12. CERTIFICATIONS', '12.1. CERTIFICATIONS D''UN PRODUIT, D''UN SERVICE OU D''UNE PRATIQUE', 'Quel est le pourcentage de vos produits ou services ou pratiques durables qui ont été contrôlés et certifiés par un organisme d''accréditation  axé sur la qualité ou le développement durable ? (ex : Fairtrade, BIO, Ecovadis, Ethibel, BDO etc) '),
 ('ESG', '12. CERTIFICATIONS', '12.2. CERTIFICATIONS DE L''ENTREPRISE', 'XXX a-t-elle obtenu une ou plusieurs certifications attestant ses efforts en matière de transition durable ?');
 
-INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement)
+INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement, is_forced_comment)
 VALUES
 -- 1. ENERGIE & CARBONE
-('oui','ALL',1,2.0,0.5,FALSE),
-('Non', 'ALL', 1, 0.0, 0.0, FALSE),
-(NULL, 'ALL', 2, 0.0, 0.0, FALSE),
+('oui','ALL',1,2.0,0.5,FALSE, FALSE),
+('Non', 'ALL', 1, 0.0, 0.0, FALSE, FALSE),
+(NULL, 'ALL', 2, 0.0, 0.0, FALSE, TRUE);
+
+INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement)
+VALUES
 ('Oui', 'OWNED FACILITY', 3, 1.0, 0.25, FALSE),
 ('Non', 'OWNED FACILITY', 3, 0.0, 0.0, FALSE),
 ('Je ne sais pas', 'OWNED FACILITY', 3, 0.0, 0.0, FALSE),
@@ -268,7 +271,7 @@ VALUES
 ('Nous avons formalisé notre engagement envers la protection des écosystèmes et de la biodiversité.', 'PRODUIT', 32, 1.3333333333333333, 0.3333333333333333, FALSE),
 ('Autre : veuillez expliquer dans les commentaires', 'PRODUIT', 32, 0, 0.0, FALSE),
 ('Aucune de ces réponses.', 'PRODUIT', 32, 0.0, 0, FALSE),
-('nan', 'PRODUIT', 32, 0.0, 0.0, FALSE),
+('N/A', 'PRODUIT', 32, 0.0, 0.0, FALSE),
 ('Oui', 'WORKERS', 33, 1.3333333333333333, 0.3333333333333333, FALSE),
 ('Non', 'WORKERS', 33, 0.0, 0, FALSE),
 ('Non applicable - Nous n''avons pas de travailleur·euses.', 'WORKERS', 33, 0.0, 0.0, FALSE),
@@ -685,3 +688,6 @@ VALUES
 ('user2', 'example', 'user2@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 2),
 ('user3', 'example', 'user3@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 3),
 ('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin', null);
+
+
+

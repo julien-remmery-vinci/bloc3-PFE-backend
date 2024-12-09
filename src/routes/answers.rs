@@ -12,6 +12,7 @@ use crate::{
     models::answer::Answer,
     models::user::User,
 };
+use crate::routes::questions::complete_question;
 
 #[axum::debug_handler]
 pub async fn create_answer(
@@ -30,37 +31,63 @@ pub async fn create_answer_for_user(
     State(state): State<AppState>,
     Extension(user): Extension<User>,
     Path(answer_id): Path<i32>,
-    Json(answer): Json<CreateAnswerUser>
+    Json(created_answer): Json<CreateAnswerUser>
 ) -> Result<Json<AnswerUser>, ResponseError> {
-    //si le contenue du champ answer de la table answers_esg est NULL alors answer de l'objet CreateAnswerUser est obligatoire
-    let possible_answer = state.answer.read_possible_answer_by_id(answer_id).await?;
-    if possible_answer.is_none() {
-        if answer.answer.is_some() {
-            return Err(ResponseError::BadRequest(None));
-        }   
+    // TODO : check if user's company is the same as the form's company
+    if created_answer.invalid() {
+        return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
     }
-    if possible_answer.is_some() {
-        if answer.answer.is_none() {
-            return Err(ResponseError::BadRequest(None));
+    
+    //si le contenue du champ answer de la table answers_esg est NULL alors comment de l'objet CreateAnswerUser est obligatoire
+    let answer: Answer = match state.answer.read_answer_by_id(answer_id).await? {
+        Some(answer) => Some(answer).unwrap(),
+        None => Err(ResponseError::NotFound(Some(String::from("Answer not found"))))?,
+    };
+
+    if answer.is_forced_comment && created_answer.comment.is_none() {
+        return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced comment"))));
+    }
+
+    if answer.answer.is_some() {
+        if created_answer.now.is_none() {
+            return Err(ResponseError::BadRequest(Some(String::from("Missing now field"))));
+        }
+        if created_answer.commitment_pact.is_none() {
+            return Err(ResponseError::BadRequest(Some(String::from("Missing commitment pact field"))));
         }
     }
-    if answer.invalid() {
-        return Err(ResponseError::BadRequest(None));
-    }
-    //check si l'id de l'answer exist
-    match state.answer.read_answer_by_id(answer_id).await? {
-        None => return Err(ResponseError::NotFound(None)),
+
+    //check si le form existe
+    match state.form.read_form_by_id(created_answer.form_id).await? {
+        None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
         Some(_) => (),
     }
-    //TODO check si le form existe
-    //check si on a deja rep a cette answer
-    let user_id = user.user_id;
-    match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
-        Some(_) => return Err(ResponseError::Conflict(None)),
+
+    //check si on a deja répondu a cette answer FONCTIONNE PAS
+    let user_id: i32 = user.user_id;
+    match state.answer.read_answer_user_by_form_id(created_answer.form_id,user_id,answer_id).await? {
+        Some(_) => return Err(ResponseError::Conflict(Some(String::from("Answer already exists")))),
         None => (),
     }
 
-    let valid = state.answer.create_answer_user(answer,user_id,answer_id).await?;
+    // check si il y un engagement forcé
+    if answer.answer.is_some() && answer.is_forced_engagement {
+        if created_answer.commitment_pact.is_none() {
+            return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
+        }
+    }
+
+    // on ne peut pas avoir now et commitment_pact true en meme temps
+    if answer.answer.is_some() && created_answer.now.unwrap() && created_answer.commitment_pact.unwrap() {
+        return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
+    }
+
+    // Save the user's answer
+    let valid: AnswerUser = state.answer.create_answer_user(created_answer.clone(), user_id,answer_id).await?;
+    
+    // Set the question status as COMPLETE
+    complete_question(State(state), answer.question_id.unwrap(), created_answer.form_id).await?;
+
     Ok(Json(valid))
 }
 
@@ -71,20 +98,4 @@ pub async fn read_answers_by_question(
 ) -> Result<Json<Vec<Answer>>, ResponseError> {
     let answers = state.answer.read_answers_by_question(question_id).await?;
     Ok(Json(answers))
-}
-
-impl CreateAnswerUser {
-    pub fn invalid(&self) -> bool {
-        self.form_id == 0
-    }
-}
-
-impl CreateAnswer {
-    pub fn invalid(&self) -> bool {
-        self.answer.is_empty()
-            || self.template.is_empty()
-            || self.question_id == 0
-            || self.score < 0.0
-            || self.engagement_score < 0.0
-    }
 }

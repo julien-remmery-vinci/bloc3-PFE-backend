@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     nb_workers INTEGER,
     revenue DOUBLE PRECISION,
     labels TEXT[],
-    dispute BOOLEAN DEFAULT FALSE
+    dispute BOOLEAN DEFAULT FALSE,
+    is_validated BOOLEAN DEFAULT FALSE,
+    is_eligible BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS pfe.template_company (
@@ -61,7 +63,7 @@ CREATE TABLE IF NOT EXISTS pfe.users (
 CREATE TABLE IF NOT EXISTS pfe.questions_form (
     form_id INTEGER REFERENCES pfe.forms(form_id),
     question_id INTEGER REFERENCES pfe.questions(question_id),
-    question_status VARCHAR(255) NOT NULL,
+    question_status TEXT NOT NULL CHECK (question_status IN ('PENDING', 'COMPLETE')),
     PRIMARY KEY (form_id, question_id)
 );
 
@@ -88,21 +90,21 @@ CREATE TABLE IF NOT EXISTS pfe.answers_esg (
     question_id INTEGER REFERENCES pfe.questions(question_id),
     template TEXT NOT NULL,
     answer TEXT,
-    score_now DOUBLE PRECISION NOT NULL,
-    score_commitment_pact DOUBLE PRECISION,
-    is_forced_engagement BOOLEAN NOT NULL
+    score_now DOUBLE PRECISION NULL,
+    score_commitment_pact DOUBLE PRECISION NULL,
+    is_forced_engagement BOOLEAN NOT NULL DEFAULT FALSE,
+    is_forced_comment BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     answer_id INTEGER REFERENCES pfe.answers_esg(answer_id),
     user_id INTEGER REFERENCES pfe.users(user_id),
     form_id INTEGER REFERENCES pfe.forms(form_id),
-    answer TEXT,
-    now BOOLEAN NOT NULL,
-    commitment_pact BOOLEAN NOT NULL,
-    comment TEXT,
-    now_verif BOOLEAN ,
-    commitment_pact_verif BOOLEAN,
+    now BOOLEAN NULL,
+    commitment_pact BOOLEAN NULL,
+    comment TEXT NULL,
+    now_verif BOOLEAN NULL,
+    commitment_pact_verif BOOLEAN NULL,
     PRIMARY KEY (answer_id, user_id, form_id)
 );
 

@@ -9,11 +9,9 @@ use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
     models::{
-        form::{
+        company::Company, form::{
             CompleteForm, CreateForm, Form, ModifiableForm, QuestionWithAnswers, QuestionWithUserAnswers
-        }, 
-        question::Question, 
-        user::User
+        }, question::Question, user::User
     }
 };
 
@@ -71,6 +69,7 @@ pub async fn read_forms_by_user(
 pub async fn get_complete_form(
     state: AppState,
     form: Form,
+    company: Company,
 ) -> Result<CompleteForm, ResponseError> {
     let templates = state.form.read_form_templates(form.form_id).await?;
 
@@ -84,7 +83,8 @@ pub async fn get_complete_form(
 
     let questions = state.question.read_all_by_form_id(form.form_id).await?;
 
-    for question in &questions {
+    for mut question in questions {
+        question.question = question.question.clone().replace("XXX", &company.company_name);
         let answers = state.answer.read_answers_by_question(question.question_id).await?;
         let user_answers = state.answer.read_answers_by_user_by_question(question.question_id, form.form_id).await?;
 
@@ -104,9 +104,14 @@ pub async fn get_complete_forms(
     company_id: i32,
 ) -> Result<Vec<CompleteForm>, ResponseError> {
     let forms = state.form.read_forms_by_company(company_id).await?;
+    let company = match state.company.find_by_id(company_id).await {
+        Ok(company) => company.unwrap(),
+        Err(_) => return Err(ResponseError::NotFound(Some(String::from("Company not found")))),
+    };
+
     let mut forms_list: Vec<CompleteForm> = Vec::new();
     for form in forms {
-        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
+        let complete_form = get_complete_form(state.clone(), form.clone(), company.clone()).await?;
         forms_list.push(complete_form);
     }
     Ok(forms_list)
