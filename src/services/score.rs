@@ -19,7 +19,7 @@ const QUERY_SUM_SCORE_TEMPLATE_ALL: &str = "
 const QUERY_FIND_TEMPLATE_BY_FORM_ID: &str = "
     SELECT value
     FROM pfe.templates
-    WHERE template_id = (SELECT template_id FROM pfe.template_form WHERE form_id = $1)
+    WHERE template_id IN (SELECT template_id FROM pfe.template_form WHERE form_id = $1)
     ";
 
 const QUERY_SUM_SCORE_USER_NOW: &str = "

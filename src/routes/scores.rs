@@ -18,6 +18,7 @@ pub async fn sum_score_template(
        for t in template {
         score_total += state.score.sum_score_template(t).await?;
         } 
+        score_total += state.score.sum_score_template("ALL".to_string()).await?;
     }
     
     println!("{:?}",score_total);
@@ -25,7 +26,8 @@ pub async fn sum_score_template(
     println!("{:?}",score_user_now);
     let score_user_commitment_pact = state.score.sum_score_user_commitment_pact(form_id).await?;
     println!("{:?}",score_user_commitment_pact);
-    let score = (score_user_now + score_user_commitment_pact)/score_total;
+    //score en %
+    let score = ((score_user_now + score_user_commitment_pact)/score_total)*100.0;
     println!("{:?}",score);
     Ok(Json(score))
 }
