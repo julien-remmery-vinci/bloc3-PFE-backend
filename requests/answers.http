@@ -50,7 +50,7 @@ Content-Type: application/json
 }
 
 ### Add an answer for a user without text
-POST {{ baseUrl }}/answers/1
+POST {{ baseUrl }}/answers/4
 Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 

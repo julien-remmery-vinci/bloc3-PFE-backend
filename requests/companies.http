@@ -32,8 +32,8 @@ Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "company_name": "Company 1",
-    "company_number": "BE0223456789",
+    "company_name": "Company 5",
+    "company_number": "BE0223456759",
     "office_address": "Rue de la Loi 1, 1000 Bruxelles",
     "legal_form": "SRL",
     "website": "www.company1.be",
@@ -48,3 +48,16 @@ Authorization: Bearer {{ user_token }}
 ### Get a company
 GET {{ baseUrl }}/company/1
 Authorization: Bearer {{ admin_token }}
+
+### Get company form status
+GET {{ baseUrl }}/company/1/forms/status
+Authorization: Bearer {{ admin_token }}
+
+### Validate a company
+POST {{ baseUrl }}/company/1/validate
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "is_eligible": true
+}

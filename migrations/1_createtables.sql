@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     nb_workers INTEGER,
     revenue DOUBLE PRECISION,
     labels TEXT[],
-    dispute BOOLEAN DEFAULT FALSE
+    dispute BOOLEAN DEFAULT FALSE,
+    is_validated BOOLEAN DEFAULT FALSE,
+    is_eligible BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS pfe.template_company (
