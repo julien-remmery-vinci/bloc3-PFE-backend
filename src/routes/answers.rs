@@ -57,7 +57,7 @@ pub async fn create_answer_for_user(
         None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
         Some(_) => (),
     }
-    //check si on a deja rep a cette answer
+    //check si on a deja rep a cette answer FONCTIONNE PAS
     let user_id = user.user_id;
     match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
         Some(_) => return Err(ResponseError::Conflict(Some(String::from("Answer already exists")))),
