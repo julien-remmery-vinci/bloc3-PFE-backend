@@ -132,4 +132,22 @@ impl QuestionService {
             .await.map_err(ResponseError::DbError)?;
         Ok(questions)
     }
+
+    pub async fn complete_question(
+        &self,
+        question_id: i32,
+        form_id: i32,
+    ) -> Result<(), ResponseError> {
+        let query = "
+            UPDATE pfe.questions_form
+            SET question_status = 'COMPLETE'
+            WHERE question_id = $1 AND form_id = $2
+        ";
+        sqlx::query(query)
+            .bind(question_id)
+            .bind(form_id)
+            .execute(&self.db)
+            .await.map_err(ResponseError::DbError)?;
+        Ok(())
+    }
 }

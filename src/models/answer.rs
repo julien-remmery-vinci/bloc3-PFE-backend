@@ -10,6 +10,7 @@ pub struct Answer {
     pub score_now: f64,
     pub score_commitment_pact: f64,
     pub is_forced_engagement: bool,
+    pub is_forced_comment: bool,
 }
 
 #[derive(Deserialize,Serialize,FromRow, Debug)]
@@ -17,10 +18,9 @@ pub struct AnswerUser {
     pub answer_id: i32,
     pub user_id: i32,
     pub form_id: i32,
-    pub answer: Option<String>,
-    pub now: bool,
-    pub commitment_pact: bool,
-    pub comment: String,
+    pub now: Option<bool>,
+    pub commitment_pact: Option<bool>,
+    pub comment: Option<String>,
     pub now_verif: Option<bool>,
     pub commitment_pact_verif: Option<bool>,
 }
@@ -33,13 +33,29 @@ pub struct CreateAnswer {
     pub score: f64,
     pub engagement_score: f64,
     pub is_forced_engagement: bool,
+    pub is_forced_comment: bool,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct CreateAnswerUser {
-    pub answer: Option<String>,
     pub form_id: i32,
-    pub now: bool,
-    pub commitment_pact: bool,
-    pub comment: String,
+    pub now: Option<bool>,
+    pub commitment_pact: Option<bool>,
+    pub comment: Option<String>,
+}
+
+impl CreateAnswerUser {
+    pub fn invalid(&self) -> bool {
+        self.form_id <= 0
+    }
+}
+
+impl CreateAnswer {
+    pub fn invalid(&self) -> bool {
+        self.answer.is_empty()
+            || self.template.is_empty()
+            || self.question_id == 0
+            || self.score < 0.0
+            || self.engagement_score < 0.0
+    }
 }
