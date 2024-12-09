@@ -6,3 +6,4 @@ pub mod question;
 pub mod answer;
 pub mod claims;
 pub mod template;
+pub mod score;

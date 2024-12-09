@@ -1,7 +1,7 @@
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 
-use crate::services::{answers::AnswerService, auth::AuthService, company::CompanyService, forms::FormService, questions::QuestionService};
+use crate::services::{answers::AnswerService, auth::AuthService, company::CompanyService, forms::FormService, questions::QuestionService, score::ScoreService};
 
 #[derive(Debug, Clone)]
 pub struct AppState {
@@ -10,6 +10,7 @@ pub struct AppState {
     pub question: QuestionService,
     pub company: CompanyService,
     pub answer: AnswerService,
+    pub score: ScoreService,
 }
 
 impl AppState {
@@ -37,6 +38,7 @@ impl AppState {
             question: QuestionService { db: db.clone() },
             company: CompanyService { db: db.clone() },
             answer: AnswerService { db: db.clone() },
+            score: ScoreService { db: db.clone() },
         }
     }
 }
