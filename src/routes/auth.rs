@@ -1,5 +1,6 @@
 use std::env;
 use axum::extract::Request;
+use axum::Extension;
 use axum::{
     extract::State, 
     Json
@@ -36,25 +37,29 @@ pub async fn login(
     };
 }
 
-// TODO : Not return the password
 pub async fn register(
     State(state): State<AppState>,
+    Extension(logged_user): Extension<User>,
     Json(mut user): Json<CreateUser>,
 ) -> Result<Json<User>, ResponseError> {
     if user.invalid() {
         return Err(ResponseError::BadRequest(Some(String::from("Missing user information"))));
     }
 
+    if user.role == "admin" && logged_user.role != "admin" {
+        return Err(ResponseError::Unauthorized(Some(String::from("Only admin users can create new admin users"))));
+    }
+
     match state.auth.find_by_login(user.login.clone()).await? {
-        Some(_) => return Err(ResponseError::Conflict(Some("User already exists".to_string()))),
+        Some(_) => return Err(ResponseError::Conflict(Some(String::from("User already exists")))),
         None => (),
     }
 
-    match user.company_id {
+    match logged_user.company_id {
         Some(company_id) => {
             match state.company.find_by_id(company_id).await? {
-                    Some(_) => (),
-                    None => return Err(ResponseError::NotFound(Some("Company not found".to_string()))),
+                    Some(_) => user.company_id = Some(company_id),
+                    None => return Err(ResponseError::NotFound(Some(String::from("User's company not found")))),
                 }
         }
         None => (),
