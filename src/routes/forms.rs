@@ -10,7 +10,7 @@ use crate::{
     errors::responserror::ResponseError, 
     models::{
         form::{
-            CompleteForm, CreateForm, Form, QuestionWithAnswers
+            CompleteForm, CreateForm, Form, ModifiableForm, QuestionWithAnswers, QuestionWithUserAnswers
         }, 
         question::Question, 
         user::User
@@ -35,6 +35,22 @@ pub async fn create_form(
         Ok(_) => Ok(StatusCode::CREATED),
         Err(error) => Err(ResponseError::DbError(error)),
     }
+}
+
+pub async fn read_forms_with_questions_and_answers(
+    State(state): State<AppState>
+) -> Result<impl IntoResponse, ResponseError> {
+    let mut form = ModifiableForm {
+        r#type: String::from("ESG"),
+        questions: Vec::new(),
+    };
+
+    let questions = state.question.read_all_questions_by_type(form.r#type.clone()).await?;
+    for question in questions {
+        let answers = state.answer.read_answers_by_question(question.question_id).await?;
+        form.questions.push(QuestionWithAnswers { question, answers });
+    }
+    Ok((StatusCode::OK, Json(form)))
 }
 
 #[axum::debug_handler]
@@ -80,7 +96,7 @@ pub async fn get_complete_form(
         let user_answers = state.answer.read_answers_by_user_by_question(question.question_id, form.form_id).await?;
 
         complete_form.questions.push(
-            QuestionWithAnswers { 
+            QuestionWithUserAnswers { 
                 question: question.clone(), 
                 answers, 
                 user_answers

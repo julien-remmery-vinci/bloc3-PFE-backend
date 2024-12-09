@@ -1,51 +1,64 @@
 @baseUrl=http://127.0.0.1:3000
+@admin_token={{ admin.response.body.token }}
+
+### Login with admin account
+# @name admin
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "admin@example.com",
+    "password": "password"
+}
 
 ### Add a question
 POST {{ baseUrl }}/questions
 Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
 
 {
-    "category": "TEST",
-    "sub_category": "TEST",
-    "question": "cc sava"
+    "category": "Exemple de catégorie",
+    "sub_category": "Exemple de sous-catégorie",
+    "question": "Exemple de question",
+    "question_type": "ESG",
+    "is_used": true
 }
 
 ### Add a question with empty question
 POST {{ baseUrl }}/questions
 Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
 
 {
-    "category": "TEST",
-    "sub_category": "TEST",
-    "question": ""
+    "category": "Exemple de catégorie",
+    "sub_category": "Exemple de sous-catégorie",
+    "question": "",
+    "question_type": "ESG",
+    "is_used": true
 }
 
 ### Get one question
 GET {{ baseUrl }}/questions/1
+Authorization: Bearer {{ admin_token }}
 
 ### Get a question that does not exist
 GET {{ baseUrl }}/questions/100
+Authorization: Bearer {{ admin_token }}
 
 ### Update a question
 PUT {{ baseUrl }}/questions/1
 Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
 
 {
-    "question": "cc sava je modifie hihihi"
+    "question": "Test modification d'une question"
 }
 
 ### Update a question with empty question
 PUT {{ baseUrl }}/questions/1
 Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
 
 {
     "question": ""
-}
-
-### Delete a question
-PUT {{ baseUrl }}/questions/1
-Content-Type: application/json
-
-{
-    "is_used": false
 }
