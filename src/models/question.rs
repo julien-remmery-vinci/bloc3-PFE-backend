@@ -18,6 +18,8 @@ pub struct QuestionRequest {
     pub category: String,
     pub sub_category: String,
     pub question: String,
+    pub question_type: String,
+    pub is_used: bool,
 }
 
 impl QuestionRequest {

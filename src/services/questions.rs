@@ -5,9 +5,9 @@ use crate::{
 };
 
 const READ_BY_ID_QUERY: &str = "
-        SELECT question_id, category, sub_category
+        SELECT question_id, category, sub_category, question, is_used, question_type
         FROM pfe.questions
-        WHERE id = $1
+        WHERE question_id = $1
     ";
 const READ_ALL_BY_TYPE_QUERY: &str = "
         SELECT question_id, category, sub_category, question, is_used, question_type
@@ -26,19 +26,18 @@ const READ_ALL_BY_FORM_ID_QUERY: &str = "
         WHERE qf.form_id = $1
     ";
 const INSERT_QUERY: &str ="
-        INSERT INTO pfe.questions (question_id, category, sub_category)
-        VALUES ($1, $2, $3)
-        RETURNING id
+        INSERT INTO pfe.questions (question, category, sub_category, question_type, is_used)
+        VALUES ($1, $2, $3, $4, $5)
     ";
-const UPDATE_QUERY: &str = "
-        UPDATE pfe.question_id
+const UPDATE_QUESTION_QUERY: &str = "
+        UPDATE pfe.questions
         SET question = $1
-        WHERE id = $2
+        WHERE question_id = $2
     ";
-const DELETE_QUERY: &str = "
-        UPDATE pfe.question_id
+const UPDATE_QUESTION_USAGE_QUERY: &str = "
+        UPDATE pfe.questions
         SET is_used = $1
-        WHERE id = $2
+        WHERE question_id = $2
     ";
 
 #[derive(Debug, Clone)]
@@ -50,21 +49,23 @@ impl QuestionService {
     pub async fn create_question(
         &self,
         question: QuestionRequest,
-    ) -> Result<i32, ResponseError> {
-        let question_id: i32 = sqlx::query_scalar(INSERT_QUERY)
+    ) -> Result<(), ResponseError> {
+        sqlx::query::<_>(INSERT_QUERY)
             .bind(&question.question)
             .bind(&question.category)
             .bind(&question.sub_category)
-            .fetch_one(&self.db)
+            .bind(&question.question_type)
+            .bind(&question.is_used)
+            .execute(&self.db)
             .await.map_err(ResponseError::DbError)?;
-        Ok(question_id)
+        Ok(())
     }
 
     pub async fn read_one_question(
         &self,
         id: i32,
-    ) -> Result<QuestionRequest, ResponseError> {
-        match sqlx::query_as::<_, QuestionRequest>(READ_BY_ID_QUERY)
+    ) -> Result<Question, ResponseError> {
+        match sqlx::query_as::<_, Question>(READ_BY_ID_QUERY)
             .bind(id)
             .fetch_optional(&self.db)
             .await.map_err(ResponseError::DbError) {
@@ -80,7 +81,7 @@ impl QuestionService {
         question: PutQuestionRequest,
     ) -> Result<(), ResponseError> {
         if let Some(is_used) = question.is_used {
-            sqlx::query(DELETE_QUERY)
+            sqlx::query(UPDATE_QUESTION_USAGE_QUERY)
                 .bind(&is_used)
                 .bind(id)
                 .execute(&self.db)
@@ -88,7 +89,7 @@ impl QuestionService {
             return Ok(());
         }
         if let Some(question) = question.question {
-        sqlx::query(UPDATE_QUERY)
+        sqlx::query(UPDATE_QUESTION_QUERY)
             .bind(&question)
             .bind(id)
             .execute(&self.db)
@@ -130,17 +131,5 @@ impl QuestionService {
             .fetch_all(&self.db)
             .await.map_err(ResponseError::DbError)?;
         Ok(questions)
-    }
-
-    pub async fn delete_question(
-        &self,
-        id: i32,
-    ) -> Result<(), ResponseError> {
-        sqlx::query(DELETE_QUERY)
-            .bind(id)
-            .execute(&self.db)
-            .await.map_err(ResponseError::DbError)?;
-    
-        Ok(())
     }
 }
