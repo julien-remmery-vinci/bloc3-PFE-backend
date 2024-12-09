@@ -53,6 +53,10 @@ pub async fn create_answer_for_user(
         Some(_) => (),
     }
     //TODO check si le form existe
+    match state.form.read_form_by_id(answer.form_id).await? {
+        None => return Err(ResponseError::NotFound(None)),
+        Some(_) => (),
+    }
     //check si on a deja rep a cette answer
     let user_id = user.user_id;
     match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
