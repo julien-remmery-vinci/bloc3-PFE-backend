@@ -6,7 +6,7 @@ use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
     models::{company::{Company, CompanyWithCompleteForms}, form::CompleteForm},
-    routes::forms::get_complete_form
+    routes::forms::get_complete_forms
 };
 
 #[axum::debug_handler]
@@ -23,13 +23,7 @@ pub async fn read_one_company(
         None => return Err(ResponseError::NotFound(Some(String::from("Company not found")))),
     };
 
-    let forms = state.form.read_forms_by_company(company_id).await?;
-
-    let mut forms_list: Vec<CompleteForm> = Vec::new();
-    for form in forms {
-        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
-        forms_list.push(complete_form);
-    }
+    let forms_list: Vec<CompleteForm> = get_complete_forms(state, company_id).await?;
 
     Ok(Json(CompanyWithCompleteForms { company, forms: forms_list }))
 }
@@ -53,4 +47,34 @@ pub async fn create_company(
 
     state.company.create_company(company).await?;
     Ok(StatusCode::CREATED)
+}
+
+pub async fn company_forms_status(
+    State(state): State<AppState>,
+    Path(company_id): Path<i32>,
+) -> Result<impl IntoResponse, ResponseError> {
+    if company_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid company id"))));
+    }
+
+    match state.company.find_by_id(company_id).await? {
+        Some(_) => (),
+        None => return Err(ResponseError::NotFound(Some(String::from("Company not found")))),
+    };
+
+    let forms_list: Vec<CompleteForm> = get_complete_forms(state, company_id).await?;
+
+    let last_form = match forms_list.last() {
+        Some(form) => form,
+        None => return Err(ResponseError::BadRequest(Some(String::from("No forms found for specified company")))),
+    };
+    let mut total_answers = 0;
+    let mut total_user_answers = 0;
+
+    for question in last_form.questions.iter() {
+        total_answers += question.answers.len();
+        total_user_answers += question.user_answers.len();
+    }
+
+    Ok(Json((total_user_answers as f64 / total_answers as f64) * 100 as f64))
 }
