@@ -5,7 +5,7 @@ use axum::{
 use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
-    models::{company::{self, Company, CompanyWithCompleteForms}, form::CompleteForm},
+    models::{company::{Company, CompanyWithCompleteForms}, form::CompleteForm},
     routes::forms::get_complete_form
 };
 
