@@ -9,28 +9,28 @@ pub struct AnswerService {
 }
 
 const QUERY_INSERT_ANSWER: &str = "
-    INSERT INTO pfe.answers_esg (question_id, template, answer, score_now, score_commitment_pact, is_forced_engagement) 
-    VALUES ($1, $2, $3, $4, $5, $6) 
-    RETURNING answer_id, question_id, template, answer, score_now, score_commitment_pact, is_forced_engagement
+    INSERT INTO pfe.answers_esg (question_id, template, answer, score_now, score_commitment_pact, is_forced_engagement, is_forced_comment) 
+    VALUES ($1, $2, $3, $4, $5, $6, $7) 
+    RETURNING answer_id, question_id, template, answer, score_now, score_commitment_pact, is_forced_engagement, is_forced_comment
 ";
 
 const QUERY_INSERT_ANSWER_USER: &str = "
-    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, answer, now, commitment_pact, comment)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING answer_id, user_id, form_id, answer, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
 ";
 
 const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
     SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
     FROM pfe.user_answer_esg
     WHERE form_id = $1 AND user_id = $2 AND answer_id = $3
-    ";
+";
 
 const QUERY_READ_ANSWERS_BY_QUESTION: &str = "
-    SELECT answer_id, user_id, form_id, answer, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
     FROM pfe.user_answer_esg
     WHERE form_id = $2 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $1)
-    ";
+";
 
 
 impl AnswerService {
@@ -42,6 +42,7 @@ impl AnswerService {
             .bind(answer.score.clone())
             .bind(answer.engagement_score.clone())
             .bind(answer.is_forced_engagement.clone())
+            .bind(answer.is_forced_comment.clone())
             .fetch_one(&self.db)
             .await
             .map_err(|error| ResponseError::DbError(error))
@@ -56,7 +57,6 @@ impl AnswerService {
             .bind(answer_id.clone())
             .bind(user_id.clone())
             .bind(answer.form_id.clone())
-            .bind(answer.answer.clone())
             .bind(answer.now.clone())
             .bind(answer.commitment_pact.clone())
             .bind(answer.comment.clone())
@@ -105,18 +105,6 @@ impl AnswerService {
             Ok(answers) => Ok(answers),
             Err(error) => Err(error),
         }
-    }
-
-    pub async fn read_possible_answer_by_id(&self, answer_id: i32) -> Result<Option<Answer>, ResponseError> {
-        match sqlx::query_as::<_, Answer>("SELECT * FROM pfe.answers_esg WHERE answer_id = $1 AND answer IS NULL")
-            .bind(answer_id)
-            .fetch_optional(&self.db)
-            .await
-            .map_err(|error| ResponseError::DbError(error))
-        {
-            Ok(answer) => Ok(answer),
-            Err(error) => Err(error),
-        }   
     }
 
     // method to retrieve all answers of a user for a specific question

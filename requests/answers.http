@@ -50,28 +50,34 @@ Content-Type: application/json
 }
 
 ### Add an answer for a user without text
-POST {{ baseUrl }}/answers/4
+POST {{ baseUrl }}/answers/1
 Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "form_id": 4,
+    "form_id": 1,
     "now": true,
     "commitment_pact": false,
-    "comment": " "
+    "comment": "Mon commentaire"
 }
 
-### Add an answer for a user with text
+### Add an answer for a user with text on forced comment
 POST {{ baseUrl }}/answers/3
 Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "answer": "cc sava",
     "form_id": 1,
-    "now": true,
-    "commitment_pact": false,
-    "comment": " "
+    "comment": "Mon commentaire"
+}
+
+### Add an answer for a user without text on forced comment
+POST {{ baseUrl }}/answers/3
+Content-Type: application/json
+Authorization: Bearer {{ user_token }}
+
+{
+    "form_id": 1
 }
 
 ### Get the answers of a question

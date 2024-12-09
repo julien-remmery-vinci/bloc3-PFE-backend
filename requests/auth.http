@@ -2,18 +2,30 @@
 @user_token={{ user.response.body.token }}
 @admin_token={{ admin.response.body.token }}
 
-### Register without company
+### Register a new user for a company
 POST {{ baseUrl }}/auth/register
 Content-Type: application/json
-Authorization: Bearer {{ admin_token }}
+Authorization: Bearer {{ user_token }}
 
 {
     "firstname": "John",
     "lastname": "Doe",
     "login": "John",
     "password": "password",
-    "role": "admin",
-    "company_id": null
+    "role": "user"
+}
+
+### Register a new user with not enough rights
+POST {{ baseUrl }}/auth/register
+Content-Type: application/json
+Authorization: Bearer {{ user_token }}
+
+{
+    "firstname": "John",
+    "lastname": "Doe",
+    "login": "John",
+    "password": "password",
+    "role": "admin"
 }
 
 ### Register without company
@@ -27,20 +39,6 @@ Authorization: Bearer {{ admin_token }}
     "login": "azeazeazeae",
     "password": "password",
     "role": "admin"
-}
-
-### Register with company
-POST {{ baseUrl }}/auth/register
-Content-Type: application/json
-Authorization: Bearer {{ admin_token }}
-
-{
-    "firstname": "John",
-    "lastname": "Doe",
-    "login": "John",
-    "password": "password",
-    "role": "user",
-    "company_id": 1
 }
 
 ### Login with user account

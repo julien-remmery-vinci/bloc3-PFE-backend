@@ -30,3 +30,12 @@ pub async fn update_question(
     state.question.update_question(id, question).await?;
     Ok(StatusCode::NO_CONTENT)
 }
+
+pub async fn complete_question(
+    State(state): State<AppState>,
+    question_id: i32,
+    form_id: i32,
+) -> Result<impl IntoResponse, ResponseError> {
+    state.question.complete_question(question_id, form_id).await?;
+    Ok(StatusCode::NO_CONTENT)
+}

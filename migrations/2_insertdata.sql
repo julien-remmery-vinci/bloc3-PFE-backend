@@ -116,12 +116,15 @@ Une déclaration de mission formelle et écrite de l''entreprise est une déclar
 ('ESG', '12. CERTIFICATIONS', '12.1. CERTIFICATIONS D''UN PRODUIT, D''UN SERVICE OU D''UNE PRATIQUE', 'Quel est le pourcentage de vos produits ou services ou pratiques durables qui ont été contrôlés et certifiés par un organisme d''accréditation  axé sur la qualité ou le développement durable ? (ex : Fairtrade, BIO, Ecovadis, Ethibel, BDO etc) '),
 ('ESG', '12. CERTIFICATIONS', '12.2. CERTIFICATIONS DE L''ENTREPRISE', 'XXX a-t-elle obtenu une ou plusieurs certifications attestant ses efforts en matière de transition durable ?');
 
-INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement)
+INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement, is_forced_comment)
 VALUES
 -- 1. ENERGIE & CARBONE
-('oui','ALL',1,2.0,0.5,FALSE),
-('Non', 'ALL', 1, 0.0, 0.0, FALSE),
-(NULL, 'ALL', 2, 0.0, 0.0, FALSE),
+('oui','ALL',1,2.0,0.5,FALSE, FALSE),
+('Non', 'ALL', 1, 0.0, 0.0, FALSE, FALSE),
+(NULL, 'ALL', 2, 0.0, 0.0, FALSE, TRUE);
+
+INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement)
+VALUES
 ('Oui', 'OWNED FACILITY', 3, 1.0, 0.25, FALSE),
 ('Non', 'OWNED FACILITY', 3, 0.0, 0.0, FALSE),
 ('Je ne sais pas', 'OWNED FACILITY', 3, 0.0, 0.0, FALSE),
