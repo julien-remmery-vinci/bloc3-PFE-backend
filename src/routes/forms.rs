@@ -63,14 +63,7 @@ pub async fn read_forms_by_user(
     }
 
     let company_id = user.company_id.unwrap();
-    let forms = state.form.read_forms_by_company(company_id)
-        .await?;
-
-    let mut forms_list: Vec<CompleteForm> = Vec::new();
-    for form in forms {
-        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
-        forms_list.push(complete_form);
-    }
+    let forms_list: Vec<CompleteForm> = get_complete_forms(state, company_id).await?;
 
     Ok((StatusCode::OK, Json(forms_list)))
 }
@@ -104,4 +97,17 @@ pub async fn get_complete_form(
         );
     }
     Ok(complete_form)
+}
+
+pub async fn get_complete_forms(
+    state: AppState,
+    company_id: i32,
+) -> Result<Vec<CompleteForm>, ResponseError> {
+    let forms = state.form.read_forms_by_company(company_id).await?;
+    let mut forms_list: Vec<CompleteForm> = Vec::new();
+    for form in forms {
+        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
+        forms_list.push(complete_form);
+    }
+    Ok(forms_list)
 }

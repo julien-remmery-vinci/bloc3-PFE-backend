@@ -32,7 +32,7 @@ POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
 {
-    "login": "user@example.com",
+    "login": "user1@example.com",
     "password": "password"
 }
 
@@ -50,12 +50,12 @@ Content-Type: application/json
 }
 
 ### Add an answer for a user without text
-POST {{ baseUrl }}/answers/1
+POST {{ baseUrl }}/answers/4
 Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "form_id": 7,
+    "form_id": 4,
     "now": true,
     "commitment_pact": false,
     "comment": " "
