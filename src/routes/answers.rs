@@ -36,32 +36,38 @@ pub async fn create_answer_for_user(
     let possible_answer = state.answer.read_possible_answer_by_id(answer_id).await?;
     if possible_answer.is_none() {
         if answer.answer.is_some() {
-            return Err(ResponseError::BadRequest(None));
+            return Err(ResponseError::BadRequest(Some(String::from("Answer information not required"))));
         }   
     }
     if possible_answer.is_some() {
         if answer.answer.is_none() {
-            return Err(ResponseError::BadRequest(None));
+            return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
         }
     }
     if answer.invalid() {
-        return Err(ResponseError::BadRequest(None));
+        return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
     }
     //check si l'id de l'answer exist
     match state.answer.read_answer_by_id(answer_id).await? {
-        None => return Err(ResponseError::NotFound(None)),
+        None => return Err(ResponseError::NotFound(Some(String::from("Answer not found")))),
         Some(_) => (),
     }
-    //TODO check si le form existe
+    //check si le form existe
     match state.form.read_form_by_id(answer.form_id).await? {
-        None => return Err(ResponseError::NotFound(None)),
+        None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
         Some(_) => (),
     }
     //check si on a deja rep a cette answer
     let user_id = user.user_id;
     match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
-        Some(_) => return Err(ResponseError::Conflict(None)),
+        Some(_) => return Err(ResponseError::Conflict(Some(String::from("Answer already exists")))),
         None => (),
+    }
+    //TODO check si il y un engagement forcé
+    //TODO changé l'état de la question en answered
+    // on ne peut pas avoir now et commitment_pact true en meme temps
+    if answer.now && answer.commitment_pact {
+        return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
     }
 
     let valid = state.answer.create_answer_user(answer,user_id,answer_id).await?;
