@@ -6,12 +6,12 @@ use crate::models::template::Template;
 use sqlx::{Error, PgPool};
 
 const QUERY_INSERT_FORM: &str = "
-    INSERT INTO pfe.forms (company_id, type)
-    VALUES ($1, $2)
+    INSERT INTO pfe.forms (company_id, type, status)
+    VALUES ($1, $2, 'PENDING')
     RETURNING form_id, company_id, type
 ";
 const QUERY_SELECT_FORMS_BY_COMPANY: &str = "
-    SELECT form_id, company_id, type
+    SELECT form_id, company_id, type, status
     FROM pfe.forms
     WHERE company_id = $1
 ";
@@ -33,7 +33,7 @@ const QUERY_SELECT_TEMPLATES_BY_FORM: &str = "
 ";
 
 const QUERY_SELECT_FORM_BY_ID: &str = "
-    SELECT form_id, company_id, type
+    SELECT form_id, company_id, type, status
     FROM pfe.forms
     WHERE form_id = $1
 ";
@@ -94,5 +94,26 @@ impl FormService {
             .fetch_optional(&self.db)
             .await.map_err(ResponseError::DbError)?;
         Ok(form)
+    }
+
+    pub async fn get_pending_questions(&self, form_id: i32) -> Result<Vec<i32>, ResponseError> {
+        let pending_questions = sqlx::query_scalar::<_, i32>(
+            "SELECT question_id FROM pfe.questions_form WHERE question_status = 'PENDING' AND form_id = $1"
+        )
+        .bind(form_id)
+        .fetch_all(&self.db)
+        .await
+        .map_err(ResponseError::DbError)?;
+    
+        Ok(pending_questions)
+    }
+
+    pub async fn submit_form(&self, form_id: i32) -> Result<(), ResponseError> {
+        sqlx::query("UPDATE pfe.forms SET status = 'SUBMITTED' WHERE form_id = $1")
+            .bind(form_id)
+            .execute(&self.db)
+            .await
+            .map_err(ResponseError::DbError)?;
+        Ok(())
     }
 }

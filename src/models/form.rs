@@ -17,6 +17,7 @@ pub struct Form {
     pub form_id: i32,
     pub company_id: i32,
     pub r#type: String,
+    pub status: String,
 }
 
 #[derive(Serialize, Deserialize, FromRow, Debug)]
@@ -24,6 +25,7 @@ pub struct CompleteForm {
     pub form_id: i32,
     pub company_id: i32,
     pub r#type: String,
+    pub status: String,
     pub templates: Vec<Template>,
     pub questions: Vec<QuestionWithUserAnswers>,
 }
