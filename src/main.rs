@@ -35,7 +35,7 @@ use routes::questions::{
     update_question
 };
 use routes::companies::{
-    company_forms_status, create_company, read_all_companies, read_one_company
+    company_forms_status, create_company, read_all_companies, read_one_company, validate_company
 };
 use routes::scores::sum_score_template;
 use tokio::net::TcpListener;
@@ -98,6 +98,8 @@ fn company_routes(state: AppState) -> Router<AppState> {
         .route("/company/:id", get(read_one_company)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
         .route("/company/:id/forms/status", get(company_forms_status)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/company/:id/validate", post(validate_company)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 

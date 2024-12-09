@@ -17,10 +17,17 @@ pub struct Company {
     pub revenue: Option<f64>,
     pub labels: Option<Vec<String>>,
     pub dispute: bool,
+    pub is_validated: Option<bool>,
+    pub is_eligible: Option<bool>,
 }
 
 #[derive(Deserialize, FromRow, Serialize)]
 pub struct CompanyWithCompleteForms {
     pub company: Company,
     pub forms: Vec<CompleteForm>,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct CompanyValidation {
+    pub is_eligible: bool,
 }
