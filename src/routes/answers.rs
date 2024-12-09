@@ -30,37 +30,57 @@ pub async fn create_answer_for_user(
     State(state): State<AppState>,
     Extension(user): Extension<User>,
     Path(answer_id): Path<i32>,
-    Json(answer): Json<CreateAnswerUser>
+    Json(created_answer): Json<CreateAnswerUser>
 ) -> Result<Json<AnswerUser>, ResponseError> {
     //si le contenue du champ answer de la table answers_esg est NULL alors answer de l'objet CreateAnswerUser est obligatoire
     let possible_answer = state.answer.read_possible_answer_by_id(answer_id).await?;
     if possible_answer.is_none() {
-        if answer.answer.is_some() {
-            return Err(ResponseError::BadRequest(None));
+        if created_answer.answer.is_some() {
+            return Err(ResponseError::BadRequest(Some(String::from("Answer information not required"))));
         }   
     }
     if possible_answer.is_some() {
-        if answer.answer.is_none() {
-            return Err(ResponseError::BadRequest(None));
+        if created_answer.answer.is_none() {
+            return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
         }
     }
-    if answer.invalid() {
-        return Err(ResponseError::BadRequest(None));
+    if created_answer.invalid() {
+        return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
     }
     //check si l'id de l'answer exist
-    match state.answer.read_answer_by_id(answer_id).await? {
-        None => return Err(ResponseError::NotFound(None)),
+    let answer = state.answer.read_answer_by_id(answer_id).await?;
+    match answer {
+        None => return Err(ResponseError::NotFound(Some(String::from("Answer not found")))),
         Some(_) => (),
     }
-    //TODO check si le form existe
-    //check si on a deja rep a cette answer
+    //check si le form existe
+    match state.form.read_form_by_id(created_answer.form_id).await? {
+        None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
+        Some(_) => (),
+    }
+    //check si on a deja rep a cette answer FONCTIONNE PAS
     let user_id = user.user_id;
-    match state.answer.read_answer_user_by_form_id(answer.form_id,user_id,answer_id).await? {
-        Some(_) => return Err(ResponseError::Conflict(None)),
+    match state.answer.read_answer_user_by_form_id(created_answer.form_id,user_id,answer_id).await? {
+        Some(_) => return Err(ResponseError::Conflict(Some(String::from("Answer already exists")))),
         None => (),
     }
+    // check si il y un engagement forcé
+    if let Some(answer) = answer {
+        if answer.is_forced_engagement {
+            if !created_answer.commitment_pact {
+                if !created_answer.now {
+                    return Err(ResponseError::BadRequest(Some(String::from("You must have a forced engagement"))));
+                }
+            }
+        }
+    }
+    //TODO changé l'état de la question en answered
+    // on ne peut pas avoir now et commitment_pact true en meme temps
+    if created_answer.now && created_answer.commitment_pact {
+        return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
+    }
 
-    let valid = state.answer.create_answer_user(answer,user_id,answer_id).await?;
+    let valid = state.answer.create_answer_user(created_answer,user_id,answer_id).await?;
     Ok(Json(valid))
 }
 

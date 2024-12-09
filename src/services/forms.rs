@@ -32,6 +32,12 @@ const QUERY_SELECT_TEMPLATES_BY_FORM: &str = "
     WHERE t.template_id = tf.template_id AND tf.form_id = $1
 ";
 
+const QUERY_SELECT_FORM_BY_ID: &str = "
+    SELECT form_id, company_id, type
+    FROM pfe.forms
+    WHERE form_id = $1
+";
+
 #[derive(Debug, Clone)]
 pub struct FormService {
     pub db: PgPool,
@@ -80,5 +86,13 @@ impl FormService {
             .fetch_all(&self.db)
             .await.map_err(ResponseError::DbError)?;
         Ok(templates)
+    }
+
+    pub async fn read_form_by_id(&self, form_id: i32) -> Result<Option<Form>, ResponseError> {
+        let form = sqlx::query_as::<_, Form>(QUERY_SELECT_FORM_BY_ID)
+            .bind(form_id)
+            .fetch_optional(&self.db)
+            .await.map_err(ResponseError::DbError)?;
+        Ok(form)
     }
 }
