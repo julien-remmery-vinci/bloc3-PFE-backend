@@ -9,12 +9,13 @@ const READ_BY_ID_QUERY: &str = "
         FROM pfe.questions
         WHERE id = $1
     ";
-const READ_ALL_QUERY: &str = "
-        SELECT question_id, category, sub_category
+const READ_ALL_BY_TYPE_QUERY: &str = "
+        SELECT question_id, category, sub_category, question, is_used, question_type
         FROM pfe.questions
+        WHERE question_type = $1
     ";
 const READ_ALL_USED_QUERY: &str = "
-        SELECT question_id, category, sub_category, question, is_used
+        SELECT question_id, category, sub_category, question, is_used, question_type
         FROM pfe.questions
         WHERE is_used = true AND question_type = $1
     ";
@@ -97,10 +98,12 @@ impl QuestionService {
         Ok(())
     }
 
-    pub async fn read_all_questions(
-        &self
-    ) -> Result<Vec<QuestionRequest>, ResponseError> {
-        let questions = sqlx::query_as::<_, QuestionRequest>(READ_ALL_QUERY)
+    pub async fn read_all_questions_by_type(
+        &self,
+        question_type: String
+    ) -> Result<Vec<Question>, ResponseError> {
+        let questions = sqlx::query_as::<_, Question>(READ_ALL_BY_TYPE_QUERY)
+            .bind(question_type)
             .fetch_all(&self.db)
             .await.map_err(ResponseError::DbError)?;
         Ok(questions)

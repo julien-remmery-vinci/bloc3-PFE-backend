@@ -36,10 +36,6 @@ Authorization: Bearer {{ admin_token }}
 GET {{ baseUrl }}/forms/user
 Authorization: Bearer {{ user_token }}
 
-### Get a form by ID
-GET {{ baseUrl }}/forms/20
-Authorization: Bearer {{ user_token }}
-
-### Get a form that does not exist
-GET {{ baseUrl }}/forms/100
-Authorization: Bearer {{ user_token }}
+### Read all types of forms with their questions & answers, used for managing forms
+GET {{ baseUrl }}/forms
+Authorization: Bearer {{ admin_token }}

@@ -10,6 +10,7 @@ pub struct Question {
     pub sub_category: String,
     pub question: String,
     pub is_used: bool,
+    pub question_type: String,
 }
 
 #[derive(Deserialize, Serialize, FromRow)]
