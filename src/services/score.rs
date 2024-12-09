@@ -11,6 +11,11 @@ const QUERY_SUM_SCORE_TEMPLATE: &str = "
     WHERE template = $1
     ";
 
+const QUERY_SUM_SCORE_TEMPLATE_ALL: &str = "
+    SELECT SUM(score_now) as score
+    FROM pfe.answers_esg
+    ";
+
 const QUERY_FIND_TEMPLATE_BY_FORM_ID: &str = "
     SELECT value
     FROM pfe.templates
@@ -20,13 +25,13 @@ const QUERY_FIND_TEMPLATE_BY_FORM_ID: &str = "
 const QUERY_SUM_SCORE_USER_NOW: &str = "
     SELECT SUM(score_now) as score
     FROM pfe.answers_esg
-    WHERE answer_id IN (SELECT answer_id FROM pfe.user_answer_esg WHERE now = TRUE AND form_id = $2)
+    WHERE answer_id IN (SELECT answer_id FROM pfe.user_answer_esg WHERE now = TRUE AND form_id = $1)
     ";
 
 const QUERY_SUM_SCORE_USER_COMMITMENT_PACT: &str = "
     SELECT SUM(score_commitment_pact) as score
     FROM pfe.answers_esg
-    WHERE answer_id IN (SELECT answer_id FROM pfe.user_answer_esg WHERE commitment_pact = TRUE AND form_id = $2)
+    WHERE answer_id IN (SELECT answer_id FROM pfe.user_answer_esg WHERE commitment_pact = TRUE AND form_id = $1)
     ";
 
 
@@ -36,6 +41,15 @@ impl ScoreService {
     pub async fn sum_score_template(&self, template: String) -> Result<f64, ResponseError> {
         let score: (f64,) = sqlx::query_as(QUERY_SUM_SCORE_TEMPLATE)
             .bind(template)
+            .fetch_one(&self.db)
+            .await
+            .map_err(ResponseError::DbError)?;
+        Ok(score.0)
+    }
+
+    pub async fn sum_score_template_all(&self) -> Result<f64, ResponseError> {
+        let score: (f64,) = sqlx::query_as(QUERY_SUM_SCORE_TEMPLATE_ALL)
+            .bind("ALL")
             .fetch_one(&self.db)
             .await
             .map_err(ResponseError::DbError)?;
@@ -57,21 +71,22 @@ impl ScoreService {
 
     //SECOND STEP
     // now we need to sum the score that the user actually choose (now and commitment_pact)
-    pub async fn sum_score_user_now(&self, user_id: i32) -> Result<f64, ResponseError> {
+    pub async fn sum_score_user_now(&self, form_id: i32) -> Result<f64, ResponseError> {
         let score: (f64,) = sqlx::query_as(QUERY_SUM_SCORE_USER_NOW)
-            .bind(user_id)
+            .bind(form_id)
             .fetch_one(&self.db)
             .await
             .map_err(ResponseError::DbError)?;
         Ok(score.0)
     }
 
-    pub async fn sum_score_user_commitment_pact(&self, user_id: i32) -> Result<f64, ResponseError> {
-        let score: (f64,) = sqlx::query_as(QUERY_SUM_SCORE_USER_COMMITMENT_PACT)
-            .bind(user_id)
+    pub async fn sum_score_user_commitment_pact(&self, form_id: i32) -> Result<f64, ResponseError> {
+        let score: (Option<f64>,) = sqlx::query_as(QUERY_SUM_SCORE_USER_COMMITMENT_PACT)
+            .bind(form_id)
             .fetch_one(&self.db)
             .await
             .map_err(ResponseError::DbError)?;
-        Ok(score.0)
+        
+        Ok(score.0.unwrap_or(0.0))
     }
 }

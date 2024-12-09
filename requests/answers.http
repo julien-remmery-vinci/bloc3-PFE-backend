@@ -32,7 +32,7 @@ POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
 {
-    "login": "user@example.com",
+    "login": "user1@example.com",
     "password": "password"
 }
 
@@ -55,7 +55,7 @@ Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "form_id": 7,
+    "form_id": 4,
     "now": true,
     "commitment_pact": false,
     "comment": " "
@@ -76,4 +76,8 @@ Authorization: Bearer {{ user_token }}
 
 ### Get the answers of a question
 GET {{ baseUrl }}/answers/1
+Authorization: Bearer {{ user_token }}
+
+### get the score of a form
+GET {{ baseUrl }}/score/4
 Authorization: Bearer {{ user_token }}
