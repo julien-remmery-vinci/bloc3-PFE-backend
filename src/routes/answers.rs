@@ -63,27 +63,29 @@ pub async fn create_answer_for_user(
         Some(_) => (),
     }
 
-    //check si on a deja répondu a cette answer FONCTIONNE PAS
-    let user_id: i32 = user.user_id;
-    match state.answer.read_answer_user_by_form_id(created_answer.form_id,user_id,answer_id).await? {
-        Some(_) => return Err(ResponseError::Conflict(Some(String::from("Answer already exists")))),
-        None => (),
-    }
-
+    
     // check si il y un engagement forcé
     if answer.answer.is_some() && answer.is_forced_engagement {
         if created_answer.commitment_pact.is_none() {
             return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
         }
     }
-
+    
     // on ne peut pas avoir now et commitment_pact true en meme temps
     if answer.answer.is_some() && created_answer.now.unwrap() && created_answer.commitment_pact.unwrap() {
         return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
     }
-
+    
+    //check si on a deja répondu a cette answer FONCTIONNE PAS
+    let user_id: i32 = user.user_id;
+    match state.answer.read_answer_by_form_id(created_answer.form_id, answer_id).await? {
+        Some(_) => {
+            state.answer.delete_user_answer_by_form_id(created_answer.form_id, answer_id).await?;
+        },
+        None => (),
+    }
     // Save the user's answer
-    let valid: AnswerUser = state.answer.create_answer_user(created_answer.clone(), user_id,answer_id).await?;
+    let valid: AnswerUser = state.answer.create_answer_user(created_answer.clone(), user_id, answer_id).await?;
     
     // Set the question status as COMPLETE
     complete_question(State(state), answer.question_id.unwrap(), created_answer.form_id).await?;

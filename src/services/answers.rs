@@ -17,13 +17,13 @@ const QUERY_INSERT_ANSWER: &str = "
 const QUERY_INSERT_ANSWER_USER: &str = "
     INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, status)
     VALUES ($1, $2, $3, $4, $5, $6, 'PENDING')
-    RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status
 ";
 
 const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
     SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status
     FROM pfe.user_answer_esg
-    WHERE form_id = $1 AND user_id = $2 AND answer_id = $3
+    WHERE form_id = $1 AND answer_id = $2
 ";
 
 const QUERY_READ_ALL_ANSWERS_BY_QUESTION: &str = "
@@ -87,16 +87,28 @@ impl AnswerService {
         }
     }
 
-    pub async fn read_answer_user_by_form_id(&self, form_id: i32, user_id: i32,answer_id: i32) -> Result<Option<AnswerUser>, ResponseError> {
+    pub async fn read_answer_by_form_id(&self, form_id: i32, answer_id: i32) -> Result<Option<AnswerUser>, ResponseError> {
         match sqlx::query_as::<_, AnswerUser>(QUERY_FIND_ANSWER_USER_BY_FORM_ID)
             .bind(form_id)
-            .bind(user_id)
             .bind(answer_id)
             .fetch_optional(&self.db)
             .await
             .map_err(|error| ResponseError::DbError(error))
         {
             Ok(answer) => Ok(answer),
+            Err(error) => Err(error),
+        }
+    }
+
+    pub async fn delete_user_answer_by_form_id(&self, form_id: i32, answer_id: i32) -> Result<(), ResponseError> {
+        match sqlx::query("DELETE FROM pfe.user_answer_esg WHERE form_id = $1 AND answer_id = $2")
+            .bind(form_id)
+            .bind(answer_id)
+            .execute(&self.db)
+            .await
+            .map_err(|error| ResponseError::DbError(error))
+        {
+            Ok(_) => Ok(()),
             Err(error) => Err(error),
         }
     }
