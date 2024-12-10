@@ -690,4 +690,6 @@ VALUES
 ('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin', null);
 
 
-
+-- LIEN QUESTION REPONSE POUR TEST
+INSERT INTO pfe.questions_form (form_id, question_id, question_status)
+VALUES (2, 1, 'PENDING');

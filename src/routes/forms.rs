@@ -94,10 +94,12 @@ pub async fn submit_form(
         return Err(ResponseError::Unauthorized(Some(String::from("You are not authorized to submit this form"))));
     }
 
-    let pending_questions: Vec<i32> = state.form.get_pending_questions(form_id).await?;
+    if !confirmation.confirmation {
+        let pending_questions: Vec<i32> = state.form.get_pending_questions(form_id).await?;
 
-    if pending_questions.len() > 0 && !confirmation.confirmation {
-        return Ok((StatusCode::BAD_REQUEST, Json(pending_questions)).into_response());
+        if pending_questions.len() > 0 {
+            return Ok((StatusCode::BAD_REQUEST, Json(pending_questions)).into_response());
+        }
     }
 
     state.form.submit_form(form_id).await?;
