@@ -39,6 +39,7 @@ Content-Type: application/json
 ### Add an answer
 POST {{ baseUrl }}/answers
 Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
 
 {
     "answer": "cc sava",

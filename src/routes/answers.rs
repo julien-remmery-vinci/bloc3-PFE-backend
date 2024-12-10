@@ -56,27 +56,26 @@ pub async fn create_answer_for_user(
             return Err(ResponseError::BadRequest(Some(String::from("Missing commitment pact field"))));
         }
     }
-
+    
+    // check si il y un engagement forcé
+    tracing::info!("answer.is_forced_engagement : {:?}", answer.is_forced_engagement);
+    tracing::info!("created_answer.commitment_pact : {:?}", created_answer.commitment_pact);
+    if answer.is_forced_engagement && (created_answer.commitment_pact.is_none() || created_answer.commitment_pact.unwrap() == false) {
+        return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
+    }
+    
+    // on ne peut pas avoir now et commitment_pact true en meme temps
+    if !answer.is_forced_engagement && answer.answer.is_some() && created_answer.now.unwrap() && created_answer.commitment_pact.unwrap() {
+        return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
+    }
+    
     //check si le form existe
     match state.form.read_form_by_id(created_answer.form_id).await? {
         None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
         Some(_) => (),
     }
-
     
-    // check si il y un engagement forcé
-    if answer.answer.is_some() && answer.is_forced_engagement {
-        if created_answer.commitment_pact.is_none() {
-            return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
-        }
-    }
-    
-    // on ne peut pas avoir now et commitment_pact true en meme temps
-    if answer.answer.is_some() && created_answer.now.unwrap() && created_answer.commitment_pact.unwrap() {
-        return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
-    }
-    
-    //check si on a deja répondu a cette answer FONCTIONNE PAS
+    //check si on a deja répondu a cette answer , si oui on supprime la reponse
     let user_id: i32 = user.user_id;
     match state.answer.read_answer_by_form_id(created_answer.form_id, answer_id).await? {
         Some(_) => {
