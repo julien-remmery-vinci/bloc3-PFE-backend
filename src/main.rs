@@ -13,6 +13,7 @@ use axum::http::{
     Method, 
     Response
 };
+use axum::routing::patch;
 use axum::{
     routing::get,
     routing::post,
@@ -27,7 +28,9 @@ use routes::forms::{
 use routes::answers::{
     create_answer, 
     create_answer_for_user, 
-    read_answers_by_question, validate_user_answer
+    read_answers_by_question, 
+    validate_user_answer, 
+    update_answer_score
 };
 use routes::questions::{
     create_question, 
@@ -92,6 +95,8 @@ fn answers_routes(state: AppState) -> Router<AppState> {
         .route("/answers/:id",get(read_answers_by_question)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
         .route("/answers/:id/validate", post(validate_user_answer)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/answers/update-score/:id", patch(update_answer_score)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 

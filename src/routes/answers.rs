@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::errors::responserror::ResponseError;
-use crate::models::answer::{AnswerUser, CreateAnswer, CreateAnswerUser, CreateAnswerValidation, ValidatedAnswer};
+use crate::models::answer::{AnswerUser, CreateAnswer, CreateAnswerUser, CreateAnswerValidation, UpdateScoreRequest, ValidatedAnswer};
 use crate::{
     database::state::AppState,
     models::answer::Answer,
@@ -152,4 +152,30 @@ pub async fn validate_user_answer(
 
     let validated: AnswerUser = state.answer.insert_answer_validation(validation).await?;
     Ok(Json(validated))
+}
+
+#[axum::debug_handler]
+pub async fn update_answer_score(
+    State(state): State<AppState>,
+    Path(answer_id): Path<i32>,
+    Json(scores): Json<UpdateScoreRequest>,
+) -> Result<Json<Answer>, ResponseError> {
+    if answer_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid answer id"))));
+    }
+
+    if scores.invalid() {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid scores: scores cannot be negative"))));
+    }
+
+    let answer = match state.answer.read_answer_by_id(answer_id).await? {
+        Some(answer) => answer,
+        None => return Err(ResponseError::NotFound(Some(String::from("Answer not found")))),
+    };
+
+    let score_now = scores.score_now.unwrap_or(answer.score_now);
+    let score_commitment_pact = scores.score_commitment_pact.unwrap_or(answer.score_commitment_pact);
+
+    let updated = state.answer.update_answer_score(answer_id, score_now, score_commitment_pact).await?;
+    Ok(Json(updated))
 }

@@ -119,3 +119,40 @@ Authorization: Bearer {{ admin_token }}
 {
     "form_id": 2
 }
+
+### Update score of an answer ONLY SCORE NOW
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_now": 0.7
+}
+
+### Update score of an answer ONLY SCORE ENGAGEMENT
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_commitment_pact": 0.6
+}
+
+### Update score of an answer BOTH SCORES
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_now": 2,
+    "score_commitment_pact": 0.5
+}
+
+### Update score of an answer with wrong value
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_now": -1
+}
