@@ -5,6 +5,7 @@ pub struct ScoreService {
     pub db: sqlx::PgPool,
 }
 
+/*
 const QUERY_SUM_SCORE_TEMPLATE: &str = "
     SELECT SUM(score_now) as score
     FROM pfe.answers_esg
@@ -20,7 +21,7 @@ const QUERY_FIND_TEMPLATE_BY_FORM_ID: &str = "
     SELECT value
     FROM pfe.templates
     WHERE template_id IN (SELECT template_id FROM pfe.template_form WHERE form_id = $1)
-    ";
+    ";*/
 
 const QUERY_SUM_SCORE_USER_NOW: &str = "
     SELECT q.sub_category, SUM(a.score_now) as score
@@ -44,6 +45,7 @@ const QUERY_SUM_SCORE_USER_COMMITMENT_PACT: &str = "
 impl ScoreService {
     //FIRST STEP
     //returns the sum of the scores of all the answers that have the same template
+    /* 
     pub async fn sum_score_template(&self, template: String) -> Result<f64, ResponseError> {
         let score: (f64,) = sqlx::query_as(QUERY_SUM_SCORE_TEMPLATE)
             .bind(template)
@@ -74,6 +76,7 @@ impl ScoreService {
             .filter_map(|(template,)| template)
             .collect())
     }
+    */
 
     //SECOND STEP
     // now we need to sum the score that the user actually choose (now and commitment_pact)
