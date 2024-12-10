@@ -56,34 +56,35 @@ pub async fn create_answer_for_user(
             return Err(ResponseError::BadRequest(Some(String::from("Missing commitment pact field"))));
         }
     }
-
+    
+    // check si il y un engagement forcé
+    tracing::info!("answer.is_forced_engagement : {:?}", answer.is_forced_engagement);
+    tracing::info!("created_answer.commitment_pact : {:?}", created_answer.commitment_pact);
+    if answer.is_forced_engagement && (created_answer.commitment_pact.is_none() || created_answer.commitment_pact.unwrap() == false) {
+        return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
+    }
+    
+    // on ne peut pas avoir now et commitment_pact true en meme temps
+    if !answer.is_forced_engagement && answer.answer.is_some() && created_answer.now.unwrap() && created_answer.commitment_pact.unwrap() {
+        return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
+    }
+    
     //check si le form existe
     match state.form.read_form_by_id(created_answer.form_id).await? {
         None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
         Some(_) => (),
     }
-
-    //check si on a deja répondu a cette answer FONCTIONNE PAS
+    
+    //check si on a deja répondu a cette answer , si oui on supprime la reponse
     let user_id: i32 = user.user_id;
-    match state.answer.read_answer_user_by_form_id(created_answer.form_id,user_id,answer_id).await? {
-        Some(_) => return Err(ResponseError::Conflict(Some(String::from("Answer already exists")))),
+    match state.answer.read_answer_by_form_id(created_answer.form_id, answer_id).await? {
+        Some(_) => {
+            state.answer.delete_user_answer_by_form_id(created_answer.form_id, answer_id).await?;
+        },
         None => (),
     }
-
-    // check si il y un engagement forcé
-    if answer.answer.is_some() && answer.is_forced_engagement {
-        if created_answer.commitment_pact.is_none() {
-            return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
-        }
-    }
-
-    // on ne peut pas avoir now et commitment_pact true en meme temps
-    if answer.answer.is_some() && created_answer.now.unwrap() && created_answer.commitment_pact.unwrap() {
-        return Err(ResponseError::BadRequest(Some(String::from("You can't have now and commitment_pact true at the same time"))));
-    }
-
     // Save the user's answer
-    let valid: AnswerUser = state.answer.create_answer_user(created_answer.clone(), user_id,answer_id).await?;
+    let valid: AnswerUser = state.answer.create_answer_user(created_answer.clone(), user_id, answer_id).await?;
     
     // Set the question status as COMPLETE
     complete_question(State(state), answer.question_id.unwrap(), created_answer.form_id).await?;
