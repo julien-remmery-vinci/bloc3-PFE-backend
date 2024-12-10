@@ -196,4 +196,20 @@ impl AnswerService {
             .map_err(ResponseError::DbError)?;
         Ok(answer)
     }
+
+    pub async fn update_answer_score(&self, answer_id: i32, score: f64, engagement_score: f64) -> Result<Answer, ResponseError> {
+        let answer = sqlx::query_as::<_, Answer>("
+                UPDATE pfe.answers_esg 
+                SET score_now = $2, score_commitment_pact = $3
+                WHERE answer_id = $1
+                RETURNING answer_id, question_id, template, answer, score_now, score_commitment_pact, is_forced_engagement, is_forced_comment
+            ")
+            .bind(answer_id)
+            .bind(score)
+            .bind(engagement_score)
+            .fetch_one(&self.db)
+            .await
+            .map_err(ResponseError::DbError)?;
+        Ok(answer)
+    }
 }

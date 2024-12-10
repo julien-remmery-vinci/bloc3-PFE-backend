@@ -63,6 +63,12 @@ pub struct CreateAnswerValidation {
     pub commitment_pact_verif: Option<bool>,
 }
 
+#[derive(Deserialize)]
+pub struct UpdateScoreRequest {
+    pub score_now: Option<f64>,
+    pub score_commitment_pact: Option<f64>,
+}
+
 impl CreateAnswerUser {
     pub fn invalid(&self) -> bool {
         self.form_id <= 0
@@ -76,5 +82,16 @@ impl CreateAnswer {
             || self.question_id == 0
             || self.score < 0.0
             || self.engagement_score < 0.0
+    }
+}
+
+impl UpdateScoreRequest {
+    pub fn invalid(&self) -> bool {
+        match (self.score_now, self.score_commitment_pact) {
+            (Some(now), Some(commitment)) => now < 0.0 || commitment < 0.0,
+            (Some(now), None) => now < 0.0,
+            (None, Some(commitment)) => commitment < 0.0,
+            (None, None) => false,
+        }
     }
 }
