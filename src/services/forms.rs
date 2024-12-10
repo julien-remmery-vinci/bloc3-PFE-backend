@@ -108,8 +108,17 @@ impl FormService {
         Ok(pending_questions)
     }
 
-    pub async fn submit_form(&self, form_id: i32) -> Result<(), ResponseError> {
+    pub async fn user_submit_form(&self, form_id: i32) -> Result<(), ResponseError> {
         sqlx::query("UPDATE pfe.forms SET status = 'SUBMITTED' WHERE form_id = $1")
+            .bind(form_id)
+            .execute(&self.db)
+            .await
+            .map_err(ResponseError::DbError)?;
+        Ok(())
+    }
+
+    pub async fn submit_validated_form(&self, form_id: i32) -> Result<(), ResponseError> {
+        sqlx::query("UPDATE pfe.forms SET status = 'VALIDATED' WHERE form_id = $1")
             .bind(form_id)
             .execute(&self.db)
             .await

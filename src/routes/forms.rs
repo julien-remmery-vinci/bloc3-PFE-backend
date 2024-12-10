@@ -84,8 +84,7 @@ pub async fn submit_form(
 
     let form = match state.form.read_form_by_id(form_id).await {
         Ok(form) => form.unwrap(),
-        Err(e) => {
-            tracing::error!("Error reading form by id : {:?}", e);
+        Err(_) => {
             return Err(ResponseError::NotFound(Some(String::from("Form not found"))))
         },
     };
@@ -102,7 +101,27 @@ pub async fn submit_form(
         }
     }
 
-    state.form.submit_form(form_id).await?;
+    state.form.user_submit_form(form_id).await?;
+    Ok((StatusCode::NO_CONTENT, Json("Form submitted")).into_response())
+}
+
+#[axum::debug_handler]
+pub async fn submit_validated_form(
+    State(state): State<AppState>,
+    Path(form_id): Path<i32>,
+) -> Result<impl IntoResponse, ResponseError> {
+    if form_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
+    }
+
+    match state.form.read_form_by_id(form_id).await {
+        Ok(form) => form.unwrap(),
+        Err(_) => {
+            return Err(ResponseError::NotFound(Some(String::from("Form not found"))))
+        },
+    };
+
+    state.form.submit_validated_form(form_id).await?;
     Ok((StatusCode::NO_CONTENT, Json("Form submitted")).into_response())
 }
 

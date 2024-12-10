@@ -22,7 +22,7 @@ use axum::{
 use std::time::Duration;
 use routes::forms::{
     create_form, 
-    read_forms_by_user, read_forms_with_questions_and_answers, submit_form
+    read_forms_by_user, read_forms_with_questions_and_answers, submit_form, submit_validated_form
 };
 use routes::answers::{
     create_answer, 
@@ -70,6 +70,8 @@ fn forms_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_user)))
         .route("/forms/:id/submit", post(submit_form)
         .layer(from_fn_with_state(state.clone(), authorize_user)))
+        .route("/forms/:id/validate", post(submit_validated_form)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
 fn questions_routes(state: AppState) -> Router<AppState> {
@@ -102,7 +104,7 @@ fn company_routes(state: AppState) -> Router<AppState> {
         .route("/company/:id", get(read_one_company)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
         .route("/company/:id/forms/status", get(company_forms_status)
-        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .layer(from_fn_with_state(state.clone(), authorize_user)))
         .route("/company/:id/validate", post(validate_company)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
