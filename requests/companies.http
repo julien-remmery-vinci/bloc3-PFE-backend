@@ -2,7 +2,7 @@
 @admin_token={{ admin.response.body.token }}
 @user_token={{ user.response.body.token }}
 
-### Login with admin account
+### Login with user account
 # @name user
 POST {{ baseUrl }}/auth/login
 Content-Type: application/json
@@ -61,3 +61,7 @@ Authorization: Bearer {{ admin_token }}
 {
     "is_eligible": true
 }
+
+### Read a user's company
+GET {{ baseUrl }}/company/user
+Authorization: Bearer {{ user_token }}

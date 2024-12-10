@@ -1,12 +1,12 @@
 use axum::{
-    extract::{Path, State}, http::StatusCode, response::IntoResponse, Json
+    extract::{Path, State}, http::StatusCode, response::IntoResponse, Extension, Json
 };
 
 use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
-    models::{company::{Company, CompanyValidation, CompanyWithCompleteForms}, form::{self, CompleteForm, CreateForm}},
-    routes::forms::{get_complete_forms, create_form}
+    models::{company::{Company, CompanyValidation, CompanyWithCompleteForms}, form::{self, CompleteForm, CreateForm}, user::User},
+    routes::forms::{create_form, get_complete_forms}
 };
 
 #[axum::debug_handler]
@@ -104,4 +104,18 @@ pub async fn validate_company(
     }
 
     Ok(StatusCode::NO_CONTENT)
+}
+
+pub async fn get_user_company(
+    State(state): State<AppState>,
+    Extension(user): Extension<User>,
+) -> Result<Json<Company>, ResponseError> {
+    if user.company_id.is_none() || user.company_id.unwrap() <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid user company id"))));
+    }
+
+    match state.company.find_by_id(user.company_id.unwrap()).await? {
+        Some(company) => Ok(Json(company)),
+        None => Err(ResponseError::NotFound(Some(String::from("Company not found")))),
+    }
 }
