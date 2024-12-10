@@ -3,6 +3,7 @@ use axum::{
     response::IntoResponse
 };
 
+#[derive(Debug)]
 pub enum ResponseError {
     Conflict(Option<String>),
     BadRequest(Option<String>),

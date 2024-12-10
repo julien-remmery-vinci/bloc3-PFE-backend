@@ -1,5 +1,5 @@
 use axum::{
-    extract::State, 
+    extract::{Path, State}, 
     http::StatusCode, 
     response::IntoResponse, 
     Extension, 
@@ -14,6 +14,11 @@ use crate::{
         }, question::Question, user::User
     }
 };
+
+#[derive(serde::Deserialize)]
+pub struct SubmitValidation {
+    confirmation: bool,
+}
 
 #[axum::debug_handler]
 pub async fn create_form(
@@ -31,7 +36,7 @@ pub async fn create_form(
 
     match state.form.create_form_in_db(new_form, questions, templates).await {
         Ok(_) => Ok(StatusCode::CREATED),
-        Err(error) => Err(ResponseError::DbError(error)),
+        Err(error) => Err(error),
     }
 }
 
@@ -66,6 +71,41 @@ pub async fn read_forms_by_user(
     Ok((StatusCode::OK, Json(forms_list)))
 }
 
+#[axum::debug_handler]
+pub async fn submit_form(
+    State(state): State<AppState>,
+    Path(form_id): Path<i32>,
+    Extension(user): Extension<User>,
+    Json(confirmation): Json<SubmitValidation>
+) -> Result<impl IntoResponse, ResponseError> {
+    if form_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
+    }
+
+    let form = match state.form.read_form_by_id(form_id).await {
+        Ok(form) => form.unwrap(),
+        Err(e) => {
+            tracing::error!("Error reading form by id : {:?}", e);
+            return Err(ResponseError::NotFound(Some(String::from("Form not found"))))
+        },
+    };
+
+    if form.company_id != user.company_id.unwrap() {
+        return Err(ResponseError::Unauthorized(Some(String::from("You are not authorized to submit this form"))));
+    }
+
+    if !confirmation.confirmation {
+        let pending_questions: Vec<i32> = state.form.get_pending_questions(form_id).await?;
+
+        if pending_questions.len() > 0 {
+            return Ok((StatusCode::BAD_REQUEST, Json(pending_questions)).into_response());
+        }
+    }
+
+    state.form.submit_form(form_id).await?;
+    Ok((StatusCode::NO_CONTENT, Json("Form submitted")).into_response())
+}
+
 pub async fn get_complete_form(
     state: AppState,
     form: Form,
@@ -76,7 +116,8 @@ pub async fn get_complete_form(
     let mut complete_form: CompleteForm = CompleteForm { 
         form_id: form.form_id, 
         company_id: form.company_id, 
-        r#type: form.r#type.clone(), 
+        r#type: form.r#type.clone(),
+        status: form.status.clone(),
         templates,
         questions: Vec::new() 
     };
