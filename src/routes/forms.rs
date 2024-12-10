@@ -31,7 +31,7 @@ pub async fn create_form(
 
     match state.form.create_form_in_db(new_form, questions, templates).await {
         Ok(_) => Ok(StatusCode::CREATED),
-        Err(error) => Err(ResponseError::DbError(error)),
+        Err(error) => Err(error),
     }
 }
 

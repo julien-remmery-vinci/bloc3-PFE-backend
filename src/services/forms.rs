@@ -3,12 +3,12 @@ use crate::models::form::{CreateForm, Form};
 use crate::models::question::Question;
 use crate::models::template::Template;
 
-use sqlx::{Error, PgPool};
+use sqlx::PgPool;
 
 const QUERY_INSERT_FORM: &str = "
     INSERT INTO pfe.forms (company_id, type, status)
     VALUES ($1, $2, 'PENDING')
-    RETURNING form_id, company_id, type
+    RETURNING form_id, company_id, type, status
 ";
 const QUERY_SELECT_FORMS_BY_COMPANY: &str = "
     SELECT form_id, company_id, type, status
@@ -45,12 +45,12 @@ pub struct FormService {
 
 impl FormService {
     // Inserer un formulaire et ses questions dans la base de données
-    pub async fn create_form_in_db(&self, new_form: CreateForm, questions: Vec<Question>, templates: Vec<Template>) -> Result<(), Error> {
+    pub async fn create_form_in_db(&self, new_form: CreateForm, questions: Vec<Question>, templates: Vec<Template>) -> Result<(), ResponseError> {
         let form = sqlx::query_as::<_, Form>(QUERY_INSERT_FORM)
             .bind(new_form.company_id)
             .bind(new_form.r#type)
             .fetch_one(&self.db)
-            .await?;
+            .await.map_err(ResponseError::DbError)?;
 
         for question in questions {
             sqlx::query(QUERY_INSERT_QUESTION_FORM)
@@ -58,7 +58,7 @@ impl FormService {
                 .bind(question.question_id)
                 .bind(String::from("PENDING"))
                 .execute(&self.db)
-                .await?;
+                .await.map_err(ResponseError::DbError)?;
         }
 
         for template in templates {
@@ -66,7 +66,7 @@ impl FormService {
                 .bind(form.form_id)
                 .bind(template.template_id)
                 .execute(&self.db)
-                .await?;
+                .await.map_err(ResponseError::DbError)?;
         }
         Ok(())
     }
