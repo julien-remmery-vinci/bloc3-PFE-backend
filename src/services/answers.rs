@@ -15,27 +15,27 @@ const QUERY_INSERT_ANSWER: &str = "
 ";
 
 const QUERY_INSERT_ANSWER_USER: &str = "
-    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, status)
+    VALUES ($1, $2, $3, $4, $5, $6, 'PENDING')
     RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
 ";
 
 const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
-    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status
     FROM pfe.user_answer_esg
     WHERE form_id = $1 AND user_id = $2 AND answer_id = $3
 ";
 
 const QUERY_READ_ALL_ANSWERS_BY_QUESTION: &str = "
-    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status
     FROM pfe.user_answer_esg
     WHERE form_id = $2 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $1)
 ";
 
 const QUERY_READ_ANSWER_BY_QUESTION: &str = "
-    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status
     FROM pfe.user_answer_esg
-    WHERE form_id = $3 AND answer_id = $1 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $2)
+    WHERE form_id = $3 AND answer_id = $1
 ";
 
 
@@ -134,18 +134,22 @@ impl AnswerService {
             .bind(form_id)
             .fetch_optional(&self.db)
             .await
-            .map_err(|error| ResponseError::DbError(error))
+            // .map_err(|error| ResponseError::DbError(error))
         {
             Ok(answers) => Ok(answers),
-            Err(error) => Err(error),
+            Err(error) =>  {
+                tracing::error!("Error reading user answer by question: {:?}", error);
+                Err(ResponseError::DbError(error))
+            },
         }
     }
 
     pub async fn validate_user_answer(&self, validated: AnswerUser) -> Result<AnswerUser, ResponseError> {
-        let answer = sqlx::query_as::<_, AnswerUser>("
+        match sqlx::query_as::<_, AnswerUser>("
                 UPDATE pfe.user_answer_esg 
-                SET now_verif = $3, commitment_pact_verif = $4, comment = $5
+                SET now_verif = $3, commitment_pact_verif = $4, comment = $5, status = 'VALIDATED'
                 WHERE answer_id = $1 AND form_id = $2
+                RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status
             ")
             .bind(validated.answer_id)
             .bind(validated.form_id)
@@ -153,17 +157,21 @@ impl AnswerService {
             .bind(validated.commitment_pact_verif.clone())
             .bind(validated.comment.clone())
             .fetch_one(&self.db)
-            .await
-            .map_err(ResponseError::DbError)?;
-        tracing::warn!("Answer validated: {:?}", answer);
-        Ok(answer)
+            .await 
+        {
+            Ok(answer) => Ok(answer),
+            Err(error) => {
+                tracing::error!("Error validating answer: {:?}", error);
+                Err(ResponseError::DbError(error))
+            },
+        }
     }
 
     pub async fn insert_answer_validation(&self, validated: CreateAnswerValidation) -> Result<AnswerUser, ResponseError> {
         let answer = sqlx::query_as::<_, AnswerUser>("
-                INSERT INTO pfe.user_answer_esg (answer_id, form_id, user_id, comment, now_verif, commitment_pact_verif)
-                VALUES ($1, $2, $3, $4, $5, $6)
-                RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+                INSERT INTO pfe.user_answer_esg (answer_id, form_id, user_id, comment, now_verif, commitment_pact_verif, status)
+                VALUES ($1, $2, $3, $4, $5, $6, 'VALIDATED')
+                RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status
             ")
             .bind(validated.answer_id)
             .bind(validated.form_id)
@@ -174,7 +182,6 @@ impl AnswerService {
             .fetch_one(&self.db)
             .await
             .map_err(ResponseError::DbError)?;
-        tracing::warn!("Answer validated: {:?}", answer);
         Ok(answer)
     }
 }

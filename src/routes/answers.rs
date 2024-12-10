@@ -132,7 +132,6 @@ pub async fn validate_user_answer(
         .await?;
 
     if user_answer.is_some() {
-        tracing::warn!("UserAnswer exists: {:?}", user_answer);
         let mut user_answer: AnswerUser = user_answer.unwrap();
         user_answer.comment = validated.comment.clone();
         user_answer.now_verif = validated.now_verif.clone();

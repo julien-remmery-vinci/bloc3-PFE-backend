@@ -100,7 +100,7 @@ Authorization: Bearer {{ admin_token }}
 }
 
 ### Validate a non existant user's answer with comment
-POST {{ baseUrl }}/answers/3/validate
+POST {{ baseUrl }}/answers/1/validate
 Content-Type: application/json
 Authorization: Bearer {{ admin_token }}
 

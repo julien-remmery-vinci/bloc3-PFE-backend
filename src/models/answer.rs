@@ -13,7 +13,7 @@ pub struct Answer {
     pub is_forced_comment: bool,
 }
 
-#[derive(Deserialize,Serialize,FromRow, Debug)]
+#[derive(Deserialize,Serialize,FromRow, Debug, Clone)]
 pub struct AnswerUser {
     pub answer_id: i32,
     pub user_id: i32,
@@ -23,6 +23,7 @@ pub struct AnswerUser {
     pub comment: Option<String>,
     pub now_verif: Option<bool>,
     pub commitment_pact_verif: Option<bool>,
+    pub status: Option<String>,
 }
 
 #[derive(Deserialize)]
