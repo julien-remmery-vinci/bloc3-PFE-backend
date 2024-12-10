@@ -1,0 +1,60 @@
+@baseUrl=http://localhost:3000
+
+@admin_token={{ admin.response.body.token }}
+
+### Login with admin account
+# @name admin
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "admin@example.com",
+    "password": "password"
+}
+
+### Submit an onboarding
+POST {{baseUrl}}/onboarding
+Content-Type: application/json
+
+{
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "john.doe@example.com",
+    "password": "securepassword123",
+    "position": "CEO",
+    "company_name": "TechCorp Inc.",
+    "company_number": "123456789",
+    "legal_form": "S.A.",
+    "office_address": "123 Main Street, Brussels, Belgium",
+    "website": "https://www.techcorp.com",
+    "nace_code": "6201",
+    "revenue": 5000000,
+    "franchise": false,
+    "nb_workers": 50,
+    "dispute": false,
+    "honor_engagement": true,
+    "grant_application": true,
+    "grant_application_partner": "GrantAgency Ltd.",
+    "something_else": "Additional relevant information here.",
+    "comment": "Looking forward to the process!",
+    "submit_date": "2024-12-10",
+    "is_owner": true,
+    "offers_services": true,
+    "sells_products": false
+}
+
+### Read all onboarding requests
+GET {{baseUrl}}/onboarding
+Authorization: Bearer {{ admin_token }}
+
+### Read all pending onboarding requests
+GET {{baseUrl}}/onboarding/pending
+Authorization: Bearer {{ admin_token }}
+
+### Read all rejected onboarding requests
+GET {{baseUrl}}/onboarding/rejected
+Authorization: Bearer {{ admin_token }}
+
+### Accept an onboarding request
+POST {{baseUrl}}/onboarding/1/accept
+Authorization: Bearer {{ admin_token }}
