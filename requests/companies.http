@@ -53,6 +53,10 @@ Authorization: Bearer {{ admin_token }}
 GET {{ baseUrl }}/company/1/forms/status
 Authorization: Bearer {{ admin_token }}
 
+### Get company form status
+GET {{ baseUrl }}/company/1/forms/status
+Authorization: Bearer {{ user_token }}
+
 ### Validate a company
 POST {{ baseUrl }}/company/1/validate
 Content-Type: application/json
