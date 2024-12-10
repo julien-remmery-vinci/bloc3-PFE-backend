@@ -12,13 +12,9 @@ pub struct Company {
     pub legal_form: String,
     pub website: Option<String>,
     pub nace_code: String,
-    pub business_activity: String,
     pub nb_workers: Option<i32>,
     pub revenue: Option<f64>,
-    pub labels: Option<Vec<String>>,
     pub dispute: bool,
-    pub is_validated: Option<bool>,
-    pub is_eligible: Option<bool>,
 }
 
 #[derive(Deserialize, FromRow, Serialize)]

@@ -60,3 +60,12 @@ pub fn encode_jwt(credentials: Credentials) -> Result<String, ResponseError> {
         Err(error) => Err(ResponseError::JWTError(error)),
     }
 }
+
+pub fn hash_password(password: String) -> Result<String, ResponseError> {
+    let hashed_password = bcrypt::hash(password, env::var("HASH_ROUNDS")
+        .expect("HASH_ROUNDS must be set")
+        .parse::<u32>()
+        .unwrap())
+        .map_err(ResponseError::BCryptError)?;
+    Ok(hashed_password)
+}

@@ -8,14 +8,14 @@ const QUERY_READ_BY_COMPANY_NUMBER: &str = "SELECT * FROM pfe.companies WHERE co
 
 const QUERY_GET_ALL_COMPANIES: &str = "
     SELECT company_id, company_name, company_number, legal_form, office_address, website,
-    nace_code, business_activity, nb_workers, revenue, labels, dispute, is_validated, is_eligible
+    nace_code, nb_workers, revenue, dispute
     FROM pfe.companies
 ";
 
 const QUERY_INSERT_COMPANY: &str = "
     INSERT INTO pfe.companies (company_name, company_number, legal_form, office_address, website,
-    nace_code, business_activity, nb_workers, revenue, labels, dispute)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+    nace_code, nb_workers, revenue, dispute)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING *
 ";
 
@@ -24,14 +24,6 @@ const QUERY_SELECT_TEMPLATES: &str = "
     FROM pfe.templates t, pfe.template_company tc 
     WHERE t.template_id = tc.template_id AND tc.company_id = $1;
 ";
-
-const QUERY_VALIDATE_COMPANY: &str = "
-    UPDATE pfe.companies
-    SET is_validated = true, is_eligible = $1
-    WHERE company_id = $2
-    RETURNING *;
-";
-
 
 #[derive(Debug, Clone)]
 pub struct CompanyService {
@@ -83,20 +75,9 @@ impl CompanyService {
             .bind(company.office_address.clone())
             .bind(company.website.clone())
             .bind(company.nace_code.clone())
-            .bind(company.business_activity.clone())
             .bind(company.nb_workers)
             .bind(company.revenue)
-            .bind(company.labels.clone())
             .bind(company.dispute)
-            .fetch_one(&self.db)
-            .await.map_err(ResponseError::DbError)?;
-        Ok(company)
-    }
-
-    pub async fn validate_company(&self, company_id: i32, is_eligible: bool) -> Result<Company, ResponseError> {
-        let company = sqlx::query_as::<_, Company>(QUERY_VALIDATE_COMPANY)
-            .bind(is_eligible)
-            .bind(company_id)
             .fetch_one(&self.db)
             .await.map_err(ResponseError::DbError)?;
         Ok(company)

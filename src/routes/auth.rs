@@ -1,4 +1,3 @@
-use std::env;
 use axum::extract::Request;
 use axum::{
     extract::State, 
@@ -12,7 +11,7 @@ use crate::models::{
     user::User
 };
 use crate::database::state::AppState;
-use crate::services::auth;
+use crate::services::auth::{self, hash_password};
 
 #[axum::debug_handler]
 pub async fn login(
@@ -60,11 +59,10 @@ pub async fn register(
         None => (),
     }
 
-    let hashed_password = bcrypt::hash(&user.password, env::var("HASH_ROUNDS")
-        .expect("HASH_ROUNDS must be set")
-        .parse::<u32>()
-        .unwrap())
-        .map_err(ResponseError::BCryptError)?;
+    let hashed_password = match hash_password(user.password.clone()) {
+        Ok(hashed_password) => hashed_password,
+        Err(error) => return Err(error),
+    };
     user.password = hashed_password;
     let created = state.auth.create_user(user).await?;
     Ok(Json(created))

@@ -5,8 +5,8 @@ use axum::{
 use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
-    models::{company::{Company, CompanyValidation, CompanyWithCompleteForms}, form::{self, CompleteForm, CreateForm}},
-    routes::forms::{get_complete_forms, create_form}
+    models::{company::{Company, CompanyWithCompleteForms}, form::CompleteForm},
+    routes::forms::get_complete_forms,
 };
 
 #[axum::debug_handler]
@@ -77,31 +77,4 @@ pub async fn company_forms_status(
     }
 
     Ok(Json((total_user_answers as f64 / total_answers as f64) * 100 as f64))
-}
-
-pub async fn validate_company(
-    State(state): State<AppState>,
-    Path(company_id): Path<i32>,
-    Json(validation): Json<CompanyValidation>,
-) -> Result<impl IntoResponse, ResponseError> {
-    if company_id <= 0 {
-        return Err(ResponseError::BadRequest(Some(String::from("Invalid company id"))));
-    }
-
-    match state.company.find_by_id(company_id).await? {
-        Some(_) => (),
-        None => return Err(ResponseError::NotFound(Some(String::from("Company not found")))),
-    };
-
-    state.company.validate_company(company_id, validation.is_eligible).await?;
-
-    if validation.is_eligible {
-        let new_form = CreateForm {
-            company_id,
-            r#type: String::from("ESG"),
-        };
-        create_form(State(state), Json(new_form)).await?;
-    }
-
-    Ok(StatusCode::NO_CONTENT)
 }
