@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::errors::responserror::ResponseError;
-use crate::models::answer::{AnswerUser, CreateAnswer, CreateAnswerUser};
+use crate::models::answer::{AnswerUser, CreateAnswer, CreateAnswerUser, CreateAnswerValidation, ValidatedAnswer};
 use crate::{
     database::state::AppState,
     models::answer::Answer,
@@ -98,4 +98,57 @@ pub async fn read_answers_by_question(
 ) -> Result<Json<Vec<Answer>>, ResponseError> {
     let answers = state.answer.read_answers_by_question(question_id).await?;
     Ok(Json(answers))
+}
+
+pub async fn validate_user_answer(
+    State(state): State<AppState>,
+    Path(answer_id): Path<i32>,
+    Extension(user): Extension<User>,
+    Json(validated): Json<ValidatedAnswer>,
+) -> Result<Json<AnswerUser>, ResponseError> {
+    if answer_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid answer id"))));
+    }
+
+    let answer: Answer = match state.answer.read_answer_by_id(answer_id).await? {
+        Some(answer) => Some(answer).unwrap(),
+        None => Err(ResponseError::NotFound(Some(String::from("Answer not found"))))?,
+    };
+
+    match state.form.read_form_by_id(validated.form_id).await? {
+        None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
+        Some(_) => (),
+    }
+
+    if answer.is_forced_engagement && validated.commitment_pact_verif.is_none() {
+        return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
+    }
+
+    let user_answer: Option<AnswerUser> = state.answer
+        .read_user_answer_by_question(
+            answer_id, 
+            answer.question_id.unwrap(), 
+            validated.form_id)
+        .await?;
+
+    if user_answer.is_some() {
+        let mut user_answer: AnswerUser = user_answer.unwrap();
+        user_answer.comment = validated.comment.clone();
+        user_answer.now_verif = validated.now_verif.clone();
+        user_answer.commitment_pact_verif = validated.commitment_pact_verif.clone();
+        let validated = state.answer.validate_user_answer(user_answer).await?;
+        return Ok(Json(validated))
+    }
+
+    let validation: CreateAnswerValidation = CreateAnswerValidation {
+        answer_id,
+        form_id: validated.form_id,
+        user_id: user.user_id,
+        comment: validated.comment.clone(),
+        now_verif: validated.now_verif.clone(),
+        commitment_pact_verif: validated.commitment_pact_verif.clone(),
+    };
+
+    let validated: AnswerUser = state.answer.insert_answer_validation(validation).await?;
+    Ok(Json(validated))
 }

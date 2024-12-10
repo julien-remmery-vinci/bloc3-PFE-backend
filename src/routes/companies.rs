@@ -52,9 +52,14 @@ pub async fn create_company(
 pub async fn company_forms_status(
     State(state): State<AppState>,
     Path(company_id): Path<i32>,
+    Extension(user): Extension<User>
 ) -> Result<impl IntoResponse, ResponseError> {
     if company_id <= 0 {
         return Err(ResponseError::BadRequest(Some(String::from("Invalid company id"))));
+    }
+
+    if user.role != "admin" && user.company_id.unwrap() != company_id {
+        return Err(ResponseError::Unauthorized(Some(String::from("You are not authorized to view this company's forms status"))));
     }
 
     match state.company.find_by_id(company_id).await? {

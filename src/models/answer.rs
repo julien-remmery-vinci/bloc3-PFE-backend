@@ -13,7 +13,7 @@ pub struct Answer {
     pub is_forced_comment: bool,
 }
 
-#[derive(Deserialize,Serialize,FromRow, Debug)]
+#[derive(Deserialize,Serialize,FromRow, Debug, Clone)]
 pub struct AnswerUser {
     pub answer_id: i32,
     pub user_id: i32,
@@ -23,6 +23,7 @@ pub struct AnswerUser {
     pub comment: Option<String>,
     pub now_verif: Option<bool>,
     pub commitment_pact_verif: Option<bool>,
+    pub status: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -36,12 +37,30 @@ pub struct CreateAnswer {
     pub is_forced_comment: bool,
 }
 
+#[derive(Deserialize)]
+pub struct ValidatedAnswer {
+    pub form_id: i32,
+    pub comment: Option<String>,
+    pub now_verif: Option<bool>,
+    pub commitment_pact_verif: Option<bool>,
+}
+
 #[derive(Deserialize, Clone, Debug)]
 pub struct CreateAnswerUser {
     pub form_id: i32,
     pub now: Option<bool>,
     pub commitment_pact: Option<bool>,
     pub comment: Option<String>,
+}
+
+#[derive(Deserialize, Clone, Debug)]
+pub struct CreateAnswerValidation {
+    pub answer_id: i32,
+    pub form_id: i32,
+    pub user_id: i32,
+    pub comment: Option<String>,
+    pub now_verif: Option<bool>,
+    pub commitment_pact_verif: Option<bool>,
 }
 
 impl CreateAnswerUser {

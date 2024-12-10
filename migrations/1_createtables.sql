@@ -106,6 +106,6 @@ CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     comment TEXT NULL,
     now_verif BOOLEAN NULL,
     commitment_pact_verif BOOLEAN NULL,
+    status TEXT CHECK (status IN ('PENDING', 'VALIDATED')),
     PRIMARY KEY (answer_id, user_id, form_id)
 );
-

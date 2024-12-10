@@ -48,3 +48,7 @@ Authorization: Bearer {{ user_token }}
 {
     "confirmation": true
 }
+
+### Validate a form
+POST {{ baseUrl }}/forms/3/validate
+Authorization: Bearer {{ admin_token }}
