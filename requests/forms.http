@@ -42,4 +42,9 @@ Authorization: Bearer {{ admin_token }}
 
 ### Submit a form
 POST {{ baseUrl }}/forms/2/submit
+Content-Type: application/json
 Authorization: Bearer {{ user_token }}
+
+{
+    "confirmation": true
+}

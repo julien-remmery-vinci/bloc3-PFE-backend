@@ -15,6 +15,11 @@ use crate::{
     }
 };
 
+#[derive(serde::Deserialize)]
+pub struct SubmitValidation {
+    confirmation: bool,
+}
+
 #[axum::debug_handler]
 pub async fn create_form(
     State(state): State<AppState>,
@@ -71,6 +76,7 @@ pub async fn submit_form(
     State(state): State<AppState>,
     Path(form_id): Path<i32>,
     Extension(user): Extension<User>,
+    Json(confirmation): Json<SubmitValidation>
 ) -> Result<impl IntoResponse, ResponseError> {
     if form_id <= 0 {
         return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
@@ -90,9 +96,10 @@ pub async fn submit_form(
 
     let pending_questions: Vec<i32> = state.form.get_pending_questions(form_id).await?;
 
-    if pending_questions.len() > 0 {
+    if pending_questions.len() > 0 && !confirmation.confirmation {
         return Ok((StatusCode::BAD_REQUEST, Json(pending_questions)).into_response());
     }
+
     state.form.submit_form(form_id).await?;
     Ok((StatusCode::NO_CONTENT, Json("Form submitted")).into_response())
 }
