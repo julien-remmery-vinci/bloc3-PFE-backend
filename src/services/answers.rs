@@ -1,6 +1,6 @@
 use crate::{
     errors::responserror::ResponseError,
-    models::answer::{Answer, AnswerUser, CreateAnswer, CreateAnswerUser},
+    models::answer::{Answer, AnswerUser, CreateAnswer, CreateAnswerUser, CreateAnswerValidation},
 };
 
 #[derive(Debug, Clone)]
@@ -26,10 +26,16 @@ const QUERY_FIND_ANSWER_USER_BY_FORM_ID: &str = "
     WHERE form_id = $1 AND user_id = $2 AND answer_id = $3
 ";
 
-const QUERY_READ_ANSWERS_BY_QUESTION: &str = "
+const QUERY_READ_ALL_ANSWERS_BY_QUESTION: &str = "
     SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
     FROM pfe.user_answer_esg
     WHERE form_id = $2 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $1)
+";
+
+const QUERY_READ_ANSWER_BY_QUESTION: &str = "
+    SELECT answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+    FROM pfe.user_answer_esg
+    WHERE form_id = $3 AND answer_id = $1 AND answer_id IN (SELECT answer_id FROM pfe.answers_esg WHERE question_id = $2)
 ";
 
 
@@ -109,7 +115,7 @@ impl AnswerService {
 
     // method to retrieve all answers of a user for a specific question
     pub async fn read_answers_by_user_by_question(&self, question_id: i32, form_id: i32) -> Result<Vec<AnswerUser>, ResponseError> {
-        match sqlx::query_as::<_, AnswerUser>(QUERY_READ_ANSWERS_BY_QUESTION)
+        match sqlx::query_as::<_, AnswerUser>(QUERY_READ_ALL_ANSWERS_BY_QUESTION)
             .bind(question_id)
             .bind(form_id)
             .fetch_all(&self.db)
@@ -121,4 +127,54 @@ impl AnswerService {
         }
     }
 
+    pub async fn read_user_answer_by_question(&self, answer_id: i32, question_id: i32, form_id: i32) -> Result<Option<AnswerUser>, ResponseError> {
+        match sqlx::query_as::<_, AnswerUser>(QUERY_READ_ANSWER_BY_QUESTION)
+            .bind(answer_id)
+            .bind(question_id)
+            .bind(form_id)
+            .fetch_optional(&self.db)
+            .await
+            .map_err(|error| ResponseError::DbError(error))
+        {
+            Ok(answers) => Ok(answers),
+            Err(error) => Err(error),
+        }
+    }
+
+    pub async fn validate_user_answer(&self, validated: AnswerUser) -> Result<AnswerUser, ResponseError> {
+        let answer = sqlx::query_as::<_, AnswerUser>("
+                UPDATE pfe.user_answer_esg 
+                SET now_verif = $3, commitment_pact_verif = $4, comment = $5
+                WHERE answer_id = $1 AND form_id = $2
+            ")
+            .bind(validated.answer_id)
+            .bind(validated.form_id)
+            .bind(validated.now_verif.clone())
+            .bind(validated.commitment_pact_verif.clone())
+            .bind(validated.comment.clone())
+            .fetch_one(&self.db)
+            .await
+            .map_err(ResponseError::DbError)?;
+        tracing::warn!("Answer validated: {:?}", answer);
+        Ok(answer)
+    }
+
+    pub async fn insert_answer_validation(&self, validated: CreateAnswerValidation) -> Result<AnswerUser, ResponseError> {
+        let answer = sqlx::query_as::<_, AnswerUser>("
+                INSERT INTO pfe.user_answer_esg (answer_id, form_id, user_id, comment, now_verif, commitment_pact_verif)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif
+            ")
+            .bind(validated.answer_id)
+            .bind(validated.form_id)
+            .bind(validated.user_id)
+            .bind(validated.comment.clone())
+            .bind(validated.now_verif.clone())
+            .bind(validated.commitment_pact_verif.clone())
+            .fetch_one(&self.db)
+            .await
+            .map_err(ResponseError::DbError)?;
+        tracing::warn!("Answer validated: {:?}", answer);
+        Ok(answer)
+    }
 }

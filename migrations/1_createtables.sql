@@ -108,4 +108,3 @@ CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     commitment_pact_verif BOOLEAN NULL,
     PRIMARY KEY (answer_id, user_id, form_id)
 );
-

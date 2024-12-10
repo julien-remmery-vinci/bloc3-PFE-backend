@@ -693,3 +693,6 @@ VALUES
 -- LIEN QUESTION REPONSE POUR TEST
 INSERT INTO pfe.questions_form (form_id, question_id, question_status)
 VALUES (2, 1, 'PENDING');
+
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now) 
+VALUES (1, 2, 2, true);

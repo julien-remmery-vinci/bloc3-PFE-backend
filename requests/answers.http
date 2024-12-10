@@ -87,3 +87,33 @@ Authorization: Bearer {{ user_token }}
 ### get the score of a form
 GET {{ baseUrl }}/score/4
 Authorization: Bearer {{ user_token }}
+
+### Validate a user's answer
+POST {{ baseUrl }}/answers/1/validate
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "form_id": 2,
+    "now_verif": true,
+    "commitment_pact_verif": false
+}
+
+### Validate a non existant user's answer with comment
+POST {{ baseUrl }}/answers/3/validate
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "form_id": 2,
+    "comment": "Mon commentaire"
+}
+
+### Validate a non existant user's answer without comment
+POST {{ baseUrl }}/answers/3/validate
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "form_id": 2
+}
