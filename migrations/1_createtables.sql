@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS pfe.forms (
     form_id SERIAL PRIMARY KEY,
     company_id INTEGER REFERENCES pfe.companies(company_id),
     type VARCHAR(10) CHECK (type IN ('ODD', 'ESG')),
-    status VARCHAR(10) CHECK (status IN ('PENDING', 'SUBMITTED', 'VALIDATED')),
+    status VARCHAR(10) CHECK (status IN ('PENDING', 'SUBMITTED', 'VALIDATED'))
 );
 
 CREATE TABLE IF NOT EXISTS pfe.template_form (

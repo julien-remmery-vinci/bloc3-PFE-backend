@@ -75,9 +75,13 @@ pub async fn submit_form(
     if form_id <= 0 {
         return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
     }
+
     let form = match state.form.read_form_by_id(form_id).await {
         Ok(form) => form.unwrap(),
-        Err(_) => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
+        Err(e) => {
+            tracing::error!("Error reading form by id : {:?}", e);
+            return Err(ResponseError::NotFound(Some(String::from("Form not found"))))
+        },
     };
 
     if form.company_id != user.company_id.unwrap() {

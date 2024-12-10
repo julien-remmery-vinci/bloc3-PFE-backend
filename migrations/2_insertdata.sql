@@ -660,13 +660,13 @@ VALUES
 (3, 5);
 
 -- Insertion des formulaires
-INSERT INTO pfe.forms (company_id, type)
+INSERT INTO pfe.forms (company_id, type, status)
 VALUES
-(1,'ESG'),
+(1,'ESG', 'PENDING'),
 --(1,'ODD'),
-(2,'ESG'),
+(2,'ESG', 'PENDING'),
 --(2,'ODD'),
-(3,'ESG');
+(3,'ESG', 'PENDING');
 --(3,'ODD');
 
 -- Lien entre les templates et les formulaires
