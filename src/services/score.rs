@@ -28,7 +28,7 @@ const QUERY_SUM_SCORE_USER_NOW: &str = "
     FROM pfe.answers_esg a
     JOIN pfe.user_answer_esg u ON a.answer_id = u.answer_id
     JOIN pfe.questions q ON a.question_id = q.question_id
-    WHERE u.form_id = $1 AND u.now = TRUE
+    WHERE u.form_id = $1 AND u.now_verif = TRUE
     GROUP BY q.sub_category
     ";
 
@@ -37,7 +37,7 @@ const QUERY_SUM_SCORE_USER_COMMITMENT_PACT: &str = "
     FROM pfe.answers_esg a
     JOIN pfe.user_answer_esg u ON a.answer_id = u.answer_id
     JOIN pfe.questions q ON a.question_id = q.question_id
-    WHERE u.form_id = $1 AND u.commitment_pact = TRUE
+    WHERE u.form_id = $1 AND u.commitment_pact_verif = TRUE
     GROUP BY q.sub_category
     ";
 
