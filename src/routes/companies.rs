@@ -1,12 +1,12 @@
 use axum::{
-    extract::{Path, State}, http::StatusCode, response::IntoResponse, Json
+    extract::{Path, State}, http::StatusCode, response::IntoResponse, Extension, Json
 };
 
 use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
-    models::{company::{Company, CompanyValidation, CompanyWithCompleteForms}, form::{self, CompleteForm, CreateForm}},
-    routes::forms::{get_complete_forms, create_form}
+    models::{company::{Company, CompanyValidation, CompanyWithCompleteForms}, form::{self, CompleteForm, CreateForm}, user::User},
+    routes::forms::{create_form, get_complete_forms}
 };
 
 #[axum::debug_handler]
@@ -52,9 +52,14 @@ pub async fn create_company(
 pub async fn company_forms_status(
     State(state): State<AppState>,
     Path(company_id): Path<i32>,
+    Extension(user): Extension<User>
 ) -> Result<impl IntoResponse, ResponseError> {
     if company_id <= 0 {
         return Err(ResponseError::BadRequest(Some(String::from("Invalid company id"))));
+    }
+
+    if user.role != "admin" && user.company_id.unwrap() != company_id {
+        return Err(ResponseError::Unauthorized(Some(String::from("You are not authorized to view this company's forms status"))));
     }
 
     match state.company.find_by_id(company_id).await? {
