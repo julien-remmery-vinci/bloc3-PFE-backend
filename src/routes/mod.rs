@@ -4,3 +4,4 @@ pub mod questions;
 pub mod answers;
 pub mod companies;
 pub mod scores;
+pub mod onboarding;
