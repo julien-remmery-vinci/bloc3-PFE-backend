@@ -14,7 +14,7 @@ paths:
       description:
         Permet de connecter un utilisateur à l'application.
         L'utilisateur doit fournir son adresse email et son mot de passe.
-        Retourne un token d'authentification.
+        Retourne un token d'authentification et les informations de l'utilisateur.
       requestBody:
         required: true
         description:
@@ -27,11 +27,20 @@ paths:
         '200':
           description: L'utilisateur est connecté
           content:
-           text/plain:
-             schema:
-               type: object
-               example: 
-                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"
+            text/plain:
+              schema:
+                type: object
+                example: 
+                  {
+                    "user": {
+                      "user_id": 2,
+                      "firstname": "user",
+                      "lastname": "example",
+                      "login": "user@example.com",
+                      "role": "user"
+                    },
+                    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMUBleGFtcGxlLmNvbSIsImV4cCI6MTczMzk4Njk2OX0.R_2qqtBKjgFL21VJ1PE-mwfsOJVKgxjm2Er78MGcPDY"
+                  }
         '400':
           description: Les informations de connexion sont manquantes
         '401':
@@ -57,6 +66,10 @@ paths:
           description: L'utilisateur est enregistré
         '400':
           description: Les informations de l'utilisateur sont manquantes ou incorrectes
+        '403':
+          description: L'utilisateur n'a pas les droits pour créer un compte
+        '409':
+          description: Un utilisateur avec cette adresse email existe déjà
   /auth/verify:
     post:
       summary: Vérifie un token d'authentification
@@ -64,240 +77,245 @@ paths:
         Permet de vérifier si un token d'authentification est valide.
         L'utilisateur doit fournir son token d'authentification.
         Renvoie les informations de l'utilisateur si le token est valide.
-      requestHeaders:
-        Authorization:
-          description: Token d'authentification
+      parameters:
+        - in : header
+          name: Authorization
           required: true
           schema:
             type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
       responses:
         '200':
-          description: Le token est valide
+          description: Le token est valide, renvoie les informations de l'utilisateur
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
         '401':
-          description: Le token est invalide
+          description: Le token fourni est invalide
   /forms:
-    post:
-      summary: Crée un nouveau formulaire
-      description:
-        Permet de créer un nouveau formulaire.
-        L'ID du formulaire sera autogénéré.
-        Les questions associées au formulaire ne sont pas encore connues.
-      requestBody:
-        required: true
-        description:
-          Informations du formulaire à créer.
-        content:
-          object:
-            schema:
-              $ref: '#/components/schemas/Form'
-      responses:
-        '201':
-          description: Le formulaire a été créé
-        '400':
-          description: Les informations du formulaire sont manquantes ou incorrectes
-  /forms/{formId}:
-    parameters:
-      - name: formId
-        in: path
-        required: true
-        description: Identifiant du formulaire
-        schema:
-          type: string
-          example: "12345"
     get:
-      summary: Consulte les détails d'un formulaire
-      description: Récupère les détails d'un formulaire spécifique en utilisant son ID.
+      summary: Consulte tous les questionnaires
+      description: Récupère tous les questionnaires existants, leurs questions et les réponses possibles associées.
+      parameters:
+        - in : header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
       responses:
         '200':
-          description: Détails du formulaire
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Form'
-        '404':
-          description: Le formulaire n'existe pas
-    put:
-      summary: Met à jour un formulaire
-      description:
-        Permet de mettre à jour un formulaire existant.
-        L'ID du formulaire ne peut pas être modifié.
-      requestBody:
-        required: true
-        description:
-          Informations du formulaire à mettre à jour.
-        content:
-          object:
-            schema:
-              $ref: '#/components/schemas/Form'
-      responses:
-        '204':
-          description: Le formulaire a été mis à jour
-        '400':
-          description: Les informations du formulaire sont manquantes ou incorrectes
-        '404':
-          description: Le formulaire n'existe pas
-    delete:
-      summary: Supprime un formulaire
-      description: Supprime un formulaire spécifique en utilisant son ID.
-      responses:
-        '204':
-          description: Le formulaire a été supprimé
-        '404':
-          description: Le formulaire n'existe pas
-  /forms/user/{userId}:
-    parameters:
-      - name: userId
-        in: path
-        required: true
-        description: Identifiant de l'utilisateur
-        schema:
-          type: string
-          example: "12345"
-    get:
-      summary: Consulte les formulaires d'un utilisateur
-      description: Récupère les formulaires associés à un utilisateur spécifique en utilisant son ID.
-      responses:
-        '200':
-          description: Formulaires de l'utilisateur
+          description: questionnaires existants
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Form'
+                  $ref: '#/components/schemas/FormWithQuestions'
+        '401':
+          description: L'utilisateur n'est pas autorisé à consulter les questionnaire
+    post:
+      summary: Crée un nouveau questionnaire
+      description:
+        Permet de créer un nouveau questionnaire.
+        L'ID du questionnaire sera autogénéré.
+        Les questions associées au questionnaire sont les question qui ont le même type que le questionnaire créé et qui sont dans l'etat 'is_used'.
+      parameters:
+        - in : header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+      requestBody:
+        required: true
+        description:
+          Informations du questionnaire à créer.
+        content:
+          object:
+            schema:
+              type: object
+              properties:
+                company_id:
+                  type: integer
+                  description: Identifiant unique de l'entreprise pour laquelle on crée le questionnaire
+                type:
+                  type: string
+                  description: Type du questionnaire
+                  enum: [ESG]  
+      responses:
+        '201':
+          description: Le questionnaire a été créé
+        '400':
+          description: Les informations du questionnaire sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à créer un questionnaire
+  /forms/user/:
+    get:
+      summary: Consulte les questionnaires accessibles à l'utilisateur
+      description: Récupère les questionnaires accessibles à l'utilisateur connecté, les questionnaires renvoyés sont ceux qui appartiennent à l'entreprise à laquelle l'utilisateur appartient.
+      parameters:
+        - in : header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+      responses:
+        '200':
+          description: Questionnaires accessibles à l'utilisateur
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompleteForm'
+        '400':
+          description: L'utilisateur connecté n'appartient à aucune entreprise
+        '401':
+          description: L'utilisateur n'est pas autorisé à consulter les questionnaires
+  /forms/{form_id}/submit:
+    post:
+      summary: Soumet un questionnaire
+      description:
+        Permet à un utilisateur de soumettre un questionnaire.
+      parameters:
+        - in : path
+          name: form_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique du questionnaire à soumettre
+        - in : header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+      requestBody:
+        required: true
+        description:
+          Confirmation de soumission du questionnaire.
+          Confirme que l'utilisateur veut soumettre le questionnaire, même s'il n'a pas répondu à toutes les questions.
+        content:
+          object:
+            schema:
+              type: object
+              properties:
+                confirmation:
+                  type: boolean
+                  description: Confirmation de soumission du questionnaire
+      responses:
+        '204':
+          description: Le questionnaire a été soumis
+        '400':
+          description: Les informations de soumission du questionnaire sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à soumettre le questionnaire
         '404':
-          description: Aucun formulaire trouvé pour cet utilisateur
+          description: Le questionnaire n'existe pas
+  /forms/{form_id}/validate:
+    summary: Valide un questionnaire
+    description: 
+      Permet à un administrateur de valider un questionnaire soumis par un utilisateur.
+    parameters:
+        - in : path
+          name: form_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique du questionnaire à soumettre
+        - in : header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+    responses:
+      '204':
+        description: Le questionnaire a été validé
+      '400':
+        description: Les informations de validation du questionnaire sont manquantes ou incorrectes
+      '401':
+        description: L'utilisateur n'est pas autorisé à acceder à cette ressource
+      '403':
+        description: L'utilisateur n'a pas les droits nécéssaires pour valider le questionnaire
+      '404':
+        description: Le questionnaire n'existe pas
   /questions:
     post:
       summary: Crée une nouvelle question
       description:
         Permet de créer une nouvelle question.
         L'ID de la question sera autogénéré.
+      parameters:
+        - in : header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
       requestBody:
         required: true
-        description:
-          Informations de la question à créer.
         content:
-          object:
-            schema:
-              $ref: '#/components/schemas/Question'
+          type: object
+          properties:
+            category:
+              type: string
+              description: Catégorie de la question
+            sub_category:
+              type: string
+              description: Sous catégorie de la question
+            question:
+              type: string
+              description: Texte de la question
+            type:
+              type: string
+              description: Type du questionnaire auquel la question sera associée
+              enum: [ESG]
+            is_used:
+              type: boolean
+              description: Définit si la question serait associée aux nouveaux questionnaires
       responses:
         '201':
           description: La question a été créée
-        '400':
-          description: Les informations de la question sont manquantes ou incorrectes
-  /questions/{questionId}:
-    parameters:
-      - name: questionId
-        in: path
-        required: true
-        description: Identifiant de la question
-        schema:
-          type: string
-          example: "12345"
+        '401':
+          description: L'utilisateur n'est pas connecté
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+  /questions/{question_id}:
     get:
-      summary: Consulte les détails d'une question
-      description: Récupère les détails d'une question spécifique en utilisant son ID.
-      responses:
-        '200':
-          description: Détails de la question
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Question'
-        '404':
-          description: La question n'existe pas
     put:
-      summary: Met à jour une question
-      description:
-        Permet de mettre à jour une question existante.
-        L'ID de la question ne peut pas être modifié.
-      requestBody:
-        required: true
-        description:
-          Informations de la question à mettre à jour.
-        content:
-          object:
-            schema:
-              $ref: '#/components/schemas/Question'
-      responses:
-        '204':
-          description: La question a été mise à jour
-        '400':
-          description: Les informations de la question sont manquantes ou incorrectes
-        '404':
-          description: La question n'existe pas
-    delete:
-      summary: Supprime une question
-      description: Supprime une question spécifique en utilisant son ID.
-      responses:
-        '204':
-          description: La question a été supprimée
-        '404':
-          description: La question n'existe pas
   /answers:
     post:
-      summary: Crée une nouvelle réponse
-      description:
-        Permet de créer une nouvelle réponse.
-        L'ID de la réponse sera autogénéré.
-      requestBody:
-        required: true
-        description:
-          Informations de la réponse à créer.
-        content:
-          object:
-            schema:
-              $ref: '#/components/schemas/Answer'
-      responses:
-        '201':
-          description: La réponse a été créée
-        '400':
-          description: Les informations de la réponse sont manquantes ou incorrectes
-  /answers/{answerId}:
-    parameters:
-      - name: answerId
-        in: path
-        required: true
-        description: Identifiant de la réponse
-        schema:
-          type: string
-          example: "12345"
+  /answers/{answer_id}:
     get:
-      summary: Consulte les détails d'une réponse
-      description: Récupère les détails d'une réponse spécifique en utilisant son ID.
-      responses:
-        '200':
-          description: Détails de la réponse
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Answer'
-        '404':
-          description: La réponse n'existe pas
-    put:
-      summary: Met à jour une réponse
-      description:
-        Permet de mettre à jour une réponse existante.
-        L'ID de la réponse ne peut pas être modifié.
-      requestBody:
-        required: true
-        description:
-          Informations de la réponse à mettre à jour.
-        content:
-          object:
-            schema:
-              $ref: '#/components/schemas/Answer'
-      responses:
-        '204':
-          description: La réponse a été mise à jour
-        '400':
-          description: Les informations de la réponse sont manquantes ou incorrectes
+    post:
+  /answers/{answer_id}/validate:
+    post:
+  /answers/{answer_id}/update-score:
+    patch:
+  /company:
+    get:
+    post:
+  /company/{company_id}:
+    get:
+  /company/user:
+    get:
+  /company/{company_id}/forms/status:
+    get:
+  /score/{form_id}:
+    get:
+  /onboarding:
+    get:
+    post:
+  /onboarding/pending:
+    get:
+  /onboarding/rejected:
+    get:
+  /onboarding/{onboarding_id}/accept:
+    post:
 components:
   schemas:
     Credentials:
@@ -313,7 +331,188 @@ components:
         login: "user@example.com"
         password: "password"
     User:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: Identifiant unique de l'utilisateur
+        firstname:
+          type: string
+          description: Prénom de l'utilisateur
+        lastname:
+          type: string
+          description: Nom de famille de l'utilisateur
+        login:
+          type: string
+          description: Adresse email de l'utilisateur, utilisée pour se connecter au site
+        role:
+          type: string
+          description: Role de l'utilisateur
+        company_id:
+          type: integer
+          description: Identifiant unique de l'entreprise à laquelle l'utilisateur appartient
     NewUser:
-    Form:
+      type: object
+      properties:
+        firstname:
+          type: string
+          description: Prénom de l'utilisateur
+        lastname:
+          type: string
+          description: Nom de l'utilisateur
+        login:
+          type: string
+          description: Adresse email de l'utilisateur
+        password:
+          type: string
+          description: Mot de passe de l'utilisateur
+        role:
+          type: string
+          description: Rôle de l'utilisateur
+          enum: [user, admin]
+    FormWithQuestions:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type du formulaire
+          enum: [ESG]
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionWithAnswers'
+    CompleteForm:
+      type: object
+      properties:
+        form_id:
+          type: integer
+          description: Identifiant unique du questionnaire
+        company_id:
+          type: integer
+          description: Identifiant unique de l'entreprise à laquelle le questionnaire appartient
+        type:
+          type: string
+          description: Type du formulaire
+          enum: [ESG]
+        status:
+          type: string
+          description: Statut du questionnaire
+          enum: [PENDING, SUBMITTED, VALIDATED]
+        templates:
+          type: array
+          items:
+            type: object
+            properties:
+              template_id:
+                type: integer
+                description: Identifiant unique du template
+              value:
+                type: string
+                description: Valeur du template
+                enum: [ALL, WORKERS, PRODUITS, OWNED FACILITY, FACILITY]
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompleteQuestions'
+    QuestionWithAnswers:
+      type: object
+      properties:
+        question:
+          type: object
+          $ref: '#/components/schemas/Question'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+    CompleteQuestions:
+      type: object
+      properties:
+        question:
+          type: object
+          $ref: '#/components/schemas/Question'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+        user_answers:
+          type: object
+          items:
+            $ref: '#/components/schemas/UserAnswer'
     Question:
+      type: object
+      properties:
+        question_id:
+          type: integer
+          description: Identifiant unique de la question
+        category:
+          type: string
+          description: Catégorie de la question
+        sub_category:
+          type: string
+          description: Sous-catégorie de la question
+        question:
+          type: string
+          description: Texte de la question
+        is_used:
+          type: boolean
+          description: Indique si la question est utilisée dans les questionnaires
+        question_type:
+          type: string
+          description: Type de questionnaire auquel la question est associée
     Answer:
+      type: object
+      properties:
+        answer_id:
+          type: integer
+          description: Identifiant unique de la réponse
+        question_id:
+          type: integer
+          description: Identifiant de la question associée
+        template:
+          type: string
+          description: Template de la réponse
+          enum: [ALL, WORKERS, PRODUITS, OWNED FACILITY, FACILITY]
+        answer:
+          type: string
+          description: Le texte de la réponse
+        score_now:
+          type: number
+          format: float
+          description: Le score du choix 'Je le fais déjà'
+        score_commitment_pact:
+          type: number
+          format: float
+          description: Le score du choix 'Je m'engage à le faire'
+        is_forced_engagement:
+          type: boolean
+          description: Indique si l'engagement est obligatoire
+        is_forced_comment:
+          type: boolean
+          description: Indique si un commentaire/précision est obligatoire
+    UserAnswer:
+      type: object
+      properties:
+        answer_id:
+          type: integer
+          description: Identifiant unique de la réponse de l'utilisateur
+        user_id:
+          type: integer
+          description: Identifiant unique de l'utilisateur qui a répondu
+        form_id:
+          type: integer
+          description: Identifiant unique du questionnaire auquel la question est associée
+        now:
+          type: boolean
+          description: Réponse à la question 'Je le fais déjà'
+        commitment_pact:
+          type: boolean
+          description: Réponse à la question 'Je m'engage à le faire'
+        comment:
+          type: string
+          description: Commentaire de l'utilisateur
+        now_verif:
+          type: boolean
+          description: Vérification par l'administrateur de la réponse à la question 'Je le fais déjà'
+        commitment_pact_verif:
+          type: boolean
+          description: Vérification par l'administrateur de la réponse à la question 'Je m'engage à le faire'
