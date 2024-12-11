@@ -26,6 +26,9 @@ const QUERY_ACCEPT_ONBOARDING: &str = "
 const QUERY_SELECT_REQUEST_BY_EMAIL: &str = "
     SELECT * FROM pfe.onboarding WHERE email = $1;
 ";
+const QUERY_SELECT_BY_ID: &str = "
+    SELECT * FROM pfe.onboarding WHERE onboarding_id = $1;
+";
 
 #[derive(Debug, Clone)]
 pub struct OnboardingService {
@@ -59,6 +62,19 @@ impl OnboardingService {
             .bind(onboarding.offers_services)
             .bind(onboarding.sells_products)
             .fetch_one(&self.db)
+            .await {
+            Ok(onboarding) => Ok(onboarding),
+            Err(e) => {
+                tracing::error!("Error: {:?}", e);
+                Err(ResponseError::DbError(e))
+            }
+        }
+    }
+
+    pub async fn read_by_id(&self, onboarding_id: i32) -> Result<Option<Onboarding>, ResponseError> {
+        match sqlx::query_as::<_, Onboarding>(QUERY_SELECT_BY_ID)
+            .bind(onboarding_id)
+            .fetch_optional(&self.db)
             .await {
             Ok(onboarding) => Ok(onboarding),
             Err(e) => {

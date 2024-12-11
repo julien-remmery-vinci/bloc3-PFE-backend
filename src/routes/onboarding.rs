@@ -52,11 +52,18 @@ pub async fn accept_onboarding(
     if onboarding_id < 1 {
         return Err(ResponseError::BadRequest(Some(String::from("Invalid onboarding ID"))));
     }
-    let onboarding = state.onboarding.accept_onboarding(onboarding_id).await?;
-    if onboarding.is_none() {
-        return Err(ResponseError::NotFound(Some(String::from("Onboarding not found"))));
+    match state.onboarding.read_by_id(onboarding_id).await? {
+        Some(onboarding) => {
+            if onboarding.accepted() || onboarding.rejected() {
+                return Err(ResponseError::Conflict(Some(String::from("Onboarding already accepted"))));
+            }
+        },
+        None => return Err(ResponseError::NotFound(Some(String::from("Onboarding not found")))),
     }
-    let onboarding = onboarding.unwrap();
+    let onboarding = match state.onboarding.accept_onboarding(onboarding_id).await {
+        Ok(onboarding) => onboarding.unwrap(),
+        Err(e) => return Err(e),
+    };
 
     let company = Company {
         company_id: None,

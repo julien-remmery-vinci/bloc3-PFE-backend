@@ -48,4 +48,25 @@ impl Onboarding {
             || self.nb_workers == 0
             || self.honor_engagement == false
     }
+
+    pub fn pending(&self) -> bool {
+        if self.status.is_none() {
+            return false;
+        }
+        self.status.as_ref().unwrap() == "PENDING"
+    }
+
+    pub fn rejected(&self) -> bool {
+        if self.status.is_none() {
+            return false;
+        }
+        self.status.as_ref().unwrap() == "REJECTED"
+    }
+
+    pub fn accepted(&self) -> bool {
+        if self.status.is_none() {
+            return false;
+        }
+        self.status.as_ref().unwrap() == "ACCEPTED"
+    }
 }
