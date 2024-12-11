@@ -39,7 +39,7 @@ use routes::questions::{
     update_question
 };
 use routes::companies::{
-    company_forms_status, create_company, read_all_companies, read_one_company
+    company_forms_status, create_company, get_user_company, read_all_companies, read_one_company
 };
 use routes::scores::sum_score_template;
 use tokio::net::TcpListener;
