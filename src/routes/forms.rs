@@ -1,5 +1,5 @@
 use axum::{
-    extract::State, 
+    extract::{Path, State}, 
     http::StatusCode, 
     response::IntoResponse, 
     Extension, 
@@ -9,13 +9,16 @@ use crate::{
     database::state::AppState, 
     errors::responserror::ResponseError, 
     models::{
-        form::{
+        company::Company, form::{
             CompleteForm, CreateForm, Form, ModifiableForm, QuestionWithAnswers, QuestionWithUserAnswers
-        }, 
-        question::Question, 
-        user::User
+        }, question::Question, user::User
     }
 };
+
+#[derive(serde::Deserialize)]
+pub struct SubmitValidation {
+    confirmation: bool,
+}
 
 #[axum::debug_handler]
 pub async fn create_form(
@@ -33,7 +36,7 @@ pub async fn create_form(
 
     match state.form.create_form_in_db(new_form, questions, templates).await {
         Ok(_) => Ok(StatusCode::CREATED),
-        Err(error) => Err(ResponseError::DbError(error)),
+        Err(error) => Err(error),
     }
 }
 
@@ -68,23 +71,80 @@ pub async fn read_forms_by_user(
     Ok((StatusCode::OK, Json(forms_list)))
 }
 
+#[axum::debug_handler]
+pub async fn submit_form(
+    State(state): State<AppState>,
+    Path(form_id): Path<i32>,
+    Extension(user): Extension<User>,
+    Json(confirmation): Json<SubmitValidation>
+) -> Result<impl IntoResponse, ResponseError> {
+    if form_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
+    }
+
+    let form = match state.form.read_form_by_id(form_id).await {
+        Ok(form) => form.unwrap(),
+        Err(_) => {
+            return Err(ResponseError::NotFound(Some(String::from("Form not found"))))
+        },
+    };
+
+    if form.company_id != user.company_id.unwrap() {
+        return Err(ResponseError::Unauthorized(Some(String::from("You are not authorized to submit this form"))));
+    }
+
+    if !confirmation.confirmation {
+        let pending_questions: Vec<i32> = state.form.get_pending_questions(form_id).await?;
+
+        if pending_questions.len() > 0 {
+            return Ok((StatusCode::BAD_REQUEST, Json(pending_questions)).into_response());
+        }
+    }
+
+    state.form.user_submit_form(form_id).await?;
+    Ok((StatusCode::NO_CONTENT, Json("Form submitted")).into_response())
+}
+
+#[axum::debug_handler]
+pub async fn submit_validated_form(
+    State(state): State<AppState>,
+    Path(form_id): Path<i32>,
+) -> Result<impl IntoResponse, ResponseError> {
+    if form_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
+    }
+
+    match state.form.read_form_by_id(form_id).await {
+        Ok(form) => form.unwrap(),
+        Err(_) => {
+            return Err(ResponseError::NotFound(Some(String::from("Form not found"))))
+        },
+    };
+
+    state.form.submit_validated_form(form_id).await?;
+    Ok((StatusCode::NO_CONTENT, Json("Form submitted")).into_response())
+}
+
 pub async fn get_complete_form(
     state: AppState,
     form: Form,
+    company: Company,
 ) -> Result<CompleteForm, ResponseError> {
     let templates = state.form.read_form_templates(form.form_id).await?;
 
     let mut complete_form: CompleteForm = CompleteForm { 
         form_id: form.form_id, 
         company_id: form.company_id, 
-        r#type: form.r#type.clone(), 
+        r#type: form.r#type.clone(),
+        status: form.status.clone(),
         templates,
         questions: Vec::new() 
     };
 
     let questions = state.question.read_all_by_form_id(form.form_id).await?;
 
-    for question in &questions {
+    for mut question in questions {
+        question.question = question.question.clone().replace("XXX", &company.company_name);
         let answers = state.answer.read_answers_by_question(question.question_id).await?;
         let user_answers = state.answer.read_answers_by_user_by_question(question.question_id, form.form_id).await?;
 
@@ -104,9 +164,14 @@ pub async fn get_complete_forms(
     company_id: i32,
 ) -> Result<Vec<CompleteForm>, ResponseError> {
     let forms = state.form.read_forms_by_company(company_id).await?;
+    let company = match state.company.find_by_id(company_id).await {
+        Ok(company) => company.unwrap(),
+        Err(_) => return Err(ResponseError::NotFound(Some(String::from("Company not found")))),
+    };
+
     let mut forms_list: Vec<CompleteForm> = Vec::new();
     for form in forms {
-        let complete_form = get_complete_form(state.clone(), form.clone()).await?;
+        let complete_form = get_complete_form(state.clone(), form.clone(), company.clone()).await?;
         forms_list.push(complete_form);
     }
     Ok(forms_list)

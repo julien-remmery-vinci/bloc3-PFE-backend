@@ -8,7 +8,7 @@ POST {{ baseUrl }}/auth/login
 Content-Type: application/json
 
 {
-    "login": "user1@example.com",
+    "login": "user2@example.com",
     "password": "password"
 }
 
@@ -38,4 +38,17 @@ Authorization: Bearer {{ user_token }}
 
 ### Read all types of forms with their questions & answers, used for managing forms
 GET {{ baseUrl }}/forms
+Authorization: Bearer {{ admin_token }}
+
+### Submit a form
+POST {{ baseUrl }}/forms/2/submit
+Content-Type: application/json
+Authorization: Bearer {{ user_token }}
+
+{
+    "confirmation": true
+}
+
+### Validate a form
+POST {{ baseUrl }}/forms/3/validate
 Authorization: Bearer {{ admin_token }}

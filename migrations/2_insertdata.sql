@@ -116,12 +116,15 @@ Une déclaration de mission formelle et écrite de l''entreprise est une déclar
 ('ESG', '12. CERTIFICATIONS', '12.1. CERTIFICATIONS D''UN PRODUIT, D''UN SERVICE OU D''UNE PRATIQUE', 'Quel est le pourcentage de vos produits ou services ou pratiques durables qui ont été contrôlés et certifiés par un organisme d''accréditation  axé sur la qualité ou le développement durable ? (ex : Fairtrade, BIO, Ecovadis, Ethibel, BDO etc) '),
 ('ESG', '12. CERTIFICATIONS', '12.2. CERTIFICATIONS DE L''ENTREPRISE', 'XXX a-t-elle obtenu une ou plusieurs certifications attestant ses efforts en matière de transition durable ?');
 
-INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement)
+INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement, is_forced_comment)
 VALUES
 -- 1. ENERGIE & CARBONE
-('oui','ALL',1,2.0,0.5,FALSE),
-('Non', 'ALL', 1, 0.0, 0.0, FALSE),
-(NULL, 'ALL', 2, 0.0, 0.0, FALSE),
+('oui','ALL',1,2.0,0.5,FALSE, FALSE),
+('Non', 'ALL', 1, 0.0, 0.0, FALSE, FALSE),
+(NULL, 'ALL', 2, 0.0, 0.0, FALSE, TRUE);
+
+INSERT INTO pfe.answers_esg (answer, template, question_id, score_now, score_commitment_pact, is_forced_engagement)
+VALUES
 ('Oui', 'OWNED FACILITY', 3, 1.0, 0.25, FALSE),
 ('Non', 'OWNED FACILITY', 3, 0.0, 0.0, FALSE),
 ('Je ne sais pas', 'OWNED FACILITY', 3, 0.0, 0.0, FALSE),
@@ -140,7 +143,7 @@ VALUES
 ('Non applicable', 'OWNED FACILITY', 5, 0.0, 0.0, FALSE),
 ('Oui', 'WORKERS', 6, 1.0, 0.25, FALSE),
 ('Non', 'WORKERS', 6, 0.0, 0, FALSE),
-('N/A - Nous n''avons pas de travailleur·euses.', 'WORKERS', 6, 0.0, 0.0, FALSE),
+('Non applicable - Nous n''avons pas de travailleur·euses.', 'WORKERS', 6, 0.0, 0.0, FALSE),
 ('Oui, pour les Scopes 1 & 2 (les émissions de gaz à effet de serre directes et indirectes liées à notre consommation d''énergie).', 'ALL', 7, 0.5, 0.125, FALSE),
 ('Oui, pour le Scope 3 (toutes les émissions de GES indirectes liées à nos activités).', 'ALL', 7, 1.5, 0.375, FALSE),
 ('Non', 'ALL', 7, 0.0, 0.0, FALSE),
@@ -206,7 +209,7 @@ VALUES
 ('Non applicable', 'FACILITY', 20, 0.0, 0.0, FALSE),
 ('Oui', 'WORKERS', 21, 0.8888888888888888, 0.2222222222222222, TRUE),
 ('Non', 'WORKERS', 21, 0.0, 0, FALSE),
-('N/A - Nous n''avons pas de travailleur·euses.', 'WORKERS', 21, 0.0, 0.0, FALSE),
+('Non applicable - Nous n''avons pas de travailleur·euses.', 'WORKERS', 21, 0.0, 0.0, FALSE),
 ('Nous avons réalisé une analyse de notre chaîne de valeur, incluant nos fournisseurs, services et matériaux, afin de repérer les principaux domaines où l''eau est utilisée.', 'ALL', 22, 0.8888888888888888, 0.2222222222222222, FALSE),
 ('Nous avons défini des objectifs pour réduire l''empreinte hydrique de notre chaîne d''approvisionnement.', 'ALL', 22, 0.8888888888888888, 0.2222222222222222, FALSE),
 ('Nous collaborons avec nos fournisseurs et les encourageons à collecter des données et à publier leur empreinte hydrique.', 'ALL', 22, 0.8888888888888888, 0.2222222222222222, FALSE),
@@ -249,7 +252,7 @@ VALUES
 ('Non applicable', 'FACILITY', 29, 0.0, 0.0, FALSE),
 ('Oui', 'WORKERS', 30, 0.6153846153846154, 0.15384615384615385, TRUE),
 ('Non', 'WORKERS', 30, 0.0, 0, FALSE),
-('N/A - Nous n''avons pas de travailleur·euses.', 'WORKERS', 30, 0.0, 0.0, FALSE),
+('Non applicable - Nous n''avons pas de travailleur·euses.', 'WORKERS', 30, 0.0, 0.0, FALSE),
 ('Nous réutilisons les déchets générés au cours des processus de fabrication.', 'PRODUIT', 31, 0.6153846153846154, 0.15384615384615385, FALSE),
 ('Nous avons pris des mesures pour simplifier le recyclage ou la réutilisation de nos produits.', 'PRODUIT', 31, 0.6153846153846154, 0.15384615384615385, FALSE),
 ('Nous disposons de programmes de reprise des produits en fin de vie.', 'PRODUIT', 31, 0.6153846153846154, 0.15384615384615385, FALSE),
@@ -268,7 +271,7 @@ VALUES
 ('Nous avons formalisé notre engagement envers la protection des écosystèmes et de la biodiversité.', 'PRODUIT', 32, 1.3333333333333333, 0.3333333333333333, FALSE),
 ('Autre : veuillez expliquer dans les commentaires', 'PRODUIT', 32, 0, 0.0, FALSE),
 ('Aucune de ces réponses.', 'PRODUIT', 32, 0.0, 0, FALSE),
-('nan', 'PRODUIT', 32, 0.0, 0.0, FALSE),
+('N/A', 'PRODUIT', 32, 0.0, 0.0, FALSE),
 ('Oui', 'WORKERS', 33, 1.3333333333333333, 0.3333333333333333, FALSE),
 ('Non', 'WORKERS', 33, 0.0, 0, FALSE),
 ('Non applicable - Nous n''avons pas de travailleur·euses.', 'WORKERS', 33, 0.0, 0.0, FALSE),
@@ -316,7 +319,7 @@ VALUES
 ('25-49%', 'WORKERS', 41, 0.21428571428571427, 0.05357142857142857, FALSE),
 ('50%+', 'WORKERS', 41, 0.2857142857142857, 0.07142857142857142, FALSE),
 ('Je ne sais pas.', 'WORKERS', 41, 0.0, 0.0, FALSE),
-('N/A - Nous n''avons pas de cadre.', 'WORKERS', 41, 0.0, 0.0, FALSE),
+('Non applicable - Nous n''avons pas de cadre.', 'WORKERS', 41, 0.0, 0.0, FALSE),
 ('0%', 'WORKERS', 42, 0.0, 0.0, FALSE),
 ('1-24%', 'WORKERS', 42, 0.14285714285714285, 0.03571428571428571, FALSE),
 ('25-49%', 'WORKERS', 42, 0.21428571428571427, 0.05357142857142857, FALSE),
@@ -657,13 +660,13 @@ VALUES
 (3, 5);
 
 -- Insertion des formulaires
-INSERT INTO pfe.forms (company_id, type)
+INSERT INTO pfe.forms (company_id, type, status)
 VALUES
-(1,'ESG'),
+(1,'ESG', 'PENDING'),
 --(1,'ODD'),
-(2,'ESG'),
+(2,'ESG', 'PENDING'),
 --(2,'ODD'),
-(3,'ESG');
+(3,'ESG', 'PENDING');
 --(3,'ODD');
 
 -- Lien entre les templates et les formulaires
@@ -686,6 +689,14 @@ VALUES
 ('user3', 'example', 'user3@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 3),
 ('admin', 'example', 'admin@example.com', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'admin', null);
 
+-- LIEN QUESTION REPONSE POUR TEST
+INSERT INTO pfe.questions_form (form_id, question_id, question_status)
+VALUES (2, 1, 'PENDING');
+
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now) 
+VALUES (1, 2, 2, true);
+
+-- Insertion d'exemples de onboarding
 INSERT INTO pfe.onboarding (
     firstname,
     lastname,

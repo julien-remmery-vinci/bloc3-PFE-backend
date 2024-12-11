@@ -39,6 +39,7 @@ Content-Type: application/json
 ### Add an answer
 POST {{ baseUrl }}/answers
 Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
 
 {
     "answer": "cc sava",
@@ -46,32 +47,39 @@ Content-Type: application/json
     "question_id": 1,
     "score": 0.3,
     "engagement_score": 0.5,
-    "is_forced_engagement": false
+    "is_forced_engagement": false,
+    "is_forced_comment": false
 }
 
 ### Add an answer for a user without text
-POST {{ baseUrl }}/answers/4
+POST {{ baseUrl }}/answers/1
 Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "form_id": 4,
+    "form_id": 1,
     "now": true,
     "commitment_pact": false,
-    "comment": " "
+    "comment": "Mon commentaire"
 }
 
-### Add an answer for a user with text
+### Add an answer for a user with text on forced comment
 POST {{ baseUrl }}/answers/3
 Content-Type: application/json
 Authorization: Bearer {{ user_token }}
 
 {
-    "answer": "cc sava",
     "form_id": 1,
-    "now": true,
-    "commitment_pact": false,
-    "comment": " "
+    "comment": "Mon commentaire"
+}
+
+### Add an answer for a user without text on forced comment
+POST {{ baseUrl }}/answers/3
+Content-Type: application/json
+Authorization: Bearer {{ user_token }}
+
+{
+    "form_id": 1
 }
 
 ### Get the answers of a question
@@ -81,3 +89,70 @@ Authorization: Bearer {{ user_token }}
 ### get the score of a form
 GET {{ baseUrl }}/score/4
 Authorization: Bearer {{ user_token }}
+
+### Validate a user's answer
+POST {{ baseUrl }}/answers/1/validate
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "form_id": 2,
+    "now_verif": true,
+    "commitment_pact_verif": false
+}
+
+### Validate a non existant user's answer with comment
+POST {{ baseUrl }}/answers/1/validate
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "form_id": 2,
+    "comment": "Mon commentaire"
+}
+
+### Validate a non existant user's answer without comment
+POST {{ baseUrl }}/answers/3/validate
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "form_id": 2
+}
+
+### Update score of an answer ONLY SCORE NOW
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_now": 0.7
+}
+
+### Update score of an answer ONLY SCORE ENGAGEMENT
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_commitment_pact": 0.6
+}
+
+### Update score of an answer BOTH SCORES
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_now": 2,
+    "score_commitment_pact": 0.5
+}
+
+### Update score of an answer with wrong value
+PATCH {{ baseUrl }}/answers/update-score/1
+Content-Type: application/json
+Authorization: Bearer {{ admin_token }}
+
+{
+    "score_now": -1
+}

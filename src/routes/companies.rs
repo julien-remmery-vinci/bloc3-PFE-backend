@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Path, State}, http::StatusCode, response::IntoResponse, Json
+    extract::{Path, State}, http::StatusCode, response::IntoResponse, Extension, Json
 };
 
 use crate::{
@@ -52,9 +52,14 @@ pub async fn create_company(
 pub async fn company_forms_status(
     State(state): State<AppState>,
     Path(company_id): Path<i32>,
+    Extension(user): Extension<User>
 ) -> Result<impl IntoResponse, ResponseError> {
     if company_id <= 0 {
         return Err(ResponseError::BadRequest(Some(String::from("Invalid company id"))));
+    }
+
+    if user.role != "admin" && user.company_id.unwrap() != company_id {
+        return Err(ResponseError::Unauthorized(Some(String::from("You are not authorized to view this company's forms status"))));
     }
 
     match state.company.find_by_id(company_id).await? {
@@ -77,4 +82,18 @@ pub async fn company_forms_status(
     }
 
     Ok(Json((total_user_answers as f64 / total_answers as f64) * 100 as f64))
+}
+
+pub async fn get_user_company(
+    State(state): State<AppState>,
+    Extension(user): Extension<User>,
+) -> Result<Json<Company>, ResponseError> {
+    if user.company_id.is_none() || user.company_id.unwrap() <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid user company id"))));
+    }
+
+    match state.company.find_by_id(user.company_id.unwrap()).await? {
+        Some(company) => Ok(Json(company)),
+        None => Err(ResponseError::NotFound(Some(String::from("Company not found")))),
+    }
 }

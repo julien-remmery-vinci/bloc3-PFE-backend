@@ -7,6 +7,7 @@ pub async fn sum_score_template(
     State(state): State<AppState>,
     Path(form_id): Path<i32>,
 ) -> Result<Json<Score>, ResponseError> {
+    /* 
     let template=state.score.find_template_by_form_id(form_id).await?;
     let mut score_total = 0.0;
     // si template est ALL 
@@ -19,7 +20,7 @@ pub async fn sum_score_template(
         } 
         score_total += state.score.sum_score_template("ALL".to_string()).await?;
     }
-    
+    */
     let score_user_now = state.score.sum_score_user_now(form_id).await?;
     let mut sum: f64 = 0.0;
     let score_user_now_clone = score_user_now.clone();
@@ -44,7 +45,7 @@ pub async fn sum_score_template(
         println!("No scores available");
     }
     //score en %
-    let score = ((sum)/score_total)*100.0;
+    let score = ((sum)/90.0)*100.0;
     Ok(Json(Score {
         total: score,
         details_now: score_user_now_clone.unwrap_or_default(),
