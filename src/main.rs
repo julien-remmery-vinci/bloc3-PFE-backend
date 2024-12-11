@@ -97,7 +97,7 @@ fn answers_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_user)))
         .route("/answers/:id/validate", post(validate_user_answer)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
-        .route("/answers/update-score/:id", patch(update_answer_score)
+        .route("/answers/:id/update-score", patch(update_answer_score)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
