@@ -23,13 +23,9 @@ CREATE TABLE IF NOT EXISTS pfe.companies (
     office_address TEXT,
     website VARCHAR(255),
     nace_code VARCHAR(20),
-    business_activity TEXT,
     nb_workers INTEGER,
     revenue DOUBLE PRECISION,
-    labels TEXT[],
-    dispute BOOLEAN DEFAULT FALSE,
-    is_validated BOOLEAN DEFAULT FALSE,
-    is_eligible BOOLEAN DEFAULT FALSE
+    dispute BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS pfe.template_company (
@@ -108,4 +104,33 @@ CREATE TABLE IF NOT EXISTS pfe.user_answer_esg (
     commitment_pact_verif BOOLEAN NULL,
     status TEXT CHECK (status IN ('PENDING', 'VALIDATED')),
     PRIMARY KEY (answer_id, user_id, form_id)
+);
+
+CREATE TABLE IF NOT EXISTS pfe.onboarding (
+    onboarding_id SERIAL PRIMARY KEY,
+    firstname TEXT NOT NULL,
+    lastname TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL,
+    position TEXT NOT NULL,
+    company_name TEXT NOT NULL,
+    company_number TEXT NOT NULL,
+    legal_form TEXT NOT NULL,
+    office_address TEXT NOT NULL,
+    website TEXT NOT NULL,
+    nace_code TEXT NOT NULL,
+    revenue DOUBLE PRECISION NOT NULL,
+    franchise BOOLEAN NOT NULL,
+    nb_workers INTEGER NOT NULL,
+    dispute BOOLEAN NOT NULL,
+    honor_engagement BOOLEAN NOT NULL,
+    grant_application BOOLEAN NOT NULL,
+    grant_application_partner TEXT NOT NULL,
+    something_else TEXT NOT NULL,
+    comment TEXT NOT NULL,
+    submit_date TEXT NOT NULL DEFAULT NOW(),
+    is_owner BOOLEAN NOT NULL,
+    offers_services BOOLEAN NOT NULL,
+    sells_products BOOLEAN NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('PENDING', 'ACCEPTED', 'REJECTED')) DEFAULT 'PENDING'
 );
