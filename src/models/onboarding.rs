@@ -24,7 +24,7 @@ pub struct Onboarding {
     pub grant_application_partner: String,
     pub something_else: String,
     pub comment: String,
-    pub submit_date: String,
+    pub submit_date: Option<String>,
     pub is_owner: bool,
     pub offers_services: bool,
     pub sells_products: bool,

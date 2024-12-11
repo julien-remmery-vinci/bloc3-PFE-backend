@@ -37,7 +37,6 @@ Content-Type: application/json
     "grant_application_partner": "GrantAgency Ltd.",
     "something_else": "Additional relevant information here.",
     "comment": "Looking forward to the process!",
-    "submit_date": "2024-12-10",
     "is_owner": true,
     "offers_services": true,
     "sells_products": false
