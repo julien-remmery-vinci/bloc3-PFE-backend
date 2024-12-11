@@ -58,3 +58,11 @@ Authorization: Bearer {{ admin_token }}
 ### Accept an onboarding request
 POST {{baseUrl}}/onboarding/1/accept
 Authorization: Bearer {{ admin_token }}
+
+### Accept an onboarding request
+POST {{baseUrl}}/onboarding/-1/accept
+Authorization: Bearer {{ admin_token }}
+
+### Accept an onboarding request
+POST {{baseUrl}}/onboarding/1000/accept
+Authorization: Bearer {{ admin_token }}
