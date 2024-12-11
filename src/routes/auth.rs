@@ -46,7 +46,7 @@ pub async fn register(
     }
 
     if user.role == "admin" && logged_user.role != "admin" {
-        return Err(ResponseError::Unauthorized(Some(String::from("Only admin users can create new admin users"))));
+        return Err(ResponseError::Forbidden(Some(String::from("Only admin users can create new admin users"))));
     }
 
     match state.auth.find_by_login(user.login.clone()).await? {
