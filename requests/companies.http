@@ -57,15 +57,6 @@ Authorization: Bearer {{ admin_token }}
 GET {{ baseUrl }}/company/1/forms/status
 Authorization: Bearer {{ user_token }}
 
-### Validate a company
-POST {{ baseUrl }}/company/1/validate
-Content-Type: application/json
-Authorization: Bearer {{ admin_token }}
-
-{
-    "is_eligible": true
-}
-
 ### Read a user's company
 GET {{ baseUrl }}/company/user
 Authorization: Bearer {{ user_token }}
