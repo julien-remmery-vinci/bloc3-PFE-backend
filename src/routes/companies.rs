@@ -32,7 +32,7 @@ pub async fn read_one_company(
 pub async fn read_all_companies(
     State(state): State<AppState>,
 ) -> Result<Json<Vec<Company>>, ResponseError> {
-    let companies = state.company.get_companies().await?;
+    let companies: Vec<Company> = state.company.get_companies().await?;
     Ok(Json(companies))
 }
 
@@ -40,7 +40,7 @@ pub async fn create_company(
     State(state): State<AppState>,
     Json(company): Json<Company>,
 ) -> Result<impl IntoResponse, ResponseError> {
-    match state.company.find_by_company_number(company.company_number.clone()).await? {
+    match state.company.read_by_company_number(company.company_number.clone()).await? {
         Some(_) => return Err(ResponseError::Conflict(Some(String::from("Company already exists")))),
         None => (),
     }

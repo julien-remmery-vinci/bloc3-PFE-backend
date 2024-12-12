@@ -644,9 +644,9 @@ VALUES
 -- Insertion des entreprises
 INSERT INTO pfe.companies (company_name, company_number, legal_form, office_address, website, nace_code, nb_workers, revenue, dispute)
 VALUES
-('Company 1', 'BE0123456789', 'SRL', 'Rue de la Loi 1, 1000 Bruxelles', 'www.company1.be', '1234', 100, 1000000, FALSE),
-('Company 2', 'BE9876543210', 'SPRL', 'Rue de la Loi 2, 1000 Bruxelles', 'www.company2.be', '4321', 200, 2000000, FALSE),
-('Company 3', 'BE1234567890', 'SCRL', 'Rue de la Loi 3, 1000 Bruxelles', 'www.company3.be', '5678', 300, 3000000, FALSE);
+('Company 1', 'BE1111111111', 'SRL', 'Rue de la Loi 1, 1000 Bruxelles', 'www.company1.be', '1234', 100, 1000000, FALSE),
+('Company 2', 'BE2222222222', 'SPRL', 'Rue de la Loi 2, 1000 Bruxelles', 'www.company2.be', '4321', 200, 2000000, FALSE),
+('Company 3', 'BE3333333333', 'SCRL', 'Rue de la Loi 3, 1000 Bruxelles', 'www.company3.be', '5678', 300, 3000000, FALSE);
 
 -- Lien entre les entreprises et les templates
 INSERT INTO pfe.template_company (company_id, template_id)
@@ -729,7 +729,7 @@ INSERT INTO pfe.onboarding (
     'securepassword123',
     'Manager',
     'GreenTech Solutions',
-    '987654321',
+    'BE9876543210',
     'LLC',
     '456 Innovation Lane, Paris, France',
     'https://www.greentech.com',
@@ -781,7 +781,7 @@ INSERT INTO pfe.onboarding (
     'mypassword456',
     'Director',
     'TechVision Inc.',
-    '123987654',
+    'BE1239876540',
     'S.A.',
     '789 Startup Road, Berlin, Germany',
     'https://www.techvision.com',
@@ -833,7 +833,7 @@ INSERT INTO pfe.onboarding (
     'password789',
     'Founder',
     'EcoFriendly Co.',
-    '456789123',
+    'BE4567891230',
     'GmbH',
     '123 Sustainable Way, Amsterdam, Netherlands',
     'https://www.ecofriendly.com',

@@ -17,6 +17,16 @@ pub async fn submit_onboarding(
         None => (),
     }
 
+    match state.company.read_by_company_number(data.company_number.clone()).await? {
+        Some(_) => return Err(ResponseError::Conflict(Some(String::from("Company number already used")))),
+        None => (),
+    }
+
+    match state.onboarding.read_by_company_number(data.company_number.clone()).await? {
+        Some(_) => return Err(ResponseError::Conflict(Some(String::from("Company number already used")))),
+        None => (),
+    }
+
     let hashed_password = match hash_password(data.password.clone()) {
         Ok(password) => password,
         Err(error) => return Err(error),
@@ -60,12 +70,13 @@ pub async fn accept_onboarding(
         },
         None => return Err(ResponseError::NotFound(Some(String::from("Onboarding not found")))),
     }
-    let onboarding = match state.onboarding.accept_onboarding(onboarding_id).await {
+
+    let onboarding: Onboarding = match state.onboarding.accept_onboarding(onboarding_id).await {
         Ok(onboarding) => onboarding.unwrap(),
         Err(e) => return Err(e),
     };
 
-    let company = Company {
+    let company: Company = Company {
         company_id: None,
         company_name: onboarding.company_name.clone(),
         company_number: onboarding.company_number.clone(),
@@ -77,8 +88,30 @@ pub async fn accept_onboarding(
         nb_workers: Some(onboarding.nb_workers.clone()),
         dispute: onboarding.dispute.clone()
     };
-    let company = state.company.create_company(company).await?;
-    let user = CreateUser {
+    let company: Company = state.company.create_company(company).await?;
+
+    if onboarding.is_owner && onboarding.nb_workers > 0 && onboarding.sells_products {
+        let template: String = String::from("ALL");
+        state.company.insert_company_templates(company.company_id.unwrap(), template).await?;
+    } else {
+        if onboarding.sells_products {
+            let template: String = String::from("PRODUITS");
+            state.company.insert_company_templates(company.company_id.unwrap(), template).await?;
+        } else {
+            let template: String = String::from("FACILITY");
+            state.company.insert_company_templates(company.company_id.unwrap(), template).await?;
+        }
+        if onboarding.nb_workers > 0 {
+            let template: String = String::from("WORKERS");
+            state.company.insert_company_templates(company.company_id.unwrap(), template).await?;
+        }
+        if onboarding.is_owner{
+            let template: String = String::from("OWNED FACILITY");
+            state.company.insert_company_templates(company.company_id.unwrap(), template).await?;
+        }
+    }
+
+    let user: CreateUser = CreateUser {
         company_id: company.company_id,
         login: onboarding.email.clone(),
         password: onboarding.password.clone(),
@@ -87,7 +120,7 @@ pub async fn accept_onboarding(
         role: "user".to_string(),
     };
     state.auth.create_user(user).await?;
-    let new_form = CreateForm {
+    let new_form: CreateForm = CreateForm {
         company_id: company.company_id.unwrap(),
         r#type: String::from("ESG"),
     };
