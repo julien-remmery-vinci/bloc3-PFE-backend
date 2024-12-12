@@ -37,10 +37,6 @@ pub struct StatsService {
 }
 
 impl StatsService {
-    pub fn new(db: Pool<Postgres>) -> Self {
-        Self { db }
-    }
-
     pub async fn get_stats(&self) -> Result<Stats, ResponseError> {
         let stats = sqlx::query_as::<_, Stats>(QUERY_SELECT_STATS)
             .fetch_one(&self.db)
