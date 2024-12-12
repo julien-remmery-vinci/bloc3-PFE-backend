@@ -1,5 +1,5 @@
 use axum::{
-    body::Body, extract::{Path, State}, http::{Response, StatusCode}, response::IntoResponse, Extension, Json
+    extract::{Path, State}, http::StatusCode, response::IntoResponse, Extension, Json
 };
 use crate::{
     database::state::AppState, 
