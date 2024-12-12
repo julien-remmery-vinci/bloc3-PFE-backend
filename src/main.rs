@@ -148,7 +148,8 @@ async fn main() {
             Method::POST, 
             Method::PUT, 
             Method::DELETE, 
-            Method::OPTIONS
+            Method::OPTIONS,
+            Method::PATCH
         ])
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
