@@ -50,3 +50,10 @@ impl PutQuestionRequest {
         Ok(())
     }
 }
+
+#[derive(Deserialize, Serialize, FromRow)]
+pub struct QuestionForm {
+    pub form_id: i32,
+    pub question_id: i32,
+    pub question_status: String,
+}
