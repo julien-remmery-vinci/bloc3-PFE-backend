@@ -120,7 +120,7 @@ fn company_routes(state: AppState) -> Router<AppState> {
 fn score_routes(state: AppState) -> Router<AppState> {
     Router::new()
         .route("/score/:form_id", get(sum_score_template)
-        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .layer(from_fn_with_state(state.clone(), authorize_user)))
 }
 
 fn onboardings_routes(state: AppState) -> Router<AppState> {

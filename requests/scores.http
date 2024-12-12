@@ -1,5 +1,20 @@
 @baseUrl=http://127.0.0.1:3000
+@user_token={{ user.response.body.token }}
 @admin_token={{ admin.response.body.token }}
+
+### Login with user account
+# @name user
+POST {{ baseUrl }}/auth/login
+Content-Type: application/json
+
+{
+    "login": "user1@example.com",
+    "password": "password"
+}
+
+### Get all scores
+GET {{ baseUrl }}/score/1
+Authorization: Bearer {{ user_token }}
 
 ### Login with admin account
 # @name admin

@@ -96,7 +96,7 @@ Content-Type: application/json
 Authorization: Bearer {{ admin_token }}
 
 {
-    "form_id": 2,
+    "form_id": 1,
     "now_verif": true,
     "commitment_pact_verif": false,
     "comment": "Mon commentaire"

@@ -695,8 +695,6 @@ paths:
           description: Les informations du formulaire sont manquantes ou incorrectes
         '401':
           description: L'utilisateur n'est pas autorisé à accéder à cette ressource
-        '403':
-          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
         '404':
           description: Le formulaire n'existe pas
   /onboarding:

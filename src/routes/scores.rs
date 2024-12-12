@@ -1,11 +1,12 @@
-use axum::{extract::{ Path, State}, Json};
+use axum::{extract::{ Path, State}, Extension, Json};
 
-use crate::{database::state::AppState, errors::responserror::ResponseError, models::{form, score::Score}};
+use crate::{database::state::AppState, errors::responserror::ResponseError, models::{form, score::Score, user::User}};
 
 #[axum::debug_handler]
 pub async fn sum_score_template(
     State(state): State<AppState>,
     Path(form_id): Path<i32>,
+    Extension(user): Extension<User>,
 ) -> Result<Json<Score>, ResponseError> {
     if form_id < 1 {
         return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
@@ -53,6 +54,15 @@ pub async fn sum_score_template(
     }
     //score en %
     let score = ((sum)/90.0)*100.0;
+    
+    if user.role != "admin" {
+        return Ok(Json(Score {
+            total: score,
+            details_now: Vec::new(),
+            details_commitment_pact: Vec::new()
+        }))
+    }
+
     Ok(Json(Score {
         total: score,
         details_now: score_user_now_clone.unwrap_or_default(),
