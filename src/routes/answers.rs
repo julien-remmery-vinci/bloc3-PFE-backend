@@ -35,7 +35,6 @@ pub async fn create_answer_for_user(
     Path(answer_id): Path<i32>,
     Json(created_answer): Json<CreateAnswerUser>
 ) -> Result<impl IntoResponse, ResponseError> {
-    // TODO : check if user's company is the same as the form's company
     if created_answer.invalid() {
         return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
     }
@@ -60,8 +59,6 @@ pub async fn create_answer_for_user(
     }
     
     // check si il y un engagement forcé
-    tracing::info!("answer.is_forced_engagement : {:?}", answer.is_forced_engagement);
-    tracing::info!("created_answer.commitment_pact : {:?}", created_answer.commitment_pact);
     if answer.is_forced_engagement && (created_answer.commitment_pact.is_none() || created_answer.commitment_pact.unwrap() == false) {
         return Err(ResponseError::BadRequest(Some(String::from("This answer has a forced engagement"))));
     }

@@ -49,7 +49,7 @@ impl Onboarding {
             || self.honor_engagement == false
     }
 
-    pub fn pending(&self) -> bool {
+    pub fn _pending(&self) -> bool {
         if self.status.is_none() {
             return false;
         }
