@@ -3,7 +3,7 @@ use sqlx::{Pool, Postgres};
 use crate::{errors::responserror::ResponseError, models::stats::Stats};
 
 const QUERY_SELECT_STATS: &str = "
-    SELECT
+SELECT
     (SELECT COUNT(user_id) FROM pfe.users) AS total_users,
     (SELECT COUNT(company_id) FROM pfe.companies) AS total_companies,
     (SELECT COUNT(form_id) FROM pfe.forms) AS total_forms,
@@ -28,7 +28,10 @@ const QUERY_SELECT_STATS: &str = "
     (SELECT COUNT(tc.template_id)
      FROM pfe.template_company tc
      JOIN pfe.templates t ON tc.template_id = t.template_id
-     WHERE t.value = 'FACILITY') AS total_templates_facility;
+     WHERE t.value = 'FACILITY') AS total_templates_facility,
+    (SELECT COUNT(onboarding_id) FROM pfe.onboarding) AS total_onboarding,
+    (SELECT COUNT(CASE WHEN status = 'ACCEPTED' THEN 1 END) FROM pfe.onboarding) AS total_accepted_onboarding,
+    (SELECT COUNT(CASE WHEN status = 'REJECTED' THEN 1 END) FROM pfe.onboarding) AS total_rejected_onboarding;
 ";
 
 #[derive(Debug, Clone)]

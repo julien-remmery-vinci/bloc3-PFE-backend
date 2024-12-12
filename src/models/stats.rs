@@ -13,4 +13,7 @@ pub struct Stats {
     pub total_templates_owned_facility: i64,
     pub total_templates_products: i64,
     pub total_templates_facility: i64,
+    pub total_onboarding: i64,
+    pub total_accepted_onboarding: i64,
+    pub total_rejected_onboarding: i64,
 }
