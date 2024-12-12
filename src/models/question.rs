@@ -55,5 +55,5 @@ impl PutQuestionRequest {
 pub struct QuestionForm {
     pub form_id: i32,
     pub question_id: i32,
-    pub status: String,
+    pub question_status: String,
 }

@@ -76,7 +76,6 @@ pub async fn company_forms_status(
         Some(form) => form,
         None => return Err(ResponseError::BadRequest(Some(String::from("No forms found for specified company")))),
     };
-    tracing::warn!("Last form: {:?}", last_form);
     let mut total_answers = 0;
     let mut total_user_answers = 0;
 
@@ -88,7 +87,7 @@ pub async fn company_forms_status(
     let questions_form = state.question.read_all_questions_forms_by_form_id(last_form.form_id).await?;
     for question in questions_form {
         total_answers +=1 ;
-        if question.status == "COMPLETE" {
+        if question.question_status == "COMPLETE" {
             total_user_answers += 1;
         }
     }
