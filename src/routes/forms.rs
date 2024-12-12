@@ -1,9 +1,5 @@
 use axum::{
-    extract::{Path, State}, 
-    http::StatusCode, 
-    response::IntoResponse, 
-    Extension, 
-    Json
+    body::Body, extract::{Path, State}, http::{Response, StatusCode}, response::IntoResponse, Extension, Json
 };
 use crate::{
     database::state::AppState, 
@@ -102,7 +98,7 @@ pub async fn submit_form(
     }
 
     state.form.user_submit_form(form_id).await?;
-    Ok((StatusCode::NO_CONTENT, Json("Form submitted")).into_response())
+    Ok(StatusCode::OK.into_response())
 }
 
 #[axum::debug_handler]
