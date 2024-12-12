@@ -141,8 +141,8 @@ pub async fn get_complete_form(
         questions: Vec::new() 
     };
 
-    let questions = state.question.read_all_by_form_id(form.form_id).await?;
-
+    let mut questions = state.question.read_all_by_form_id(form.form_id).await?;
+    questions.sort_by(|a, b| a.question_id.cmp(&b.question_id));
     for mut question in questions {
         question.question = question.question.clone().replace("XXX", &company.company_name);
         let answers = state.answer.read_answers_by_question(question.question_id).await?;
