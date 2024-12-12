@@ -70,7 +70,7 @@ pub async fn company_forms_status(
         None => return Err(ResponseError::NotFound(Some(String::from("Company not found")))),
     };
 
-    let forms_list: Vec<CompleteForm> = get_complete_forms(state, company_id).await?;
+    let forms_list: Vec<CompleteForm> = get_complete_forms(state.clone(), company_id).await?;
 
     let last_form = match forms_list.last() {
         Some(form) => form,
@@ -79,9 +79,17 @@ pub async fn company_forms_status(
     let mut total_answers = 0;
     let mut total_user_answers = 0;
 
-    for question in last_form.questions.iter() {
-        total_answers += question.answers.len();
-        total_user_answers += question.user_answers.len();
+    // for question in last_form.questions.iter() {
+    //     total_answers += question.answers.len();
+    //     total_user_answers += question.user_answers.len();
+    // }
+
+    let questions_form = state.question.read_all_questions_forms_by_form_id(last_form.form_id).await?;
+    for question in questions_form {
+        total_answers +=1 ;
+        if question.question_status == "COMPLETE" {
+            total_user_answers += 1;
+        }
     }
 
     Ok(Json((total_user_answers as f64 / total_answers as f64) * 100 as f64))
