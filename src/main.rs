@@ -91,7 +91,8 @@ fn questions_routes(state: AppState) -> Router<AppState> {
 
 fn answers_routes(state: AppState) -> Router<AppState> {
     Router::new()
-        .route("/answers", post(create_answer))
+        .route("/answers", post(create_answer)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
         .route("/answers/:id",post(create_answer_for_user)
         .layer(from_fn_with_state(state.clone(), authorize_user)),)
         .route("/answers/:id",get(read_answers_by_question)
@@ -107,7 +108,7 @@ fn company_routes(state: AppState) -> Router<AppState> {
         .route("/company",get(read_all_companies)
         .layer(from_fn_with_state(state.clone(), authorize_admin))
         .post(create_company)
-        .layer(from_fn_with_state(state.clone(), authorize_user)))
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
         .route("/company/:id", get(read_one_company)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
         .route("/company/user", get(get_user_company)
@@ -119,7 +120,7 @@ fn company_routes(state: AppState) -> Router<AppState> {
 fn score_routes(state: AppState) -> Router<AppState> {
     Router::new()
         .route("/score/:form_id", get(sum_score_template)
-        .layer(from_fn_with_state(state.clone(), authorize_user)))
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
 fn onboardings_routes(state: AppState) -> Router<AppState> {

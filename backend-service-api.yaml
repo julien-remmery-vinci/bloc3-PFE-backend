@@ -30,17 +30,13 @@ paths:
             text/plain:
               schema:
                 type: object
-                example: 
-                  {
-                    "user": {
-                      "user_id": 2,
-                      "firstname": "user",
-                      "lastname": "example",
-                      "login": "user@example.com",
-                      "role": "user"
-                    },
-                    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMUBleGFtcGxlLmNvbSIsImV4cCI6MTczMzk4Njk2OX0.R_2qqtBKjgFL21VJ1PE-mwfsOJVKgxjm2Er78MGcPDY"
-                  }
+                properties:
+                  user: 
+                    type: object
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+                    description: Token d'authentification
         '400':
           description: Les informations de connexion sont manquantes
         '401':
@@ -83,7 +79,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+            example: "Bearer <token>"
       responses:
         '200':
           description: Le token est valide, renvoie les informations de l'utilisateur
@@ -103,7 +99,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+            example: "Bearer <token>"
       responses:
         '200':
           description: questionnaires existants
@@ -127,7 +123,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+            example: "Bearer <token>"
       requestBody:
         required: true
         description:
@@ -161,7 +157,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+            example: "Bearer <token>"
       responses:
         '200':
           description: Questionnaires accessibles à l'utilisateur
@@ -192,7 +188,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+            example: "Bearer <token>"
       requestBody:
         required: true
         description:
@@ -216,33 +212,34 @@ paths:
         '404':
           description: Le questionnaire n'existe pas
   /forms/{form_id}/validate:
-    summary: Valide un questionnaire
-    description: 
-      Permet à un administrateur de valider un questionnaire soumis par un utilisateur.
-    parameters:
-        - in : path
-          name: form_id
-          required: true
-          schema:
-            type: integer
-            description: Identifiant unique du questionnaire à soumettre
-        - in : header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
-    responses:
-      '204':
-        description: Le questionnaire a été validé
-      '400':
-        description: Les informations de validation du questionnaire sont manquantes ou incorrectes
-      '401':
-        description: L'utilisateur n'est pas autorisé à acceder à cette ressource
-      '403':
-        description: L'utilisateur n'a pas les droits nécéssaires pour valider le questionnaire
-      '404':
-        description: Le questionnaire n'existe pas
+    post:
+      summary: Valide un questionnaire
+      description: 
+        Permet à un administrateur de valider un questionnaire soumis par un utilisateur.
+      parameters:
+          - in : path
+            name: form_id
+            required: true
+            schema:
+              type: integer
+              description: Identifiant unique du questionnaire à soumettre
+          - in : header
+            name: Authorization
+            required: true
+            schema:
+              type: string
+              example: "Bearer <token>"
+      responses:
+        '204':
+          description: Le questionnaire a été validé
+        '400':
+          description: Les informations de validation du questionnaire sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à acceder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits nécéssaires pour valider le questionnaire
+        '404':
+          description: Le questionnaire n'existe pas
   /questions:
     post:
       summary: Crée une nouvelle question
@@ -255,28 +252,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibG9naW4iOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI5MjM5MDIyfQ.7J1"  
+            example: "Bearer <token>"
       requestBody:
         required: true
         content:
-          type: object
-          properties:
-            category:
-              type: string
-              description: Catégorie de la question
-            sub_category:
-              type: string
-              description: Sous catégorie de la question
-            question:
-              type: string
-              description: Texte de la question
-            type:
-              type: string
-              description: Type du questionnaire auquel la question sera associée
-              enum: [ESG]
-            is_used:
-              type: boolean
-              description: Définit si la question serait associée aux nouveaux questionnaires
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuestion'
       responses:
         '201':
           description: La question a été créée
@@ -286,36 +268,554 @@ paths:
           description: L'utilisateur n'a pas les droits pour accéder à cette ressource
   /questions/{question_id}:
     get:
+      summary: Récupère les détails d'une question spécifique
+      description:
+        Permet de récupérer les détails d'une question spécifique.
+      parameters:
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de la question
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Détails de la question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: Les informations de la question sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: La question n'existe pas
     put:
+      summary: Met à jour les détails d'une question spécifique
+      description:
+        Permet de mettre à jour les détails d'une question spécifique.
+      parameters:
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de la question
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '200':
+          description: La question a été mise à jour
+        '400':
+          description: Les informations de la question sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: La question n'existe pas
   /answers:
     post:
-  /answers/{answer_id}:
+      summary: Crée une nouvelle réponse
+      description:
+        Permet de créer une nouvelle réponse.
+        L'ID de la réponse sera autogénéré.
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAnswer'
+      responses:
+        '201':
+          description: La réponse a été créée
+        '400':
+          description: Les informations de la réponse sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à créer une réponse
+        '403':
+          description: L'utilisateur n'a pas les droits pour créer une réponse
+  /answers/{question_id}:
     get:
+      summary: Récupère les réponses associées à une question spécifique
+      description:
+        Permet de récupérer les réponses associées à une question spécifique.
+      parameters:
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de la question
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Réponses associées à la question
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Answer'
+        '400':
+          description: Les informations de la question sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+  /answers/{answer_id}:
     post:
+      summary: Crée la réponse d'un utilisateur à une réponse spécifique
+      description:
+        Permet à un utilisateur de répondre à une question spécifique.
+      parameters:
+        - in: path
+          name: answer_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de la réponse
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/CreateUserAnswer'
+                - $ref: '#/components/schemas/CreateUserAnswerText'
+      responses:
+        '201':
+          description: La réponse a été créée
+        '400':
+          description: Les informations de la réponse sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à répondre à cette question
+        '404':
+          description: La réponse n'existe pas
   /answers/{answer_id}/validate:
     post:
+      summary: Valide une réponse spécifique
+      parameters:
+        - in: path
+          name: answer_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de la réponse
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    form_id:
+                      type: integer
+                      description: Identifiant unique du questionnaire auquel la question est associée
+                    now_verif:
+                      type: boolean
+                      description: Vérification de la réponse à la question 'Je le fais déjà'
+                    commitment_pact_verif:
+                      type: boolean
+                      description: Vérification de la réponse à la question 'Je m'engage à le faire'
+                - type: object
+                  properties:
+                    form_id:
+                      type: integer
+                      description: Identifiant unique du questionnaire auquel la question est associée
+                    comment:
+                      type: boolean
+                      description: Vérification du commentaire de l'utilisateur
+      responses:
+        '200':
+          description: La réponse a été validée
+        '400':
+          description: Les informations de la réponse sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: La réponse n'existe pas
   /answers/{answer_id}/update-score:
     patch:
+      summary: Met à jour le score d'une réponse spécifique
+      description:
+        Permet de mettre à jour le score d'une réponse spécifique.
+      parameters:
+        - in: path
+          name: answer_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de la réponse
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    score_now:
+                      type: number
+                      format: float
+                      description: Le score du choix 'Je le fais déjà'
+                - type: object
+                  properties:
+                    score_commitment_pact:
+                      type: number
+                      format: float
+                      description: Le score du choix 'Je m'engage à le faire'
+                - type: object
+                  properties:
+                    score_now:
+                      type: number
+                      format: float
+                      description: Le score du choix 'Je le fais déjà'
+                    score_commitment_pact:
+                      type: number
+                      format: float
+                      description: Le score du choix 'Je m'engage à le faire'
+      responses:
+        '200':
+          description: Le score de la réponse a été mis à jour
+        '400':
+          description: Les informations
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: La réponse n'existe pas
   /company:
     get:
+      summary: Récupère les détails de toutes les entreprises
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Détails des entreprises
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+        '401':
+          description: L'utilisateur n'est pas autorisé à consulter les entreprises
+        '403':
+          description: L'utilisateur n'a pas les droits pour consulter les entreprises
     post:
+      summary: Crée une nouvelle entreprise
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompany'
+      responses:
+        '201':
+          description: L'entreprise a été créée
+        '400':
+          description: Les informations de l'entreprise sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à créer une entreprise
+        '403':
+          description: L'utilisateur n'a pas les droits pour créer une entreprise
+        '409':
+          description: L'entreprise existe déjà
   /company/{company_id}:
     get:
+      summary: Récupère les détails d'une entreprise spécifique
+      parameters:
+        - in: path
+          name: company_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de l'entreprise
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Détails de l'entreprise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompleteCompany'
+        '400':
+          description: Les informations de l'entreprise sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: L'entreprise n'existe pas
   /company/user:
     get:
+      summary: Renvoie les détails de l'enreprise de l'utilisateur connecté
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Détails des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+        '400':
+          description: Les informations de l'utilisateur sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '404':
+          description: L'entreprise n'existe pas
   /company/{company_id}/forms/status:
     get:
+      summary: Récupère le statut du dernier questionnaire soumis par l'entreprise
+      parameters:
+        - in: path
+          name: company_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique de l'entreprise
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Statut du dernier questionnaire soumis par l'entreprise
+          content:
+            application/json:
+              schema:
+                type: number
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '404':
+          description: L'entreprise n'existe pas
   /score/{form_id}:
     get:
+      summary: Récupère le score d'un formulaire spécifique
+      parameters:
+        - in: path
+          name: form_id
+          required: true
+          schema:
+            type: integer
+            description: Identifiant unique du formulaire
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Score du formulaire
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Score'
+        '400':
+          description: Les informations du formulaire sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: Le formulaire n'existe pas
   /onboarding:
     get:
+      summary: Récupère les informations d'onboarding
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Informations d'onboarding
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Onboarding'
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
     post:
+      summary: Crée un nouvel onboarding
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOnboarding'
+      responses:
+        '201':
+          description: L'onboarding a été créé
+        '400':
+          description: Les informations de l'onboarding sont manquantes ou incorrectes
+        '409':
+          description: Un utilisateur ou une entreprise avec ces informations existe déjà
   /onboarding/pending:
     get:
+      summary: Récupère les onboardings en attente
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Onboardings en attente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Onboarding'
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: Aucun onboarding en attente
   /onboarding/rejected:
     get:
-  /onboarding/{onboarding_id}/accept:
-    post:
+      summary: Récupère les onboardings rejetés
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Onboardings rejetés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Onboarding'
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: Aucun onboarding rejeté
+  /stats:
+    get:
+      summary: Récupère les statistiques
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '200':
+          description: Statistiques
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Stats'
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
 components:
   schemas:
     Credentials:
@@ -516,3 +1016,387 @@ components:
         commitment_pact_verif:
           type: boolean
           description: Vérification par l'administrateur de la réponse à la question 'Je m'engage à le faire'
+    CreateQuestion:
+      type: object
+      properties:
+        category:
+          type: string
+          description: Catégorie de la question
+        sub_category:
+          type: string
+          description: Sous-catégorie de la question
+        question:
+          type: string
+          description: Texte de la question
+        question_type:
+          type: string
+          description: Type de questionnaire auquel la question est associée
+        is_used:
+          type: boolean
+          description: Indique si la question est utilisée dans les questionnaires
+    CreateAnswer:
+      type: object
+      properties:
+        question_id:
+          type: integer
+          description: Identifiant de la question associée
+        template:
+          type: string
+          description: Template de la réponse
+          enum: [ALL, WORKERS, PRODUITS, OWNED FACILITY, FACILITY]
+        answer:
+          type: string
+          description: Le texte de la réponse
+        score_now:
+          type: number
+          format: float
+          description: Le score du choix 'Je le fais déjà'
+        score_commitment_pact:
+          type: number
+          format: float
+          description: Le score du choix 'Je m'engage à le faire'
+        is_forced_engagement:
+          type: boolean
+          description: Indique si l'engagement est obligatoire
+        is_forced_comment:
+          type: boolean
+          description: Indique si un commentaire/précision est obligatoire
+    CreateUserAnswer:
+      type: object
+      properties:
+        form_id:
+          type: integer
+          description: Identifiant unique du questionnaire auquel la question est associée
+        now:
+          type: boolean
+          description: Réponse à la question 'Je le fais déjà'
+        commitment_pact:
+          type: boolean
+          description: Réponse à la question 'Je m'engage à le faire'
+        comment:
+          type: string
+          description: Commentaire de l'utilisateur
+    CreateUserAnswerText:
+      type: object
+      properties:
+        form_id:
+          type: integer
+          description: Identifiant unique du questionnaire auquel la question est associée
+        comment:
+          type: string
+          description: Commentaire de l'utilisateur
+    Company:
+      type: object
+      properties:
+        company_id:
+          type: integer
+          description: Identifiant unique de l'entreprise
+          nullable: true
+        company_name:
+          type: string
+          description: Nom de l'entreprise
+        company_number:
+          type: string
+          description: Numéro d'enregistrement de l'entreprise
+        office_address:
+          type: string
+          description: Adresse du bureau de l'entreprise
+        legal_form:
+          type: string
+          description: Forme juridique de l'entreprise
+        website:
+          type: string
+          description: Site web de l'entreprise
+          nullable: true
+        nace_code:
+          type: string
+          description: Code NACE de l'entreprise
+        nb_workers:
+          type: integer
+          description: Nombre de travailleurs dans l'entreprise
+          nullable: true
+        revenue:
+          type: number
+          format: double
+          description: Revenu de l'entreprise
+          nullable: true
+        dispute:
+          type: boolean
+          description: Indique si l'entreprise est en litige
+    CreateCompany:
+      type: object
+      properties:
+        company_name:
+          type: string
+          description: Nom de l'entreprise
+        company_number:
+          type: string
+          description: Numéro d'enregistrement de l'entreprise
+        office_address:
+          type: string
+          description: Adresse du bureau de l'entreprise
+        legal_form:
+          type: string
+          description: Forme juridique de l'entreprise
+        website:
+          type: string
+          description: Site web de l'entreprise
+          nullable: true
+        nace_code:
+          type: string
+          description: Code NACE de l'entreprise
+        nb_workers:
+          type: integer
+          description: Nombre de travailleurs dans l'entreprise
+          nullable: true
+        revenue:
+          type: number
+          format: double
+          description: Revenu de l'entreprise
+          nullable: true
+        dispute:
+          type: boolean
+          description: Indique si l'entreprise est en litige
+    CompleteCompany:
+      type: object
+      properties:
+        company:
+          type: object
+          $ref: '#/components/schemas/Company'
+        forms:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompleteForm'
+    ScoreQuery:
+      type: object
+      properties:
+        sub_category:
+          type: string
+          description: Sous-catégorie de la question
+        score:
+          type: number
+          format: float
+          description: Score de la question
+          nullable: true
+    Score:
+      type: object
+      properties:
+        total:
+          type: number
+          format: float
+          description: Score total
+        details_now:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoreQuery'
+          description: Détails des scores actuels
+        details_commitment_pact:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoreQuery'
+          description: Détails des scores d'engagement
+    Onboarding:
+      type: object
+      properties:
+        onboarding_id:
+          type: integer
+          description: Identifiant unique de la demande d'onboarding
+          nullable: true
+        firstname:
+          type: string
+          description: Prénom de l'utilisateur
+        lastname:
+          type: string
+          description: Nom de famille de l'utilisateur
+        email:
+          type: string
+          description: Adresse email de l'utilisateur
+        password:
+          type: string
+          description: Mot de passe de l'utilisateur
+        position:
+          type: string
+          description: Poste de l'utilisateur
+        company_name:
+          type: string
+          description: Nom de l'entreprise
+        company_number:
+          type: string
+          description: Numéro d'enregistrement de l'entreprise
+        legal_form:
+          type: string
+          description: Forme juridique de l'entreprise
+        office_address:
+          type: string
+          description: Adresse du bureau de l'entreprise
+        website:
+          type: string
+          description: Site web de l'entreprise
+        nace_code:
+          type: string
+          description: Code NACE de l'entreprise
+        revenue:
+          type: number
+          format: double
+          description: Revenu de l'entreprise
+        franchise:
+          type: boolean
+          description: Indique si l'entreprise est une franchise
+        nb_workers:
+          type: integer
+          description: Nombre de travailleurs dans l'entreprise
+        dispute:
+          type: boolean
+          description: Indique si l'entreprise est en litige
+        honor_engagement:
+          type: boolean
+          description: Indique si l'utilisateur s'engage à respecter l'honneur
+        grant_application:
+          type: boolean
+          description: Indique si l'utilisateur a fait une demande de subvention
+        grant_application_partner:
+          type: string
+          description: Partenaire pour la demande de subvention
+        something_else:
+          type: string
+          description: Autre information
+        comment:
+          type: string
+          description: Commentaire de l'utilisateur
+        submit_date:
+          type: string
+          format: date-time
+          description: Date de soumission de la demande
+          nullable: true
+        is_owner:
+          type: boolean
+          description: Indique si l'utilisateur est propriétaire
+        offers_services:
+          type: boolean
+          description: Indique si l'entreprise offre des services
+        sells_products:
+          type: boolean
+          description: Indique si l'entreprise vend des produits
+        status:
+          type: string
+          description: Statut de la demande d'onboarding
+          nullable: true
+    CreateOnboarding:
+      type: object
+      properties:
+        firstname:
+          type: string
+          description: Prénom de l'utilisateur
+        lastname:
+          type: string
+          description: Nom de famille de l'utilisateur
+        email:
+          type: string
+          description: Adresse email de l'utilisateur
+        password:
+          type: string
+          description: Mot de passe de l'utilisateur
+        position:
+          type: string
+          description: Poste de l'utilisateur
+        company_name:
+          type: string
+          description: Nom de l'entreprise
+        company_number:
+          type: string
+          description: Numéro d'enregistrement de l'entreprise
+        legal_form:
+          type: string
+          description: Forme juridique de l'entreprise
+        office_address:
+          type: string
+          description: Adresse du bureau de l'entreprise
+        website:
+          type: string
+          description: Site web de l'entreprise
+        nace_code:
+          type: string
+          description: Code NACE de l'entreprise
+        revenue:
+          type: number
+          format: double
+          description: Revenu de l'entreprise
+        franchise:
+          type: boolean
+          description: Indique si l'entreprise est une franchise
+        nb_workers:
+          type: integer
+          description: Nombre de travailleurs dans l'entreprise
+        dispute:
+          type: boolean
+          description: Indique si l'entreprise est en litige
+        honor_engagement:
+          type: boolean
+          description: Indique si l'utilisateur s'engage à respecter l'honneur
+        grant_application:
+          type: boolean
+          description: Indique si l'utilisateur a fait une demande de subvention
+        grant_application_partner:
+          type: string
+          description: Partenaire pour la demande de subvention
+        something_else:
+          type: string
+          description: Autre information
+        comment:
+          type: string
+          description: Commentaire de l'utilisateur
+        is_owner:
+          type: boolean
+          description: Indique si l'utilisateur est propriétaire
+        offers_services:
+          type: boolean
+          description: Indique si l'entreprise offre des services
+        sells_products:
+          type: boolean
+          description: Indique si l'entreprise vend des produits
+        status:
+          type: string
+          description: Statut de la demande d'onboarding
+          nullable: true
+    Stats:
+      type: object
+      properties:
+        total_users:
+          type: integer
+          description: Nombre total d'utilisateurs
+        total_companies:
+          type: integer
+          description: Nombre total d'entreprises
+        total_forms:
+          type: integer
+          description: Nombre total de formulaires
+        total_questions:
+          type: integer
+          description: Nombre total de questions
+        total_answers:
+          type: integer
+          description: Nombre total de réponses
+        total_templates_all:
+          type: integer
+          description: Nombre total de modèles (tous)
+        total_templates_workers:
+          type: integer
+          description: Nombre total de modèles pour les travailleurs
+        total_templates_owned_facility:
+          type: integer
+          description: Nombre total de modèles de facilités possédées
+        total_templates_products:
+          type: integer
+          description: Nombre total de modèles de produits
+        total_templates_facility:
+          type: integer
+          description: Nombre total de modèles de facilités
+        total_onboarding:
+          type: integer
+          description: Nombre total de processus d'onboarding
+        total_accepted_onboarding:
+          type: integer
+          description: Nombre total de processus d'onboarding acceptés
+        total_rejected_onboarding:
+          type: integer
+          description: Nombre total de processus d'onboarding rejetés

@@ -40,6 +40,9 @@ pub async fn create_company(
     State(state): State<AppState>,
     Json(company): Json<Company>,
 ) -> Result<impl IntoResponse, ResponseError> {
+    if company.invalid() {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid company data"))));
+    }
     match state.company.read_by_company_number(company.company_number.clone()).await? {
         Some(_) => return Err(ResponseError::Conflict(Some(String::from("Company already exists")))),
         None => (),
