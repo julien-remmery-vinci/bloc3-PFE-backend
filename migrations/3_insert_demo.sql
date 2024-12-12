@@ -41,34 +41,6 @@ VALUES (
     false
 );
 
--- UCB
-INSERT INTO pfe.companies (company_name, company_number, legal_form, office_address, website, nace_code, nb_workers, revenue, dispute)
-VALUES (
-    'UCB',
-    'BE0403053608',
-    'SA',
-    'Allée de la Recherche 60, 1070 Brussels, Belgium',
-    'https://www.ucb.com',
-    '21.201',
-    8561,
-    5777000000,
-    false
-);
-
--- Spadel
-INSERT INTO pfe.companies (company_name, company_number, legal_form, office_address, website, nace_code, nb_workers, revenue, dispute)
-VALUES (
-    'Spadel',
-    'BE0405844436',
-    'SA',
-    'Avenue des Communautés 110, 1200 Brussels, Belgium',
-    'https://www.spadel.com',
-    '11.070',
-    1300,
-    282200000,
-    false
-);
-
 --users
 INSERT INTO pfe.users (firstname, lastname, login, password, role, company_id)
 VALUES
@@ -99,9 +71,7 @@ INSERT INTO pfe.template_company (company_id, template_id)
 VALUES
     (1,1),
     (2,1),
-    (3,1),
-    (4,4),
-    (5,5);
+    (3,1);
 
 --forms
 INSERT INTO pfe.forms (company_id, type, status)
