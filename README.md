@@ -1,3 +1,4 @@
+![Build Status](https://github.com/julien-remmery-vinci/bloc3-PFE-backend/actions/workflows/rust.yml/badge.svg)
 # Projet de fin d'études - Backend
 
 Bienvenue dans le repository de l'equipe backend de ce projet de fin d'études.
