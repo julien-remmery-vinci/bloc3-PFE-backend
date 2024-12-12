@@ -520,626 +520,449 @@ VALUES
 
 --answers user
 INSERT INTO pfe.user_answer_esg 
-(answer_id,user_id,form_id,now,commitment_pact,comment,now_verif,commitment_pact_verif) 
+(answer_id,user_id,form_id,now,commitment_pact,comment,now_verif,commitment_pact_verif,status) 
 VALUES 
-    (1,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (1,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
     
-    (3,1,1,NULL,NULL,'test',NULL,NULL),
+    (3,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (4,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (4,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (8,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (8,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (12,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (13,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (14,1,1,FALSE,TRUE,NULL,NULL,NULL),
+    (12,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (13,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (14,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (20,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (20,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (24,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (24,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (26,1,1,NULL,NULL,'test',NULL,NULL),
+    (26,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (27,1,1,NULL,NULL,'test',NULL,NULL),
+    (27,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (28,1,1,NULL,NULL,'test',NULL,NULL),
+    (28,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (30,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (30,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (37,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (38,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (37,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (38,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (43,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (43,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (50,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (50,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (54,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (54,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (59,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (59,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (64,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (65,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (67,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (68,1,1,FALSE,TRUE,NULL,NULL,NULL),
+    (64,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (65,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (67,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (68,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (72,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (72,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (75,1,1,NULL,NULL,'test',NULL,NULL),
+    (75,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (76,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (77,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (81,1,1,NULL,NULL,'test',NULL,NULL),
+    (76,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (77,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (81,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (84,1,1,FALSE,TRUE,NULL,NULL,NULL),
+    (84,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (88,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (89,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (90,1,1,NULL,NULL,'test',NULL,NULL),
+    (88,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (89,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (90,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (93,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (93,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (100,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (100,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (106,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (106,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (109,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (109,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (112,1,1,NULL,NULL,'test',NULL,NULL),
+    (112,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (113,1,1,NULL,NULL,'test',NULL,NULL),
+    (113,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (114,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (115,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (116,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (117,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (118,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (119,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (120,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (121,1,1,TRUE,TRUE,NULL,NULL,NULL),
+    (114,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (115,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (116,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (117,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (118,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (119,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (120,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (121,1,1,TRUE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (125,1,1,TRUE,TRUE,NULL,NULL,NULL),
+    (125,1,1,TRUE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (128,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (129,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (131,1,1,FALSE,TRUE,NULL,NULL,NULL),
+    (128,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (129,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (131,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (136,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (137,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (139,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (140,1,1,FALSE,TRUE,NULL,NULL,NULL),
+    (136,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (137,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (139,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (140,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (145,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (145,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (148,1,1,TRUE,TRUE,NULL,NULL,NULL),
-    (149,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (151,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (148,1,1,TRUE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (149,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (151,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (155,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (157,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (155,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (157,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (161,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (162,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (163,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (161,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (162,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (163,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (167,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (167,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (170,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (170,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (173,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (173,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (179,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (179,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (187,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (187,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (193,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (193,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (198,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (198,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (204,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (204,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (210,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (210,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (219,1,1, NULL,NULL,'test',NULL,NULL),
+    (219,1,1, NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (222,1,1,TRUE,TRUE,NULL,NULL,NULL),
+    (222,1,1,TRUE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (229,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (229,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (232,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (232,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (235,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (235,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (244,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (244,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (250,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (250,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (256,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (256,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (262,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (262,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (268,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (268,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (274,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (274,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (280,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (280,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (286,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (286,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (292,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (292,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (298,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (298,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (306,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (306,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (314,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (314,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (320,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (320,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (326,1,1,FALSE,TRUE,NULL,NULL,NULL),
+    (326,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (328,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (328,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (333,1,1,NULL,NULL,'test',NULL,NULL),
+    (333,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (334,1,1,NULL,NULL,'test',NULL,NULL),
+    (334,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (335,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (335,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (341,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (341,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (343,1,1,NULL,NULL,'test',NULL,NULL),
+    (343,1,1,NULL,NULL,'test',NULL,NULL,'PENDING'),
 
-    (345,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (345,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (351,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (351,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (357,1,1,TRUE,TRUE,NULL,NULL,NULL),
+    (357,1,1,TRUE,TRUE,NULL,NULL,NULL,'PENDING'),
 
-    (367,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (367,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (374,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (374,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
 
-    (378,1,1,FALSE,TRUE,NULL,NULL,NULL),
-    (380,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (378,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+    (380,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
     
-    (385,1,1,TRUE,FALSE,NULL,NULL,NULL),
+    (385,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+
+    (395,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+
+    (406,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+
+    (414,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+
+    (423,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+    (425,1,1,FALSE,TRUE,NULL,NULL,NULL,'PENDING'),
+
+    (431,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+
+    (441,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+
+    (448,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING'),
+
+    (454,1,1,TRUE,FALSE,NULL,NULL,NULL,'PENDING');
+
+    INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (1, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (3, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (4, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (8, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (12, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (13, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (14, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (20, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (24, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (26, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (27, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (28, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (30, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (37, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (38, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (43, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (50, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (54, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (59, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (64, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (65, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (67, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (68, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (72, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (75, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (76, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (77, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (81, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (84, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (88, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (89, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (90, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (93, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (100, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (106, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (109, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (112, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (113, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (114, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (115, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (116, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (117, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (118, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (119, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (120, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (121, 2, 2, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (125, 2, 2, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (128, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (129, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (131, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (136, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (137, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (139, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (140, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (145, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (148, 2, 2, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (149, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (151, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (155, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (157, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (161, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (162, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (163, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (167, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (170, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (173, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (179, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (187, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (193, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (198, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (204, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (210, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (219, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (222, 2, 2, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (229, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (232, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (235, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (244, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (250, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (256, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (262, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (268, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (274, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (280, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (286, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (292, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (298, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (306, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (314, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (320, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (326, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (328, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (333, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (334, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (335, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (341, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (343, 2, 2, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (345, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (351, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (357, 2, 2, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (367, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (374, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (378, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (380, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (385, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (395, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (406, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (414, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (423, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (425, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (431, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (441, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (448, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (454, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (456, 2, 2, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (458, 2, 2, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (464, 2, 2, true, false, null, null, null, 'PENDING');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (468, 2, 2, false, true, null, null, null, 'PENDING');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (470, 2, 2, true, false, null, null, null, 'PENDING');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (472, 2, 2, true, false, null, null, null, 'PENDING');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (485, 2, 2, true, false, null, null, null, 'PENDING');
+
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (1, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (3, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (4, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (8, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (12, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (13, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (14, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (20, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (24, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (26, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (27, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (28, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (30, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (37, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (38, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (43, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (50, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (54, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (59, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (64, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (65, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (67, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (68, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (72, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (75, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (76, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (77, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (81, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (84, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (88, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (89, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (90, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (93, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (100, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (106, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (109, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (112, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (113, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (114, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (115, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (116, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (117, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (118, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (119, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (120, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (121, 3, 3, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (125, 3, 3, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (128, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (129, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (131, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (136, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (137, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (139, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (140, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (145, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (148, 3, 3, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (149, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (151, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (155, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (157, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (161, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (162, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (163, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (167, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (170, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (173, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (179, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (187, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (193, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (198, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (204, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (210, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (219, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (222, 3, 3, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (229, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (232, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (235, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (244, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (250, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (256, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (262, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (268, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (274, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (280, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (286, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (292, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (298, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (306, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (314, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (320, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (326, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (328, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (333, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (334, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (335, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (341, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (343, 3, 3, null, null, 'test', null, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (345, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (351, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (357, 3, 3, true, true, null, true, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (367, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (374, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (378, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (380, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (385, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (395, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (406, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (414, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (423, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (425, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (431, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (441, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (448, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (454, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (456, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (458, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (464, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (468, 3, 3, false, true, null, null, true, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (470, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (472, 3, 3, true, false, null, true, null, 'VALIDATED');
+INSERT INTO pfe.user_answer_esg (answer_id, user_id, form_id, now, commitment_pact, comment, now_verif, commitment_pact_verif, status) VALUES (485, 3, 3, true, false, null, true, null, 'VALIDATED');
 
-    (395,1,1,TRUE,FALSE,NULL,NULL,NULL),
-
-    (406,1,1,TRUE,FALSE,NULL,NULL,NULL),
-
-    (414,1,1,TRUE,FALSE,NULL,NULL,NULL),
-
-    (423,1,1,TRUE,FALSE,NULL,NULL,NULL),
-    (425,1,1,FALSE,TRUE,NULL,NULL,NULL),
-
-    (431,1,1,TRUE,FALSE,NULL,NULL,NULL),
-
-    (441,1,1,TRUE,FALSE,NULL,NULL,NULL),
-
-    (448,1,1,TRUE,FALSE,NULL,NULL,NULL),
-
-    (454,1,1,TRUE,FALSE,NULL,NULL,NULL),
-
-    (1,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    
-    (3,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (4,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (8,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (12,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (13,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (14,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (20,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (24,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (26,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (27,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (28,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (30,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (37,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (38,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (43,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (50,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (54,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (59,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (64,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (65,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (67,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (68,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (72,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (75,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (76,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (77,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (81,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (84,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (88,2,2,TRUE,FALSE,NULL,NULL,TRUE),
-    (89,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (90,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (93,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (100,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (106,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (109,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (112,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (113,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (114,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (115,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (116,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (117,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (118,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (119,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (120,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (121,2,2,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (125,2,2,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (128,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (129,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (131,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (136,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (137,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (139,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (140,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (145,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (148,2,2,TRUE,TRUE,NULL,TRUE,TRUE),
-    (149,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (151,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (155,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (157,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (161,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (162,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (163,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (167,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (170,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (173,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (179,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (187,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (193,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (198,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (204,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (210,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (219,2,2, NULL,NULL,'test',NULL,NULL),
-
-    (222,2,2,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (229,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (232,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (235,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (244,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (250,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (256,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (262,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (268,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (274,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (280,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (286,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (292,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (298,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (306,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (314,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (320,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (326,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (328,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (333,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (334,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (335,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (341,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (343,2,2,NULL,NULL,'test',NULL,NULL),
-
-    (345,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (351,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (357,2,2,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (367,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (374,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (378,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (380,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    
-    (385,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (395,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (406,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (414,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (423,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-    (425,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (431,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (441,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (448,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (454,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (456,2,2,FALSE,TRUE,NULL,NULL,TRUE),
-    (458,2,2,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (464,2,2,TRUE,FALSE,NULL,NULL,NULL),
-
-    (468,2,2,FALSE,TRUE,NULL,NULL,NULL),
-    (470,2,2,TRUE,FALSE,NULL,NULL,NULL),
-
-    (472,2,2,TRUE,FALSE,NULL,NULL,NULL),
-
-    (485,2,2,TRUE,FALSE,NULL,NULL,NULL),
-
-    (1,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    
-    (3,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (4,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (8,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (12,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (13,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (14,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (20,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (24,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (26,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (27,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (28,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (30,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (37,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (38,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (43,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (50,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (54,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (59,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (64,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (65,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (67,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (68,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (72,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (75,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (76,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (77,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (81,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (84,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (88,3,3,TRUE,FALSE,NULL,NULL,TRUE),
-    (89,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (90,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (93,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (100,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (106,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (109,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (112,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (113,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (114,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (115,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (116,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (117,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (118,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (119,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (120,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (121,3,3,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (125,3,3,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (128,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (129,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (131,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (136,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (137,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (139,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (140,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (145,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (148,3,3,TRUE,TRUE,NULL,TRUE,TRUE),
-    (149,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (151,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (155,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (157,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (161,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (162,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (163,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (167,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (170,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (173,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (179,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (187,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (193,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (198,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (204,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (210,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (219,3,3, NULL,NULL,'test',NULL,NULL),
-
-    (222,3,3,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (229,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (232,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (235,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (244,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (250,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (256,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (262,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (268,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (274,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (280,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (286,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (292,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (298,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (306,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (314,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (320,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (326,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (328,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (333,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (334,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (335,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (341,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (343,3,3,NULL,NULL,'test',NULL,NULL),
-
-    (345,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (351,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (357,3,3,TRUE,TRUE,NULL,TRUE,TRUE),
-
-    (367,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (374,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (378,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (380,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    
-    (385,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (395,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (406,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (414,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (423,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-    (425,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-
-    (431,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (441,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (448,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (454,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (456,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (458,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (464,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (468,3,3,FALSE,TRUE,NULL,NULL,TRUE),
-    (470,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (472,3,3,TRUE,FALSE,NULL,TRUE,NULL),
-
-    (485,3,3,TRUE,FALSE,NULL,TRUE,NULL);
 
