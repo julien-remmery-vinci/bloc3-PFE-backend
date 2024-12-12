@@ -46,10 +46,10 @@ Afin d'utiliser au mieux notre projet il est recommandé de lancer le frontend e
 Il est toute fois possible d'utiliser les requetes présentes dans le dossier requests pour tester l'application sans le frontend.
 
 ## Auteurs de la partie backend :
+- Hadjera Emroska
+- Hajar Haouat
 - Julien Remmery
 - Semih Turkoglu
-- Hajar Haouat
-- Hadjera Emroska
 
 En collaboration avec l'équipe frontend.
 
