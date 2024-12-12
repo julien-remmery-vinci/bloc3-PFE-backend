@@ -23,6 +23,9 @@ const QUERY_SELECT_ALL_REJECTED_ONBOARDING: &str = "
 const QUERY_ACCEPT_ONBOARDING: &str = "
     UPDATE pfe.onboarding SET status = 'ACCEPTED' WHERE onboarding_id = $1 RETURNING *;
 ";
+const QUERY_REJECT_ONBOARDING: &str = "
+    UPDATE pfe.onboarding SET status = 'REJECTED' WHERE onboarding_id = $1 RETURNING *;
+";
 const QUERY_SELECT_REQUEST_BY_EMAIL: &str = "
     SELECT * FROM pfe.onboarding WHERE email = $1;
 ";
@@ -138,6 +141,19 @@ impl OnboardingService {
 
     pub async fn accept_onboarding(&self, onboarding_id: i32) -> Result<Option<Onboarding>, ResponseError> {
         match sqlx::query_as::<_, Onboarding>(QUERY_ACCEPT_ONBOARDING)
+            .bind(onboarding_id)
+            .fetch_optional(&self.db)
+            .await {
+            Ok(onboarding) => Ok(onboarding),
+            Err(e) => {
+                tracing::error!("Error: {:?}", e);
+                Err(ResponseError::DbError(e))
+            }
+        }
+    }
+
+    pub async fn reject_onboarding(&self, onboarding_id: i32) -> Result<Option<Onboarding>, ResponseError> {
+        match sqlx::query_as::<_, Onboarding>(QUERY_REJECT_ONBOARDING)
             .bind(onboarding_id)
             .fetch_optional(&self.db)
             .await {
