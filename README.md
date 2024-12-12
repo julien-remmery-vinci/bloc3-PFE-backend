@@ -17,7 +17,7 @@ Le code de la partie [frontend](https://github.com/julien-remmery-vinci/bloc3-PF
     - Des requetes http utilisées pour tester l'application.
     - Les spécifications de notre api selon le standard OpenAPI
 
-## Lancer le projet :
+## Installation & lancement :
 
 ### Instalation préalable :
 1. Installation de [Rust et de ses outils](https://www.rust-lang.org/fr/tools/install)
@@ -39,7 +39,7 @@ Le code de la partie [frontend](https://github.com/julien-remmery-vinci/bloc3-PF
     cargo run
 ``` 
 
-### Utilisation du projet :
+## Utilisation du projet :
 Afin d'utiliser au mieux notre projet il est recommandé de lancer le frontend en même temps, ceci peut être fait en suivant les instructions présentes dans le README de cette partie du projet.
 
 Il est toute fois possible d'utiliser les requetes présentes dans le dossier requests pour tester l'application sans le frontend.
