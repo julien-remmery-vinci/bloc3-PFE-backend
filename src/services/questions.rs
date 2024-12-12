@@ -1,7 +1,7 @@
 use sqlx::{Pool, Postgres};
 use crate::{
     errors::responserror::ResponseError, 
-    models::question::{PutQuestionRequest, Question, QuestionRequest},
+    models::question::{PutQuestionRequest, Question, QuestionForm, QuestionRequest},
 };
 
 const READ_BY_ID_QUERY: &str = "
@@ -149,5 +149,21 @@ impl QuestionService {
             .execute(&self.db)
             .await.map_err(ResponseError::DbError)?;
         Ok(())
+    }
+
+    pub async fn read_all_questions_forms_by_form_id(
+        &self,
+        form_id: i32,
+    ) -> Result<Vec<QuestionForm>, ResponseError> {
+        let query = "
+            SELECT qf.form_id, qf.question_id, qf.question_status
+            FROM pfe.questions_form qf
+            WHERE qf.form_id = $1
+        ";
+        let questions = sqlx::query_as::<_, QuestionForm>(query)
+            .bind(form_id)
+            .fetch_all(&self.db)
+            .await.map_err(ResponseError::DbError)?;
+        Ok(questions)
     }
 }
