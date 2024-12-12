@@ -55,17 +55,13 @@ pub async fn sum_score_template(
     //score en %
     let score = ((sum)/90.0)*100.0;
     
-    tracing::warn!("User role1: {}", user.role);
-    
     if user.role != "admin" {
-        tracing::warn!("User role2: {}", user.role);
         return Ok(Json(Score {
             total: score,
             details_now: Vec::new(),
             details_commitment_pact: Vec::new()
         }))
     }
-    tracing::warn!("User role3: {}", user.role);
 
     Ok(Json(Score {
         total: score,
