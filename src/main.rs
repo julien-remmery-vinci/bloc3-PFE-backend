@@ -20,7 +20,7 @@ use axum::{
     middleware::from_fn_with_state,
     Router
 };
-use routes::onboarding::{accept_onboarding, read_all_onboarding, read_all_pending_onboarding, read_all_rejected_onboarding, submit_onboarding};
+use routes::onboarding::{accept_onboarding, read_all_onboarding, read_all_pending_onboarding, read_all_rejected_onboarding, reject_onboarding, submit_onboarding};
 use routes::stats::get_stats;
 use std::time::Duration;
 use routes::forms::{
@@ -133,6 +133,8 @@ fn onboardings_routes(state: AppState) -> Router<AppState> {
         .route("/onboarding/rejected", get(read_all_rejected_onboarding)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
         .route("/onboarding/:id/accept", post(accept_onboarding)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/onboarding/:id/reject", post(reject_onboarding)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 

@@ -792,6 +792,58 @@ paths:
           description: L'utilisateur n'a pas les droits pour accéder à cette ressource
         '404':
           description: Aucun onboarding rejeté
+  /onboarding/{onboarding_id}/accept:
+    post:
+      summary: Accepter un onboarding
+      parameters:
+        - in : path
+          name: onboarding_id
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '204':
+          description: Onboarding accepté
+        '400':
+          description: Les données de l'onboarding sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: Le onboarding n'existe pas
+  /onboarding/{onboarding_id}/reject:
+    post:
+      summary:  Refuser un onboarding
+      parameters:
+        - in : path
+          name: onboarding_id
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: "Bearer <token>"
+      responses:
+        '204':
+          description: Onboarding refusé
+        '400':
+          description: Les données de l'onboarding sont manquantes ou incorrectes
+        '401':
+          description: L'utilisateur n'est pas autorisé à accéder à cette ressource
+        '403':
+          description: L'utilisateur n'a pas les droits pour accéder à cette ressource
+        '404':
+          description: Le onboarding n'existe pas
   /stats:
     get:
       summary: Récupère les statistiques

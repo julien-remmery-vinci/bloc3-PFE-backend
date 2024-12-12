@@ -65,7 +65,7 @@ pub async fn accept_onboarding(
     match state.onboarding.read_by_id(onboarding_id).await? {
         Some(onboarding) => {
             if onboarding.accepted() || onboarding.rejected() {
-                return Err(ResponseError::Conflict(Some(String::from("Onboarding already accepted"))));
+                return Err(ResponseError::BadRequest(Some(String::from("Onboarding already accepted"))));
             }
         },
         None => return Err(ResponseError::NotFound(Some(String::from("Onboarding not found")))),
@@ -125,5 +125,26 @@ pub async fn accept_onboarding(
         r#type: String::from("ESG"),
     };
     create_form(State(state), Json(new_form)).await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+
+pub async fn reject_onboarding(
+    State(state): State<AppState>,
+    Path(onboarding_id): Path<i32>,
+) -> Result<impl IntoResponse, ResponseError> {
+    if onboarding_id < 1 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid onboarding ID"))));
+    }
+    match state.onboarding.read_by_id(onboarding_id).await? {
+        Some(onboarding) => {
+            if onboarding.rejected() {
+                return Err(ResponseError::BadRequest(Some(String::from("Onboarding already rejected"))));
+            }
+        },
+        None => return Err(ResponseError::NotFound(Some(String::from("Onboarding not found")))),
+    }
+
+    state.onboarding.reject_onboarding(onboarding_id).await?;
+
     Ok(StatusCode::NO_CONTENT)
 }

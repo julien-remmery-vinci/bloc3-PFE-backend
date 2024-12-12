@@ -19,11 +19,11 @@ Content-Type: application/json
 {
     "firstname": "John",
     "lastname": "Doe",
-    "email": "john.doe@example.com",
+    "email": "john.doeman@example.com",
     "password": "securepassword123",
     "position": "CEO",
     "company_name": "TechCorp Inc.",
-    "company_number": "123456789",
+    "company_number": "BE1231231230",
     "legal_form": "S.A.",
     "office_address": "123 Main Street, Brussels, Belgium",
     "website": "https://www.techcorp.com",
@@ -64,4 +64,8 @@ Authorization: Bearer {{ admin_token }}
 
 ### Accept an onboarding request
 POST {{baseUrl}}/onboarding/1000/accept
+Authorization: Bearer {{ admin_token }}
+
+### Reject an onboarding request
+POST {{baseUrl}}/onboarding/5/reject
 Authorization: Bearer {{ admin_token }}
