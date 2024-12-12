@@ -1,4 +1,6 @@
 use axum::extract::Path;
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
 use axum::Extension;
 use axum::{
     extract::State, 
@@ -18,12 +20,12 @@ use crate::routes::questions::complete_question;
 pub async fn create_answer(
     State(state): State<AppState>,
     Json(answer): Json<CreateAnswer>,
-) -> Result<Json<Answer>, ResponseError> {
+) -> Result<impl IntoResponse, ResponseError> {
     if answer.invalid() {
         return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
     }
     let valid = state.answer.create_answer(answer).await?;
-    Ok(Json(valid))
+    Ok((StatusCode::CREATED, Json(valid)))
 }
 
 #[axum::debug_handler]
@@ -32,7 +34,7 @@ pub async fn create_answer_for_user(
     Extension(user): Extension<User>,
     Path(answer_id): Path<i32>,
     Json(created_answer): Json<CreateAnswerUser>
-) -> Result<Json<AnswerUser>, ResponseError> {
+) -> Result<impl IntoResponse, ResponseError> {
     // TODO : check if user's company is the same as the form's company
     if created_answer.invalid() {
         return Err(ResponseError::BadRequest(Some(String::from("Missing answer information"))));
@@ -89,7 +91,7 @@ pub async fn create_answer_for_user(
     // Set the question status as COMPLETE
     complete_question(State(state), answer.question_id.unwrap(), created_answer.form_id).await?;
 
-    Ok(Json(valid))
+    Ok((StatusCode::CREATED, Json(valid)))
 }
 
 #[axum::debug_handler]
@@ -97,6 +99,9 @@ pub async fn read_answers_by_question(
     State(state): State<AppState>,
     Path(question_id): Path<i32>,
 ) -> Result<Json<Vec<Answer>>, ResponseError> {
+    if question_id <= 0 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid question id"))));
+    }
     let answers = state.answer.read_answers_by_question(question_id).await?;
     Ok(Json(answers))
 }

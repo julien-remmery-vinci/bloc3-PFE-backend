@@ -27,3 +27,13 @@ pub struct CompanyWithCompleteForms {
 pub struct CompanyValidation {
     pub is_eligible: bool,
 }
+
+impl Company {
+    pub fn invalid (&self) -> bool {
+        self.company_name.is_empty() 
+        || self.company_number.is_empty() 
+        || self.office_address.is_empty() 
+        || self.legal_form.is_empty() 
+        || self.nace_code.is_empty()
+    }
+}

@@ -1,12 +1,19 @@
 use axum::{extract::{ Path, State}, Json};
 
-use crate::{database::state::AppState, errors::responserror::ResponseError, models::score::Score};
+use crate::{database::state::AppState, errors::responserror::ResponseError, models::{form, score::Score}};
 
 #[axum::debug_handler]
 pub async fn sum_score_template(
     State(state): State<AppState>,
     Path(form_id): Path<i32>,
 ) -> Result<Json<Score>, ResponseError> {
+    if form_id < 1 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid form id"))));
+    }
+    match state.form.read_form_by_id(form_id).await? {
+        Some(_) => (),
+        None => return Err(ResponseError::NotFound(Some(String::from("Form not found")))),
+    }
     /* 
     let template=state.score.find_template_by_form_id(form_id).await?;
     let mut score_total = 0.0;

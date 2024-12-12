@@ -17,7 +17,10 @@ pub async fn read_one_question(
     State(state): State<AppState>,
     Path(id): Path<i32>,
 ) -> Result<Json<Question>, ResponseError> {
-    let question = state.question.read_one_question(id).await?;
+    if id < 1 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid question id"))));
+    }
+    let question: Question = state.question.read_one_question(id).await?;
     Ok(Json(question))
 }
 
@@ -26,6 +29,9 @@ pub async fn update_question(
     Path(id): Path<i32>,
     Json(question): Json<PutQuestionRequest>,
 ) -> Result<impl IntoResponse, ResponseError> {
+    if id < 1 {
+        return Err(ResponseError::BadRequest(Some(String::from("Invalid question id"))));
+    }
     question.update_validate()?;
     state.question.update_question(id, question).await?;
     Ok(StatusCode::NO_CONTENT)

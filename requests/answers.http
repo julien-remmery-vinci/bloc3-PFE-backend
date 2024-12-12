@@ -98,7 +98,8 @@ Authorization: Bearer {{ admin_token }}
 {
     "form_id": 2,
     "now_verif": true,
-    "commitment_pact_verif": false
+    "commitment_pact_verif": false,
+    "comment": "Mon commentaire"
 }
 
 ### Validate a non existant user's answer with comment
