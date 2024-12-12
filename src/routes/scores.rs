@@ -1,6 +1,6 @@
 use axum::{extract::{ Path, State}, Extension, Json};
 
-use crate::{database::state::AppState, errors::responserror::ResponseError, models::{form, score::Score, user::User}};
+use crate::{database::state::AppState, errors::responserror::ResponseError, models::{score::Score, user::User}};
 
 #[axum::debug_handler]
 pub async fn sum_score_template(
