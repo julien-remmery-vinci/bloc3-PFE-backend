@@ -33,11 +33,11 @@ Le code de la partie [frontend](https://github.com/julien-remmery-vinci/bloc3-PF
     - HASH_ROUNDS : nombre de 'rounds' nécéssaires au chiffrement des mots de passe avant stockage en base de données
 3. Build le projet
 ```console
-    cargo build
+cargo build
 ``` 
 4. Lancer le projet
 ```console
-    cargo run
+cargo run
 ``` 
 
 ## Utilisation du projet :
