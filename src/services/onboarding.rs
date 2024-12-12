@@ -27,13 +27,13 @@ const QUERY_REJECT_ONBOARDING: &str = "
     UPDATE pfe.onboarding SET status = 'REJECTED' WHERE onboarding_id = $1 RETURNING *;
 ";
 const QUERY_SELECT_REQUEST_BY_EMAIL: &str = "
-    SELECT * FROM pfe.onboarding WHERE email = $1;
+    SELECT * FROM pfe.onboarding WHERE email = $1 AND status != 'REJECTED';
 ";
 const QUERY_SELECT_BY_ID: &str = "
     SELECT * FROM pfe.onboarding WHERE onboarding_id = $1;
 ";
 const QUERY_SELECT_BY_COMPANY_NUMBER: &str = "
-    SELECT * FROM pfe.onboarding WHERE company_number = $1;
+    SELECT * FROM pfe.onboarding WHERE company_number = $1 AND status != 'REJECTED';
 ";
 
 #[derive(Debug, Clone)]
