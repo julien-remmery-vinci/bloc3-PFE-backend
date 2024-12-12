@@ -72,9 +72,9 @@ VALUES (
 --users
 INSERT INTO pfe.users (firstname, lastname, login, password, role, company_id)
 VALUES
-    ('John', 'Doe', 'johndoe', 'password', 'user', 1),
-    ('Jane', 'Doe', 'janedoe', 'password', 'user', 2),
-    ('Alice', 'Smith', 'alicesmith', 'password', 'user', 3);
+    ('John', 'Doe', 'johndoe', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 1),
+    ('Jane', 'Doe', 'janedoe', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 2),
+    ('Alice', 'Smith', 'alicesmith', '$2a$10$2PYC2hW.wb9q5mf.xpL6IOi3C03eH3OKYZYOtqtGNMFAJBeI6YLWe', 'user', 3);
 
 -- Insertion des utilisateurs de test
 INSERT INTO pfe.users (firstname, lastname, login, password, role, company_id)
