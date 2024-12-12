@@ -21,6 +21,7 @@ use axum::{
     Router
 };
 use routes::onboarding::{accept_onboarding, read_all_onboarding, read_all_pending_onboarding, read_all_rejected_onboarding, submit_onboarding};
+use routes::stats::get_stats;
 use std::time::Duration;
 use routes::forms::{
     create_form, 
@@ -134,6 +135,12 @@ fn onboardings_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
+fn stats_routes(state: AppState) -> Router<AppState> {
+    Router::new()
+        .route("/stats", get(get_stats)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
+}
+
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().ok();
@@ -161,6 +168,7 @@ async fn main() {
             .merge(company_routes(state.clone()))
             .merge(score_routes(state.clone()))
             .merge(onboardings_routes(state.clone()))
+            .merge(stats_routes(state.clone()))
             .layer(cors)
             .layer(
                 TraceLayer::new_for_http()
