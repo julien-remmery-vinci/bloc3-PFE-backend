@@ -134,6 +134,8 @@ fn onboardings_routes(state: AppState) -> Router<AppState> {
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
         .route("/onboarding/:id/accept", post(accept_onboarding)
         .layer(from_fn_with_state(state.clone(), authorize_admin)))
+        .route("/onboarding/:id/reject", post(accept_onboarding)
+        .layer(from_fn_with_state(state.clone(), authorize_admin)))
 }
 
 fn stats_routes(state: AppState) -> Router<AppState> {
