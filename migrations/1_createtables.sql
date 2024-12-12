@@ -64,24 +64,6 @@ CREATE TABLE IF NOT EXISTS pfe.questions_form (
     PRIMARY KEY (form_id, question_id)
 );
 
-CREATE TABLE IF NOT EXISTS pfe.choices_odd (
-    choice_id SERIAL PRIMARY KEY,
-    choice TEXT NOT NULL UNIQUE CHECK (choice IN (
-        'Ne correspond pas à mes activités',
-        'Pas de contribution',
-        'Contribution occasionnelle',
-        'Contribution générale',
-        'Contribution spécifique',
-        'Mission d''entreprise')),
-    score DOUBLE PRECISION NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS pfe.answers_odd (
-    answer_id SERIAL PRIMARY KEY,
-    question_id INTEGER REFERENCES pfe.questions(question_id),
-    choice_id INTEGER REFERENCES pfe.choices_odd(choice_id)
-);
-
 CREATE TABLE IF NOT EXISTS pfe.answers_esg (
     answer_id SERIAL PRIMARY KEY,
     question_id INTEGER REFERENCES pfe.questions(question_id),
